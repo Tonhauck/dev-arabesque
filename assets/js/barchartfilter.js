@@ -39,10 +39,10 @@ export default class BarChartFilter {
         this.domain = [+ga[0].key, +ga[ga.length - 1].key];
         this.value = ga.map(a => a.value)
         this.x = d3
-            .scaleLog()
-            .range([100, 0])
+            .scaleLinear()
+            .range([0, 250])
             .domain([this.domain[0], this.domain[1]]);
-        this.y = d3.scaleLinear().domain([d3.min(this.value), d3.max(this.value)]).range([100, 0]);
+        this.y = d3.scaleLog().domain([d3.min(this.value), d3.max(this.value)]).range([100, 0]);
 
         this.axis = d3.axisBottom().ticks(5);
         this.brush = d3.brushX().extent([0, 0], [250, 100]);

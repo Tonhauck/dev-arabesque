@@ -7,7 +7,8 @@ global.projections = {
     "Sphere Mollweide / ESRI:53009": {
         name: "Sphere Mollweide / ESRI:53009",
         proj4: "+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs",
-        extent: null,
+        extent: [-18e6, -9e6, 18e6, 9e6],
+        worldExtent: [-179, -89.99, 179, 89.99],
     },
     "RGF93 / Lambert-93 -- France": {
         name: "RGF93 / Lambert-93 -- France",
@@ -16,18 +17,17 @@ global.projections = {
     },
     "ETRS89 / LAEA Europe": {
         name: "ETRS89 / LAEA Europe",
-        proj4: "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-        extent: [1896628.62, 1507846.05, 4662111.45, 6829874.45],
+        proj4: "+proj=laea +lat_0=52 +lon_0=10 +x_0=4321000 +y_0=3210000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
     },
     "World Azimuthal Equidistant": {
         name: "World Azimuthal Equidistant",
-        proj4: "+proj=aeqd +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +a=6371000 +b=6371000  +units=m ",
+        proj4: "+proj=aeqd +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs ",
         extent: null,
     },
     "Transversal Mercator": {
         name: "Transversal Mercator",
         proj4: "+proj=tmerc +lat_0=0 +lon_0=6 +k=1 +x_0=2500000 +y_0=0 +ellps=bessel +towgs84=598.1,73.7,418.2,0.202,0.045,-2.455,6.7 +units=m +no_defs",
-        extent: [370753.1145, 6382922.7769, 739245.6, 6624811.0577],
+        // extent: [370753.1145, 6382922.7769, 739245.6, 6624811.0577],
     },
     Gnomonic: {
         name: "Gnomonic",
@@ -36,8 +36,8 @@ global.projections = {
     },
     "EPSG:5479": {
         name: "EPSG:5479",
-        proj4: "+proj=lcc +lat_1=-0 +lat_2=-79.33333333333333 +lat_0=-10 +lon_0=163 +x_0=7000000 +y_0=5000000 ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
-        extent: [6825737.53, 4189159.8, 9633741.96, 5782472.71],
+        proj4: "+proj=lcc +lat_1=-76.66666666666667 +lat_2=-79.33333333333333 +lat_0=-78 +lon_0=163 +x_0=7000000 +y_0=5000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+        //extent: [6825737.53, 4189159.8, 9633741.96, 5782472.71],
     },
     "World Mollweide / EPSG:54009": {
         name: "World Mollweide / EPSG:54009",
