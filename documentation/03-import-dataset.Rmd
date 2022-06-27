@@ -1,3 +1,0 @@
-# Import a dataset
-
-In this part, we will show you how to import a dataset into the application.
