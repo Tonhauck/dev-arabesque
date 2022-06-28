@@ -1,5 +1,5 @@
 {
-    "homepage": "https://tonhauck.github.io/dev-arabesque",
+    "homepage": "https://tonhauck.github.io/dev-arabesque/",
     "name": "new-hope",
     "version": "1.0.0",
     "description": "",
@@ -7,6 +7,7 @@
     "scripts": {
         "predeploy": "npm run build",
         "deploy": "gh-pages -d dist",
+        "prepublish": "npm run build",
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "webpack-dev-server --open",
         "build": "webpack"
