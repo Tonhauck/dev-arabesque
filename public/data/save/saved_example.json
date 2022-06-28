@@ -2,8 +2,8 @@
 
     "country": {
         "files": {
-            "node": "public/data/swissLoc.csv",
-            "link": "public/data/swissFlow.csv",
+            "node": "./public/data/swissLoc.csv",
+            "link": "./public/data/swissFlow.csv",
             "Ltype": "csv",
             "Ntype": "csv",
             "aggr": "sum"
@@ -55,8 +55,8 @@
 
     "local": {
         "files": {
-            "node": "public/data/londonLoc.csv",
-            "link": "public/data/londonFlow.csv",
+            "node": "./public/data/londonLoc.csv",
+            "link": "./public/data/londonFlow.csv",
             "Ltype": "csv",
             "Ntype": "csv",
             "aggr": "sum"
@@ -88,8 +88,8 @@
     },
     "world": {
         "files": {
-            "node": "./public/data/ISO_FILES/world_all.geojson",
-            "link": "./public/data/migration.csv",
+            "node": "././public/data/ISO_FILES/world_all.geojson",
+            "link": "././public/data/migration.csv",
             "Ltype": "csv",
             "Ntype": "geojson",
             "aggr": "sum"

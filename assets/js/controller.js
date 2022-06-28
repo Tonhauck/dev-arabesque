@@ -185,7 +185,7 @@ export default class Controller {
     const that = this;
     var blob;
     var request = new XMLHttpRequest();
-    request.open("GET", "/public/data/suisse2.zip");
+    request.open("GET", "./public/data/suisse2.zip");
     request.responseType = "blob";
     request.onload = function () {
       blob = request.response;
