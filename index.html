@@ -1,154 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-      <title>Arabesque</title>
 
-   </head>
-   <body id="arabesque-top">
-       <div id="content">
+<head>
+    <meta charset="UTF-8">
+    <title>Arabesque</title>
+
+</head>
+
+<body id="arabesque-top">
+    <div id="content">
         <header>
-         <nav class="navbar navbar-expand-lg navbar-light" id="main-navbar">
-           <a class="navbar-brand" href="#arabesque-top">Arabesque</a>
-           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <nav class="navbar navbar-expand-lg navbar-light" id="main-navbar">
+                <a class="navbar-brand" href="#arabesque-top">Arabesque</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
              <span class="navbar-toggler-icon"></span>
            </button>
-           <div class="collapse navbar-collapse" id="navbar-menu">
-             <ul class="navbar-nav align-self-end">
-               <li class="nav-item">
-                 <a class="nav-link" href="./docs/">Help</a>
-               </li>
-               <li class="nav-item">
-                 <a class="nav-link" href="#contact">About</a>
-               </li>
-             </ul>
-             <img src="./public/ifsttar.png" id="logo-ifsttar" class="d-inline-block align-top nav-image" alt="">
-           </div>
-         </nav>
-       </header>
-       <section id="home">
-           <div class="container" >
-             <div class="row justify-content-around">
-               <div classe="col-md-6" id="maintitle">
-                 <h1 class="home-title"> Arabesque </h1>
-                 <h3 class="home-subtitle">a web application for thematic flow mapping</h3>
-               </div>
-             </div>
-             <div class="row justify-content-around">
-               <div class="col-md-3">
-                 <div class="card" >
-                   <div class="card-body">
-                     <h5 class="card-title">New map</h5>
-                      <button type="button" id="ImportData" class="btn btn-dark btn-block">
-                       Start
-                      </button>
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <ul class="navbar-nav align-self-end">
+                        <li class="nav-item">
+                            <a class="nav-link" href="./docs/">Help</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">About</a>
+                        </li>
+                    </ul>
+                    <img src="./public/ifsttar.png" id="logo-ifsttar" class="d-inline-block align-top nav-image" alt="">
+                </div>
+            </nav>
+        </header>
+        <section id="home">
+            <div class="container">
+                <div class="row justify-content-around">
+                    <div classe="col-md-6" id="maintitle">
+                        <h1 class="home-title"> Arabesque </h1>
+                        <h3 class="home-subtitle">a web application for thematic flow mapping</h3>
                     </div>
                 </div>
-              </br>
-                <div class="card" >
-                  <div class="card-body">
-                    <h5 class="card-title">Saved map</h5>
-                      <div class="custom-file">
-                        <input type="file"  id="ImportZip" class="custom-file-input" />
-                          <label class="custom-file-label" id="label_ImportZip" for="ImportZip">map.zip</label>
+                <div class="row justify-content-around">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">New map</h5>
+                                <button type="button" id="ImportData" class="btn btn-dark btn-block">
+                       Start
+                      </button>
+                            </div>
+                        </div>
+                        </br>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Saved map</h5>
+                                <div class="custom-file">
+                                    <input type="file" id="ImportZip" class="custom-file-input" />
+                                    <label class="custom-file-label" id="label_ImportZip" for="ImportZip">map.zip</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                 </div>
-              </div>
 
 
-              <div class="col-md-3">
-              <div class="card mb-3 box-shadow" id = "thumbnail-card">
-                <img class="card-img-top" data-src="" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="/assets/svg/suisse.png" data-holder-rendered="true">
-                <div class="card-body">
-                  <p class="card-text">Flows map of work-home journeys in Switzerland</p>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <!-- <div class="btn-group">
+                    <div class="col-md-3">
+                        <div class="card mb-3 box-shadow" id="thumbnail-card">
+                            <img class="card-img-top" data-src="" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="/assets/svg/suisse.png" data-holder-rendered="true">
+                            <div class="card-body">
+                                <p class="card-text">Flows map of work-home journeys in Switzerland</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <!-- <div class="btn-group">
                       <button type="button" class="btn btn-sm btn-outline-secondary">Source</button>
                     </div>
                     <small class="text-muted">9 mins</small> -->
-                  </div>
-                </div>
-              </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-           </div>
-          </div>
-      </section>
-      <section id="map" style='display:none'>
-        <div class="container-fluid">
-          <div class="row"  >
-            <div class="col-sm-2" >
-              <div class="card">
-                <div class="card-body projection-card">
-              <div class="form-group projection-form-group">
-                <label id = "projection-label" for = "projection">Projection</label>
-                <select class="form-control selectpicker" id="projection">
+                </div>
+            </div>
+        </section>
+        <section id="map" style='display:none'>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="card">
+                            <div class="card-body projection-card">
+                                <div class="form-group projection-form-group">
+                                    <label id="projection-label" for="projection">Projection</label>
+                                    <select class="form-control selectpicker" id="projection">
 
 
                 </select>
-              </div>
-              </div>
-            </div>
+                                </div>
+                            </div>
+                        </div>
 
-              <div class="card layers-card mt-2 mb-2">
-                <div class="card-header close collapsed" id="addLayersButton" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" aria-label="Close">
-                   Add Layers
-                   <button type="button" class="close" aria-label="Close">
+                        <div class="card layers-card mt-2 mb-2">
+                            <div class="card-header close collapsed" id="addLayersButton" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" aria-label="Close">
+                                Add Layers
+                                <button type="button" class="close" aria-label="Close">
                    </button></div>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"  >
-                <div class="card-body">
-                <input type="button" value ="Add Base Layer" id="baseLayerButton" class="btn btn-dark btn-block addLayerButton" >
-                
-                </input>
-                <input type="button" id="tileLayerButton" class="btn btn-dark btn-block addLayerButton" data-toggle="modal" data-target="#tileLayerModal" value = "Add Tile Layer" >
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                                <div class="card-body">
+                                    <input type="button" value="Add Base Layer" id="baseLayerButton" class="btn btn-dark btn-block addLayerButton">
 
-                </input>           
-                <input type="button" value = "Import GeoJson Layers" id="importLayerbutton" class="btn btn-dark btn-block addLayerButton" data-toggle = "modal" data-target = "#geojsonModal" >
-                
-                </input>
+                                    </input>
+                                    <input type="button" id="tileLayerButton" class="btn btn-dark btn-block addLayerButton" data-toggle="modal" data-target="#tileLayerModal" value="Add Tile Layer">
+
+                                    </input>
+                                    <input type="button" value="Import GeoJson Layers" id="importLayerbutton" class="btn btn-dark btn-block addLayerButton" data-toggle="modal" data-target="#geojsonModal">
+
+                                    </input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layerBottomLine"></div>
+                        <div class="row p-0 mt-3" id="layerControlList" data-toggle="tooltip" data-placement="right" data-delay="0" title="Drag and Drop layers to change z-index" data-animation="false">
+
+                            <ul id="accordionLayerControl" class="list-unstyled col-md-12 align-items-center ui-sortable">
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-7 map-column">
+                        <div id="Mapcontainer">
+                            <div id="legendDiv"> </div>
+                            <div id="scaleLine"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 filterColumn">
+                        <!-- <div class="row justify-content-md-center mt-3 "> -->
+                        <!-- <div class="col-md-8"> -->
+                        <input id="selectFilterButton" class="btn btn-dark btn-block" type="button" value="Add Filter" data-toggle="modal" data-target="#FilterModal">
+                        <!-- </div> -->
+                        <!-- </div> -->
+                        <div id="Filters" class="filters">
+                        </div>
+
+                    </div>
                 </div>
-                </div>
-             </div>
-             <div class="layerBottomLine"></div>
-              <div class="row p-0 mt-3" id="layerControlList" data-toggle="tooltip" data-placement="right" data-delay="0" title="Drag and Drop layers to change z-index" data-animation="false">
-
-                <ul id="accordionLayerControl" class="list-unstyled col-md-12 align-items-center ui-sortable">
-                
-                </ul>
-              </div>
             </div>
-            <div class="col-sm-7 map-column" ><div id="Mapcontainer"> 
-              <div id="legendDiv"> </div>
-              <div id = "scaleLine"></div>
-            </div></div>
-            <div class="col-sm-3 filterColumn" >
-              <!-- <div class="row justify-content-md-center mt-3 "> -->
-                <!-- <div class="col-md-8"> -->
-                   <input id="selectFilterButton" class="btn btn-dark btn-block" type="button" value="Add Filter" data-toggle="modal" data-target="#FilterModal">
-                <!-- </div> -->
-              <!-- </div> -->
-              <div id="Filters" class="filters">
-              </div>
 
-            </div>
-          </div>
-        </div>
-
-      </section>
-      <div id="ModalImportNodes"> </div>
-      <div id="ModalImportLinks"> </div>
-      <div id="ModalImportStats"> </div>
-      <div id="ModalSemioNodes"> </div>
-      <div id = "ModalSemioLinks"> </div>
-      <div id = "ModalShapeLinks"></div>
-      <div id = "ModalNewFilter"></div>
-      <div id = "ModalNewLayer"></div>
-      <div id = "ModalNewGeojson"></div>
-      <div id = "ModalSemioLayer"></div>
+        </section>
+        <div id="ModalImportNodes"> </div>
+        <div id="ModalImportLinks"> </div>
+        <div id="ModalImportStats"> </div>
+        <div id="ModalSemioNodes"> </div>
+        <div id="ModalSemioLinks"> </div>
+        <div id="ModalShapeLinks"></div>
+        <div id="ModalNewFilter"></div>
+        <div id="ModalNewLayer"></div>
+        <div id="ModalNewGeojson"></div>
+        <div id="ModalSemioLayer"></div>
 
     </div>
     <link href="main.css" rel="stylesheet">
-    <script src="bundle.js"></script>
-   </body>
+    <script src="./dist/bundle.js"></script>
+</body>
+
 </html>
