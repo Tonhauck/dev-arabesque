@@ -368,7 +368,7 @@ export function addArrowSizeSelect(name = ''){
 
     var text = '" - Heigth: Choose the distance between the base and the arrow tip, the value is a percentage of the width of the link</br /> - Width: choose the base width of the arrow, the value represent a percentage of the arrow width"'
     // $("#ArrowHeadSize").append('<hr>')
-    $("#ArrowHeadSize"+name).append('<label class="p-2 h5">Arrow Head <img class="small-icon" src="assets/svg/si-glyph-circle-info.svg" data-html="true" data-container="body" data-toggle="popover" data-placement="right" data-content='+text+' title="Arrow Size Parameter"/></label>')
+    $("#ArrowHeadSize"+name).append('<label class="p-2 h5">Arrow Head <img class="small-icon" src="./assets/svg/si-glyph-circle-info.svg" data-html="true" data-container="body" data-toggle="popover" data-placement="right" data-content='+text+' title="Arrow Size Parameter"/></label>')
 	$("#ArrowHeadSize"+name).append($('<div>').attr('class', "row p-2"))
   	$("#ArrowHeadSize"+name+">div").append($('<div>')
                     .attr("class","col-md-6")
@@ -417,7 +417,7 @@ export function addArrowPlaceCurveSelect(name = ''){
 
     var text = '"The curve is created by the chaikin algorithm </br /></br /> - Heigth: The value is the percentage of the distance between the origin and the destination used to define the maximum height of the link </br /> - Base: The value ([0,1]) is the center of the curve, the point is select by select a percentage of the distance from the origin node of the link "'
     // $("#ArrowPlaceSize").append('<hr>')
-    $("#ArrowPlaceSize"+name).append('<label class="h5 p-2">Curve Arrow  <img class="small-icon" src="assets/svg/si-glyph-circle-info.svg" data-html="true" data-container="body" data-toggle="popover" data-placement="right" data-content='+text+' title="Arrow Size Parameter"/></label>')
+    $("#ArrowPlaceSize"+name).append('<label class="h5 p-2">Curve Arrow  <img class="small-icon" src="./assets/svg/si-glyph-circle-info.svg" data-html="true" data-container="body" data-toggle="popover" data-placement="right" data-content='+text+' title="Arrow Size Parameter"/></label>')
 	$("#ArrowPlaceSize"+name).append($('<div>').attr('class', "row p-2"))
   	$("#ArrowPlaceSize"+name+">div").append($('<div>')
                     .attr("class","col-md-6")

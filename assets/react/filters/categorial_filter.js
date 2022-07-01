@@ -158,7 +158,7 @@ export const CategorialFilter = (props) => {
   return [
     <img
       class="flowFilterIcon"
-      src="assets/svg/si-glyph-link.svg"
+      src="./assets/svg/si-glyph-link.svg"
       style={{ width: "1em" }}
     ></img>,
     <label for="filterorigin" class="filterTitle">
@@ -190,7 +190,7 @@ export const CategorialFilter = (props) => {
 
     <img
       class="icon categorialTrashIcon"
-      src="assets/svg/si-glyph-trash.svg"
+      src="./assets/svg/si-glyph-trash.svg"
       onClick={(e) => props.delete_filter(e)}
     ></img>,
     <div class="filterBottomLine"></div>,

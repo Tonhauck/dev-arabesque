@@ -362,7 +362,7 @@ export default class BarChartFilter {
     render_title() {
         let title_icon = document.createElement("img");
         title_icon.className = "flowFilterIcon";
-        title_icon.src = "assets/svg/si-glyph-link.svg";
+        title_icon.src = "./assets/svg/si-glyph-link.svg";
 
         let title_div = document.createElement("label");
         title_div.className = "filterTitle";
@@ -426,7 +426,7 @@ export default class BarChartFilter {
     render_trash_icon() {
         let trash_div = document.createElement("img");
         trash_div.className = "barchartTrashIcon";
-        trash_div.src = "assets/svg/si-glyph-trash.svg";
+        trash_div.src = "./assets/svg/si-glyph-trash.svg";
         trash_div.onclick = this.delete_filter;
 
         this.filter_div.appendChild(trash_div);
