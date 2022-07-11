@@ -1178,7 +1178,6 @@ export default class OlRenderer {
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
 
-        console.log(this.links_min_value, this.links_max_value);
 
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
@@ -1257,13 +1256,9 @@ export default class OlRenderer {
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
 
-        console.log(global.projections)
-
         const item = global.projections[proj].extent;
 
         olproj.setExtent(item);
-
-        console.log(item);
 
 
         let newProjExtent = olproj.getExtent();
@@ -1300,7 +1295,7 @@ export default class OlRenderer {
                 layer_style = config.styles.baselayer[layer_name];
             }
         }
-        console.log(this.map.getLayers().array_);
+
         let nstyle = config.styles.nodes;
         let lstyle = config.styles.links;
         this.add_nodes(nodes, nstyle);
@@ -1453,7 +1448,7 @@ export default class OlRenderer {
     }
 
     render_layers(layers, styles) {
-        console.log(layers, styles);
+
 
         for (let layer of layers) {
             //Skip the iteration if it's nodes or links (they are added in add_nodes and add_links functions)
@@ -1480,7 +1475,7 @@ export default class OlRenderer {
         for (let l of layers) {
             z_indexes[l.name] = l.z_index;
         }
-        console.log(z_indexes);
+
         for (let layer of this.map.getLayers().array_) {
             layer.setZIndex(z_indexes[layer.values_.name]);
         }
