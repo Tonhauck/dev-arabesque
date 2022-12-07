@@ -32,29 +32,6 @@ export default class OlRenderer {
 
 
 
-        /*       const proj27700 = getProjection('Sphere Mollweide / ESRI:53009');
-        proj27700.setExtent([-18e6, -9e6, 18e6, 9e6]);
-
-        const proj23032 = getProjection('RGF93 / Lambert-93 -- France');
-        proj23032.setExtent([-378305.81, 6093283.21, 1212610.74, 7186901.68]);
-
-        const proj5479 = getProjection('EPSG:5479');
-        proj5479.setExtent([6825737.53, 4189159.8, 9633741.96, 5782472.71]);
-
-        const proj21781 = getProjection('EPSG:21781');
-        proj21781.setExtent([485071.54, 75346.36, 828515.78, 299941.84]);
-
-        const proj3413 = getProjection('EPSG:3413');
-        proj3413.setExtent([-4194304, -4194304, 4194304, 4194304]);
-
-        const proj2163 = getProjection('EPSG:2163');
-        proj2163.setExtent([-8040784.5135, -2577524.921, 3668901.4484, 4785105.1096]);
-
-        const proj54009 = getProjection('ESRI:54009');
-        proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
- */
-
-
         this.map = new Map({
             controls: defaultControls().extend([
                 this.exportButton(),
@@ -70,7 +47,7 @@ export default class OlRenderer {
                 center: [0, 0],
                 zoom: 10,
                 projection: getProjection("Mercator / EPSG:3857"),
-                minZoom: 3,
+                minZoom: 0,
                 multiWorld: false,
                 maxZoom: 18,
                 constrainOnlyCenter: true,
@@ -205,6 +182,7 @@ export default class OlRenderer {
         }
 
         //Add map to doc
+        // TODO Here, we can work on the PDF export 
         doc.addImage(map_img, "PNG", 10, 10, map_final_width, map_final_height);
 
         var legendDiv = document.getElementById("legend");
@@ -1178,7 +1156,6 @@ export default class OlRenderer {
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
 
-        console.log(this.links_min_value, this.links_max_value);
 
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
@@ -1191,13 +1168,22 @@ export default class OlRenderer {
 
         this.map.removeLayer(this.get_layer("links"));
 
-        let arrows = this.create_arrows(links, lstyle);
+
+        let mean = d3.max(links.map((l) => l.value)) * (90 / 100)
+        console.log(mean)
+
+        console.log(d3.max(links.map((l) => l.value)))
+        let filtered = links.filter(function(a) { return a.value >= mean; });
+        console.log(filtered)
+
+        let arrows = this.create_arrows(filtered, lstyle);
+
 
         let links_shapes = arrows.map((a) => {
             let polygon = new Polygon([a]);
             let feature = new Feature(polygon);
             let link_index = arrows.indexOf(a);
-            let link = links[link_index];
+            let link = filtered[link_index];
             feature.setStyle(this.linkStyle(link, lstyle));
             return feature;
         }, this);
@@ -1257,13 +1243,9 @@ export default class OlRenderer {
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
 
-        console.log(global.projections)
-
         const item = global.projections[proj].extent;
 
         olproj.setExtent(item);
-
-        console.log(item);
 
 
         let newProjExtent = olproj.getExtent();
@@ -1300,7 +1282,7 @@ export default class OlRenderer {
                 layer_style = config.styles.baselayer[layer_name];
             }
         }
-        console.log(this.map.getLayers().array_);
+
         let nstyle = config.styles.nodes;
         let lstyle = config.styles.links;
         this.add_nodes(nodes, nstyle);
@@ -1324,22 +1306,31 @@ export default class OlRenderer {
     }
     add_tile_layer(layer) {
         let url;
+        let source;
         if (layer.name === "OSM") {
-            url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
+            source = new OSM();
+            // url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
         } else if (layer.name === "Humanitarian_OSM") {
             url = "http://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Wikimedia") {
             url = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
-        } else if (layer.name === "OSM_without_labels")
-            url = "https://tiles.wmflabs.org/osm-no-labels/{z}/{x}/{y}.png";
-        else if (layer.name === "wmflabs_OSM_BW")
-            url = "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png";
-        else if (layer.name === "Öpnvkarte_Transport_Map")
-            url = "http://tile.memomaps.de/tilegen/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "Stamen_without_labels") {
+            url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "Stamen_BW") {
+            url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "CartoDB Light") {
+            url = "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        }
 
-        const source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+
         let tileLayer = new TileLayer({
-            source: new OSM({ wrapX: true }),
+            name: layer.name,
+            source: source,
         });
 
 
@@ -1453,7 +1444,7 @@ export default class OlRenderer {
     }
 
     render_layers(layers, styles) {
-        console.log(layers, styles);
+
 
         for (let layer of layers) {
             //Skip the iteration if it's nodes or links (they are added in add_nodes and add_links functions)
@@ -1480,7 +1471,7 @@ export default class OlRenderer {
         for (let l of layers) {
             z_indexes[l.name] = l.z_index;
         }
-        console.log(z_indexes);
+
         for (let layer of this.map.getLayers().array_) {
             layer.setZIndex(z_indexes[layer.values_.name]);
         }

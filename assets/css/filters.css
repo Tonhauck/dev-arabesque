@@ -1,68 +1,73 @@
 .filterColumn {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .filterMinInput {
-  width: 50%;
+    width: 50%;
 }
+
 .filterMaxInput {
-  width: 50%;
+    width: 50%;
 }
 
 .barchart {
-  height: 10em;
-  width: 70%;
-  overflow: visible;
+    height: 10em;
+    width: 70%;
+    overflow: visible;
 }
 
 .barchartContainer {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 .barchartTrashIcon {
-  width: 20px;
-  position: absolute;
-  top: 30%;
-  right: 0;
+    width: 20px;
+    position: absolute;
+    top: 30%;
+    right: 0;
 }
+
 .categorialTrashIcon {
-  position: absolute;
-  top: 45%;
-  right: 0;
+    position: absolute;
+    top: 45%;
+    right: 0;
 }
 
 #selectFilterButton {
-  margin-top: 5%;
-  margin-bottom: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
 }
 
 .categorialFilter {
-  position: relative;
+    position: relative;
 }
+
 .barchartFilter {
-  position: relative;
+    position: relative;
 }
 
 .flowFilterIcon {
-  width: 1em;
+    width: 1em;
 }
 
 .filterTitle {
-  margin-left: 5%;
-  font-weight: bold;
+    margin-left: 5%;
+    font-weight: bold;
 }
 
 .filterBottomLine {
-  margin-bottom: 10%;
-  margin-top: 10%;
-  width: 100%;
-  height: 2px;
-  background-color: black;
+    margin-bottom: 10%;
+    margin-top: 10%;
+    width: 100%;
+    height: 2px;
+    background-color: black;
 }
 
 .axis {
-  font-size: 100%;
-  font-family: quicksand, ubuntu, sans-serif;
+    font-size: 100%;
+    font-family: quicksand, ubuntu, sans-serif;
 }

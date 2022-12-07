@@ -109,7 +109,7 @@ export const NewFilterModal = (props) => {
                     data-placement="right"
                     data-content="- Categorial => qualitative selector  <br />- Remove => qualitative removal <br /> - One Category => quick selector of one category <br />  - Numeral => quantitative selector <br /> Temporal => Select time area (must precise a time format)"
                     title=""
-                    src="assets/svg/si-glyph-circle-info.svg"
+                    src="./assets/svg/si-glyph-circle-info.svg"
                     data-original-title="Select the type of filter:"
                   ></img>
                 </label>

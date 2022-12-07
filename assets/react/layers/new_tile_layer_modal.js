@@ -77,10 +77,10 @@ export const NewTileLayerModal = (props) => {
                   <option value="Wikimedia">Wikimedia</option>
                   <option value="OSM">OSM</option>
                   <option value="Humanitarian_OSM">Humanitarian OSM</option>
-                  <option value="OSM_without_labels">OSM without labels</option>
-                  <option value="wmflabs_OSM_BW">wmflabs OSM BW</option>
-                  <option value="Öpnvkarte_Transport_Map">
-                    Öpnvkarte_Transport_Map
+                  <option value="Stamen_without_labels">Stamen without labels</option>
+                  <option value="Stamen_BW">Stamen Black and White</option>
+                  <option value="CartoDB Light">
+                    CartoDB Light
                   </option>
                 </select>
                 <div class="invalid-feedback">

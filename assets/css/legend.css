@@ -1,12 +1,12 @@
 #legendButton {
   bottom: 0.5em;
   left: 0.5em;
-  background-image: url("/assets/svg/legend.svg");
+  background-image: url("/./assets/svg/legend.svg");
   background-size: cover;
 }
 
 #legendButton:hover {
-  background-image: url("/assets/svg/legend_hovered.svg");
+  background-image: url("/./assets/svg/legend_hovered.svg");
   background-size: cover;
 }
 #legend {

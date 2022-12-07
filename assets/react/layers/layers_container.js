@@ -94,7 +94,7 @@ export const LayerCardsContainer = (props) => {
                 title="Change style of the layer"
                 onClick={(e) => props.show_nodes_semio()}
               >
-                <img class="icon" src="assets/svg/si-glyph-brush-1.svg"></img>
+                <img class="icon" src="./assets/svg/si-glyph-brush-1.svg"></img>
               </button>
               <button
                 type="button"
@@ -110,7 +110,7 @@ export const LayerCardsContainer = (props) => {
                 <img
                   class="icon"
                   id="nodesVisibility"
-                  src="assets/svg/si-glyph-view.svg"
+                  src="./assets/svg/si-glyph-view.svg"
                 ></img>
               </button>
             </div>
@@ -137,7 +137,7 @@ export const LayerCardsContainer = (props) => {
                 title="Change shape of the links"
                 onClick={(e) => props.show_links_shape()}
               >
-                <img class="icon" src="assets/svg/si-glyph-ruler.svg"></img>
+                <img class="icon" src="./assets/svg/si-glyph-ruler.svg"></img>
               </button>
               <button
                 type="button"
@@ -149,7 +149,7 @@ export const LayerCardsContainer = (props) => {
                 title="Change style of the links"
                 onClick={(e) => props.show_links_semio()}
               >
-                <img class="icon" src="assets/svg/si-glyph-brush-1.svg"></img>
+                <img class="icon" src="./assets/svg/si-glyph-brush-1.svg"></img>
               </button>
               <button
                 type="button"
@@ -164,7 +164,7 @@ export const LayerCardsContainer = (props) => {
                 <img
                   class="icon"
                   id="linksVisibility"
-                  src="assets/svg/si-glyph-view.svg"
+                  src="./assets/svg/si-glyph-view.svg"
                 ></img>
               </button>
             </div>
@@ -195,7 +195,7 @@ export const LayerCardsContainer = (props) => {
                 title="Remove the layer"
                 data-animation="false"
               >
-                <img class="icon" src="assets/svg/si-glyph-trash.svg"></img>
+                <img class="icon" src="./assets/svg/si-glyph-trash.svg"></img>
               </button>
               <button
                 type="button"
@@ -210,7 +210,7 @@ export const LayerCardsContainer = (props) => {
                 <img
                   class="icon"
                   id={layer.name + "Visibility"}
-                  src="assets/svg/si-glyph-view.svg"
+                  src="./assets/svg/si-glyph-view.svg"
                 ></img>
               </button>
             </div>
@@ -241,7 +241,7 @@ export const LayerCardsContainer = (props) => {
                 title="Remove the layer"
                 data-animation="false"
               >
-                <img class="icon" src="assets/svg/si-glyph-trash.svg"></img>
+                <img class="icon" src="./assets/svg/si-glyph-trash.svg"></img>
               </button>
               <button
                 type="button"
@@ -253,7 +253,7 @@ export const LayerCardsContainer = (props) => {
                 title="Change style of the links"
                 onClick={props.show_geojson_semio}
               >
-                <img class="icon" src="assets/svg/si-glyph-brush-1.svg"></img>
+                <img class="icon" src="./assets/svg/si-glyph-brush-1.svg"></img>
               </button>
               <button
                 type="button"
@@ -268,7 +268,7 @@ export const LayerCardsContainer = (props) => {
                 <img
                   class="icon"
                   id={layer.name + "Visibility"}
-                  src="assets/svg/si-glyph-view.svg"
+                  src="./assets/svg/si-glyph-view.svg"
                 ></img>
               </button>
             </div>

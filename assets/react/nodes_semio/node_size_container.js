@@ -47,7 +47,7 @@ export const SizeContainerComponent = (props) => {
             <img
               id="sizeWidthIcon"
               class="small-icon"
-              src="assets/svg/si-glyph-circle-info.svg"
+              src="./assets/svg/si-glyph-circle-info.svg"
               data-html="true"
               data-container="body"
               data-toggle="popover"
@@ -124,7 +124,7 @@ export const SizeContainerComponent = (props) => {
             <img
               id="sizeRatioIcon"
               class="small-icon"
-              src="assets/svg/si-glyph-circle-info.svg"
+              src="./assets/svg/si-glyph-circle-info.svg"
               data-html="true"
               data-container="body"
               data-toggle="popover"

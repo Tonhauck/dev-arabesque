@@ -97,6 +97,12 @@ export default class Model {
         this.config.varnames.long = long;
     }
 
+    set_presets_nodes_varnames(id, lat, long) {
+        this.config.varnames.nodeID = id;
+        this.config.varnames.lat = lat;
+        this.config.varnames.long = long;
+    }
+
     set_links_varnames(oid, did, vol) {
         this.config.varnames.linkID = [oid, did];
         this.config.varnames.vol = vol;
@@ -164,6 +170,7 @@ export default class Model {
 
     // extract varname from csv or geojson and check filetype
     async preprocess_nodes(file, callback) {
+
         if (
             (file.type != "text/csv") &
             (file.type != "application/json") &
@@ -189,48 +196,53 @@ export default class Model {
 
     // import nodes and convert to geojson points
     async import_nodes(file, callback) {
-            if (
-                (file.type != "text/csv") &
-                (file.type != "application/json") &
-                (file.type != "application/geo+json")
-            ) {
-                throw "unsupported file type";
-            } else {
-                var that = this;
-                if (file.type == "text/csv") {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        that.data.nodes = that.create_geojson(
-                            papaparse(reader.result, { header: true, skipEmptyLines: true })
-                            .data
-                        );
-                        callback();
-                    };
-                    reader.readAsText(file);
-                } else {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        let data = JSON.parse(reader.result);
-                        data.features.forEach((f) => {
-                            f.geometry = turf.centroid(f.geometry).geometry;
-                            //reverse long and lat
-                            let long = f.geometry.coordinates[0];
-                            let lat = f.geometry.coordinates[1];
-                            f.geometry.coordinates = [lat, long];
 
-                            //Convert node id to string to avoid type confusion when filtering
-                            f.properties[that.config.varnames.nodeID] = f.properties[
-                                that.config.varnames.nodeID
-                            ].toString();
-                        });
-                        that.data.nodes = data.features;
-                        callback();
-                    };
-                    reader.readAsText(file);
-                }
+        if (
+            (file.type != "text/csv") &
+            (file.type != "application/json") &
+            (file.type != "application/geo+json")
+        ) {
+            throw "unsupported file type";
+        } else {
+            var that = this;
+            if (file.type == "text/csv") {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    that.data.nodes = that.create_geojson(
+                        papaparse(reader.result, { header: true, skipEmptyLines: true })
+                        .data
+                    );
+                    callback();
+
+                };
+                console.log(file)
+                reader.readAsText(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    let data = JSON.parse(reader.result);
+                    data.features.forEach((f) => {
+                        f.geometry = turf.centroid(f.geometry).geometry;
+                        //reverse long and lat
+                        let long = f.geometry.coordinates[0];
+                        let lat = f.geometry.coordinates[1];
+                        f.geometry.coordinates = [lat, long];
+
+                        //Convert node id to string to avoid type confusion when filtering
+                        f.properties[that.config.varnames.nodeID] = f.properties[
+                            that.config.varnames.nodeID
+                        ].toString();
+                    });
+                    that.data.nodes = data.features;
+                    callback();
+                };
+                reader.readAsText(file);
             }
         }
-        // extract varname from csv a
+    }
+
+
+    // extract varname from csv a
     async preprocess_links(file, callback) {
         if (file.type != "text/csv") {
             throw "unsupported file type";

@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import React from "react";
 import { measureTextWidths } from "ol/render/canvas";
 import { style } from "d3";
-import { cssNumber } from "jquery";
+import { cssNumber, data } from "jquery";
 
 export default class BarChartFilter {
     constructor(
@@ -37,12 +37,13 @@ export default class BarChartFilter {
         });
 
         this.domain = [+ga[0].key, +ga[ga.length - 1].key];
+
         this.value = ga.map(a => a.value)
         this.x = d3
-            .scaleLinear()
+            .scaleLog()
             .range([0, 250])
-            .domain([this.domain[0], this.domain[1]]);
-        this.y = d3.scaleLog().domain([d3.min(this.value), d3.max(this.value)]).range([100, 0]);
+            // .domain([this.domain[0], this.domain[1]]);
+        this.y = d3.scaleLinear().range([100, 0]);
 
         this.axis = d3.axisBottom().ticks(5);
         this.brush = d3.brushX().extent([0, 0], [250, 100]);
@@ -134,9 +135,11 @@ export default class BarChartFilter {
         let max = this.group.all()[this.group.all().length - 1].key;
 
         const data_groups = this.group_for_barchart();
-
-        this.y.domain([1, d3.max(data_groups.map((g) => g.value))]);
-        console.log(this.y.domain());
+        console.log(data_groups)
+        var data_groupsFiltered = data_groups.filter(i => i.value < 0);
+        this.y.domain(d3.extent(data_groups, d => d.value));
+        this.x.domain([1, d3.max(data_groups, d => d.key)]);
+        //console.log(data_groupsFiltered)
 
         let g = d3.select(div).select("g");
 
@@ -176,9 +179,10 @@ export default class BarChartFilter {
             //X axis
 
             g.append("g")
-                .attr("class", "axis")
+                .attr("class", "x-axis")
+                .attr("transform", "translate(-30, 50)rotate(-90)")
                 .attr("transform", `translate(0,${height})`)
-                .call(d3.axisBottom(this.x).ticks(3));
+                .call(d3.axisBottom(this.x).ticks(2).tickFormat(d3.format(".0s")));
 
             //X label
 
@@ -194,7 +198,7 @@ export default class BarChartFilter {
             //Setting the y label
 
             g.append("g")
-                .attr("class", "axis")
+                .attr("class", "y-axis")
                 // .attr("transform", `translate(${width},0)`)
                 .call(d3.axisLeft(this.y).ticks(2).tickFormat(d3.format(".0s")));
 
@@ -265,6 +269,7 @@ export default class BarChartFilter {
         let height = that.y.range()[0];
 
         for (let d of groups) {
+            console.log(that.x(+parseFloat(d.key)));
             path.push(
                 "M",
                 that.x(+parseFloat(d.key)),
@@ -275,6 +280,8 @@ export default class BarChartFilter {
                 "h9V",
                 height
             );
+
+
         }
         return path.join(" ");
     }
@@ -283,7 +290,8 @@ export default class BarChartFilter {
         const min = this.domain[0];
         const max = this.domain[1];
 
-        const nb_groups = 30;
+        console.log(min, max)
+        const nb_groups = 50;
         let sorted_data = this.complete_data
             .map((d) => parseFloat(d[this.variable]))
             .sort((a, b) => a - b);
@@ -292,23 +300,27 @@ export default class BarChartFilter {
         let groups = [];
         let sorted_data_copy = sorted_data;
 
-        //Compute the breaks of the data (with equal amplitudes method)
+        console.log(sorted_data)
+            //Compute the breaks of the data (with equal amplitudes method)
         for (let i = 0; i <= nb_groups; i++) {
             let break_i = ((max - min) / nb_groups) * i;
+            //  console.log(break_i)
             breaks.push(break_i);
         }
-        console.log(breaks);
+
+
 
         for (let i = 0; i < nb_groups; i++) {
             let group = [];
             //While the data is between the first two breaks, we add it to group
             for (let d of sorted_data_copy) {
                 if (d >= breaks[i] && d < breaks[i + 1]) {
+
                     group.push(d);
                     continue;
                 } else {
                     //If it's not (as data are sorted), the group is full
-                    groups.push({ key: breaks[i], value: group.length });
+                    groups.push({ key: breaks[i] + 1, value: group.length });
                     sorted_data_copy = sorted_data_copy.slice(group.length);
                     break;
                 }
@@ -362,7 +374,7 @@ export default class BarChartFilter {
     render_title() {
         let title_icon = document.createElement("img");
         title_icon.className = "flowFilterIcon";
-        title_icon.src = "assets/svg/si-glyph-link.svg";
+        title_icon.src = "./assets/svg/si-glyph-link.svg";
 
         let title_div = document.createElement("label");
         title_div.className = "filterTitle";
@@ -426,7 +438,7 @@ export default class BarChartFilter {
     render_trash_icon() {
         let trash_div = document.createElement("img");
         trash_div.className = "barchartTrashIcon";
-        trash_div.src = "assets/svg/si-glyph-trash.svg";
+        trash_div.src = "./assets/svg/si-glyph-trash.svg";
         trash_div.onclick = this.delete_filter;
 
         this.filter_div.appendChild(trash_div);
