@@ -220,13 +220,13 @@ nav {
 #ExportMap {
     top: 5em;
     left: 0.5em;
-    background-image: url("/./assets/svg/si-glyph-end-page.svg");
+    background-image: url("/../assets/svg/si-glyph-end-page.svg");
 }
 
 #ExportMapPdf {
     top: 7em;
     left: 0.5em;
-    background-image: url("/./assets/svg/si-glyph-image.svg");
+    background-image: url("/../assets/svg/si-glyph-image.svg");
 }
 
 #ExportMapPdf:hover {

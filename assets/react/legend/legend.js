@@ -296,6 +296,9 @@ export const LegendComponent = (props) => {
     let min_radius = d3.min(
       Object.entries(props.nodes_hash).map((node) => node[1].radius_px)
     );
+    let median_radius = d3.median(
+      Object.entries(props.nodes_hash).map((node) => node[1].radius_px)
+    );
 
     return (
       <div id="legendCircleContainer">
@@ -303,6 +306,7 @@ export const LegendComponent = (props) => {
           map={props.map}
           node_size_scale={props.node_size_scale}
           min_radius={min_radius}
+          median_radius={median_radius}
           max_radius={max_radius}
           container_width={container_width}
           container_height={container_height}

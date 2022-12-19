@@ -44,14 +44,22 @@ function bigCircle(max_radius, scale, map) {
 }
 
 function smallAndBigCircles(smallCircleRadius, max_radius, scale, map) {
-  console.log(smallCircleRadius);
   return [
     <svg id="legendShapes">
       <circle
         id="bigCircle"
         cx="50%"
-        cy="35%"
+        cy="30%"
         r={max_radius}
+        fill="none"
+        stroke="black"
+        strokeWidth="1px"
+      ></circle>
+      <circle
+        id="midCircle"
+        cx="50%"
+        cy="70%"
+        r={((max_radius - smallCircleRadius) / 2) + smallCircleRadius}
         fill="none"
         stroke="black"
         strokeWidth="1px"
@@ -59,7 +67,7 @@ function smallAndBigCircles(smallCircleRadius, max_radius, scale, map) {
       <circle
         id="smallCircle"
         cx="50%"
-        cy="80%"
+        cy="95%"
         r={smallCircleRadius}
         fill="none"
         stroke="black"
@@ -70,10 +78,10 @@ function smallAndBigCircles(smallCircleRadius, max_radius, scale, map) {
       <div
         // class="circleOneLabel"
         style={{
-          height: "65%",
+          height: "55%",
           width: "100%",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
         }}
       >
         <div style={{ fontSize: "80%" }}>
@@ -84,10 +92,25 @@ function smallAndBigCircles(smallCircleRadius, max_radius, scale, map) {
       <div
         // class="circleOneLabel"
         style={{
-          height: "30%",
+          height: "60%",
           width: "100%",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
+        }}
+      >
+        {" "}
+        <div style={{ fontSize: "80%" }}>
+          {" "}
+          {round_and_shorten(pixelWidthToValue(((max_radius - smallCircleRadius) / 2) + smallCircleRadius, scale, map))}
+        </div>
+      </div>
+      <div
+        // class="circleOneLabel"
+        style={{
+          height: "35%",
+          width: "100%",
+          display: "flex",
+          alignItems: "flex-end",
         }}
       >
         {" "}
@@ -149,6 +172,7 @@ export const Circles = (props) => {
   let [smallCircleRadiusM, setSmallCircleRadiusM] = useState(
     pxToMeters(min_radius, props.map)
   );
+
   //Minimum visible difference between two circles, in % of the div legendShapes
   let min_vis_diff = 4;
   //Minimum radius that we can display (in % too)

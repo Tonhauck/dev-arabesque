@@ -70,7 +70,6 @@ export default class BarChartFilter {
     brush_listener(that) {
         return function() {
             const g = d3.select(this.parentNode);
-
             const brushRange = d3.event.selection || d3.brushSelection(this); // attempt to read brush range
             let activeRange = brushRange;
 
@@ -139,7 +138,6 @@ export default class BarChartFilter {
         var data_groupsFiltered = data_groups.filter(i => i.value < 0);
         this.y.domain(d3.extent(data_groups, d => d.value));
         this.x.domain([1, d3.max(data_groups, d => d.key)]);
-        //console.log(data_groupsFiltered)
 
         let g = d3.select(div).select("g");
 
