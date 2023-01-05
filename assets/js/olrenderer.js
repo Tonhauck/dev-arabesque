@@ -1312,10 +1312,10 @@ export default class OlRenderer {
             source = new OSM();
             // url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
         } else if (layer.name === "Humanitarian_OSM") {
-            url = "http://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
+            url = "https://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Wikimedia") {
-            url = "http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
+            url = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Stamen_without_labels") {
             url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
