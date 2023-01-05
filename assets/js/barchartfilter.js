@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import React from "react";
 import { measureTextWidths } from "ol/render/canvas";
-import { style } from "d3";
+import { scaleLinear, style } from "d3";
 import { cssNumber, data } from "jquery";
 
 export default class BarChartFilter {
@@ -17,10 +17,15 @@ export default class BarChartFilter {
         nstyle,
         update_bars,
         filtered_range,
-        complete_data
+        complete_data,
+        type,
+        scale,
+
     ) {
+
         this.variable = variable;
         this.filter_id = filter_id;
+        console.log(this.filter_id)
         this.margin = { top: 10, right: 13, bottom: 20, left: 10 };
         if (filtered_range !== null)
             this.filtered_range = filtered_range.map((el) => parseFloat(el));
@@ -32,18 +37,14 @@ export default class BarChartFilter {
             g = parseFloat(g);
         }
         //Sort the groups
-        ga.sort(function(a, b) {
+        ga.sort(function (a, b) {
             return a.key - b.key;
         });
 
         this.domain = [+ga[0].key, +ga[ga.length - 1].key];
 
         this.value = ga.map(a => a.value)
-        this.x = d3
-            .scaleLog()
-            .range([0, 250])
-            // .domain([this.domain[0], this.domain[1]]);
-        this.y = d3.scaleLinear().range([100, 0]);
+
 
         this.axis = d3.axisBottom().ticks(5);
         this.brush = d3.brushX().extent([0, 0], [250, 100]);
@@ -68,9 +69,8 @@ export default class BarChartFilter {
     }
 
     brush_listener(that) {
-        return function() {
+        return function () {
             const g = d3.select(this.parentNode);
-
             const brushRange = d3.event.selection || d3.brushSelection(this); // attempt to read brush range
             let activeRange = brushRange;
 
@@ -98,7 +98,7 @@ export default class BarChartFilter {
             // filter the active dimension to the range extents
 
             that.dimension.filterAll();
-            that.dimension.filterFunction(function(d) {
+            that.dimension.filterFunction(function (d) {
                 return parseFloat(d) >= extents[0] && d <= extents[1];
             });
 
@@ -120,7 +120,37 @@ export default class BarChartFilter {
     }
 
     //Creates chart
-    chart(div) {
+    chart(div, scale) {
+
+
+        console.log(scale)
+
+        const data_groups = this.group_for_barchart();
+
+        if (scale == "linear") {
+            // Linear Scale
+            this.x = d3
+                .scaleLinear()
+                .range([0, 250])
+                .domain([this.domain[0], this.domain[1]]);
+            this.y = d3.scaleLog().range([100, 0]);
+
+            this.y.domain([1, d3.max(data_groups.map((g) => g.value))]);
+            console.log(this.y.domain());
+
+        } else {
+            //Log scale
+            this.x = d3
+                .scaleLog()
+                .range([0, 250])
+            // .domain([this.domain[0], this.domain[1]]);
+            this.y = d3.scaleLinear().range([100, 0]);
+            this.y.domain(d3.extent(data_groups, d => d.value));
+            this.x.domain([1, d3.max(data_groups, d => d.key)]);
+        }
+
+
+
         let that = this;
         const width = this.x.range()[1] + this.margin.left + this.margin.right;
         const height = this.y.range()[0];
@@ -134,12 +164,10 @@ export default class BarChartFilter {
         let min = this.group.all()[0].key;
         let max = this.group.all()[this.group.all().length - 1].key;
 
-        const data_groups = this.group_for_barchart();
-        console.log(data_groups)
+
+
         var data_groupsFiltered = data_groups.filter(i => i.value < 0);
-        this.y.domain(d3.extent(data_groups, d => d.value));
-        this.x.domain([1, d3.max(data_groups, d => d.key)]);
-        //console.log(data_groupsFiltered)
+
 
         let g = d3.select(div).select("g");
 
@@ -150,6 +178,7 @@ export default class BarChartFilter {
             g = d3
                 .select(div)
                 .attr("class", "barchartContainer")
+                .attr('id', "barchartContainer")
                 .append("svg")
                 .attr("viewBox", `0 0 ${w} ${h}`)
                 .attr("width", "100%")
@@ -213,8 +242,9 @@ export default class BarChartFilter {
                 .text("Count");
         }
 
+
         // Initialize the brush component with pretty resize handles.
-        var gBrush = g.append("g").attr("class", "brush").call(this.brush);
+        var gBrush = g.append("g").attr("class", "brush").attr("id", "brush").call(this.brush);
 
         gBrush
             .selectAll(".handle--custom")
@@ -257,11 +287,10 @@ export default class BarChartFilter {
             const e = +(d.type === "e");
             const x = e ? 1 : -1;
             const y = height / 3;
-            return `M${0.5 * x},${y}A6,6 0 0 ${e} ${6.5 * x},${y + 6}V${
-        2 * y - 6
-      }A6,6 0 0 ${e} ${0.5 * x},${2 * y}ZM${2.5 * x},${y + 8}V${2 * y - 8}M${
-        4.5 * x
-      },${y + 8}V${2 * y - 8}`;
+
+            return `M${0.5 * x},${y}A6,6 0 0 ${e} ${6.5 * x},${y + 6}V${2 * y - 6
+                }A6,6 0 0 ${e} ${0.5 * x},${2 * y}ZM${2.5 * x},${y + 8}V${2 * y - 8}M${4.5 * x
+                },${y + 8}V${2 * y - 8}`;
         }
     }
     barPathF(that, groups) {
@@ -269,7 +298,8 @@ export default class BarChartFilter {
         let height = that.y.range()[0];
 
         for (let d of groups) {
-            console.log(that.x(+parseFloat(d.key)));
+
+
             path.push(
                 "M",
                 that.x(+parseFloat(d.key)),
@@ -278,8 +308,11 @@ export default class BarChartFilter {
                 "V",
                 that.y(d.value + 1),
                 "h9V",
-                height
+                height,
+
             );
+
+
 
 
         }
@@ -290,7 +323,7 @@ export default class BarChartFilter {
         const min = this.domain[0];
         const max = this.domain[1];
 
-        console.log(min, max)
+
         const nb_groups = 50;
         let sorted_data = this.complete_data
             .map((d) => parseFloat(d[this.variable]))
@@ -300,8 +333,7 @@ export default class BarChartFilter {
         let groups = [];
         let sorted_data_copy = sorted_data;
 
-        console.log(sorted_data)
-            //Compute the breaks of the data (with equal amplitudes method)
+        //Compute the breaks of the data (with equal amplitudes method)
         for (let i = 0; i <= nb_groups; i++) {
             let break_i = ((max - min) / nb_groups) * i;
             //  console.log(break_i)
@@ -374,7 +406,26 @@ export default class BarChartFilter {
     render_title() {
         let title_icon = document.createElement("img");
         title_icon.className = "flowFilterIcon";
-        title_icon.src = "./assets/svg/si-glyph-link.svg";
+        title_icon.id = "flowFilterIcon";
+        /*    if (title_icon.className.includes("nodes")) {
+               title_icon.src = "./assets/svg/si-glyph-node.svg";
+           }
+           else {
+               title_icon.src = "./assets/svg/si-glyph-link.svg";
+           }
+    */
+        let layer = $("#filteredLayer :selected").text()
+
+
+
+
+        title_icon.src = "./assets/svg/si-glyph-" + layer.toLowerCase() + ".svg";
+
+        console.log(title_icon.src.includes("si-glyph-.svg"))
+        if (title_icon.src.includes("si-glyph-.svg") == true) {
+            console.log("change")
+            title_icon.src = "./assets/svg/si-glyph-links.svg";
+        }
 
         let title_div = document.createElement("label");
         title_div.className = "filterTitle";
@@ -387,17 +438,95 @@ export default class BarChartFilter {
         let chart_div = document.createElement("div");
         // chart_div.id = `chart-${target}-${id}-${type}`;
         //In order to resize the graph
-        this.chart(chart_div);
+        this.chart(chart_div, 'linear');
         this.filter_div.appendChild(chart_div);
     }
 
+    render_radio_log() {
+        let chart_div = document.createElement("div");
+        chart_div.className = "logOrLinContainer";
+
+        let radiobox_container = document.createElement("div");
+        var radiobox = document.createElement('input')
+        radiobox_container.className = "maxMinContainer";
+        radiobox.type = 'radio';
+        radiobox.id = 'log';
+        radiobox.class = 'maxMinContainer';
+        radiobox.class = 'radioLogLin';
+        radiobox.value = 'log';
+        radiobox.name = 'log_or_lin';
+
+        var label = document.createElement('label')
+        label.htmlFor = 'log';
+
+        var description = document.createTextNode(' Log Scale');
+        label.appendChild(description);
+
+        let radiobox2_container = document.createElement("div")
+        radiobox2_container.className = "maxMinContainer";
+        var radiobox2 = document.createElement('input');
+        radiobox2.type = 'radio';
+        radiobox2.id = 'linear';
+        radiobox2.class = 'maxMinContainer';
+        radiobox2.class = 'radioLogLin';
+        radiobox2.value = 'linear';
+        radiobox2.name = 'log_or_lin';
+        radiobox2.checked = true;
+
+        var label2 = document.createElement('label')
+        label2.htmlFor = 'linear';
+
+        var description2 = document.createTextNode(' Linear Scale');
+        label2.appendChild(description2);
+
+        //var newline = document.createElement('&nbsp;');
+
+
+        radiobox2_container.appendChild(radiobox);
+        radiobox2_container.appendChild(label);
+        //chart_div.appendChild(newline);
+
+        radiobox_container.appendChild(radiobox2);
+        radiobox_container.appendChild(label2);
+        //   chart_div.appendChild(newline2);
+
+
+        chart_div.appendChild(radiobox_container)
+        chart_div.appendChild(radiobox2_container)
+
+        //radios.forEach(radio => radio.addEventListener('change', () => alert(radio.value)));
+
+        radiobox2.onchange = this.onLogLinChange.bind(this);
+        radiobox.onchange = this.onLogLinChange.bind(this);
+
+        this.filter_div.appendChild(chart_div)
+
+    }
+
+    onLogLinChange(event) {
+        console.log(event.target.value)
+        let chart_div = document.createElement("div");
+        this.chart(chart_div, event.target.value);
+        document.getElementsByClassName("barchart")[0].remove();
+        var container = document.getElementById("barchartContainer");
+        container.appendChild(chart_div)
+        // this.filter_div.appendChild(chart_div);
+    }
+
     render_minmax_inputs() {
+
         let min_max_div = document.createElement("div");
         min_max_div.id = "filterMinMax";
 
         let minLabel = document.createElement("div");
         minLabel.innerHTML = "Min";
         minLabel.className = "minMaxLabel";
+
+        let minContainer = document.createElement("div");
+        minContainer.className = "maxMinContainer";
+
+        let maxContainer = document.createElement("div");
+        maxContainer.className = "maxMinContainer";
 
         let minInput = document.createElement("input");
         minInput.className = "form-control filterMinInput";
@@ -425,11 +554,17 @@ export default class BarChartFilter {
         max_invalid_feedback.className = "invalid-feedback";
         max_invalid_feedback.innerHTML = "Value is out of range";
 
-        min_max_div.appendChild(minLabel);
-        min_max_div.appendChild(minInput);
+        minContainer.appendChild(minLabel);
+        min_max_div.appendChild(minContainer);
+        minContainer.appendChild(minInput);
+
         // min_max_div.appendChild(min_invalid_feedback);
-        min_max_div.appendChild(maxLabel);
-        min_max_div.appendChild(maxInput);
+        maxContainer.appendChild(maxLabel);
+        min_max_div.appendChild(maxContainer);
+        maxContainer.appendChild(maxInput);
+
+        /*     min_max_div.appendChild(maxLabel);
+            min_max_div.appendChild(maxInput); */
         min_max_div.appendChild(max_invalid_feedback);
 
         this.filter_div.appendChild(min_max_div);
@@ -455,6 +590,7 @@ export default class BarChartFilter {
         this.render_title();
         this.render_chart();
         this.render_trash_icon();
+        this.render_radio_log();
         this.render_minmax_inputs();
         this.render_bottom_line();
         return this.filter_div;
@@ -463,7 +599,6 @@ export default class BarChartFilter {
     update_brush_extent(data_range) {
         //Convert data_range received to brush range in pixels
         let brush_range = data_range.map(this.x);
-
         let brush = document.getElementsByClassName("brush")[0];
         d3.select(brush).call(this.brush.move, [brush_range[0], brush_range[1]]);
     }

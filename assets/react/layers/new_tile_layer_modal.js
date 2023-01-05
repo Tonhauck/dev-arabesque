@@ -53,7 +53,7 @@ export const NewTileLayerModal = (props) => {
           </div>
           <div class="modal-body">
             <div class="row">
-              <div class="col-md-6">
+              {/*   <div class="col-md-6">
                 <label class="text-muted h5">Type</label>
                 <select class="custom-select w-100" id="tileLayersAdd">
                   <option value="base">Base</option>
@@ -63,25 +63,54 @@ export const NewTileLayerModal = (props) => {
                   <option value="text">Text Tile</option>
                   <option value="carto">CARTO basemap</option>
                 </select>
-              </div>
+              </div> */}
               <div class="col-md-6" id="tileLayersNameSelector">
                 {/* <label class="text-muted h5">Layer</label>
                 <select class="custom-select w-100" id="TilelayersAdd">
                   <option selected>Choose...</option>
                 </select> */}
-                <label for="tileLayersNameSelectorOptions">Tiles</label>
+                {/*  <label for="tileLayersNameSelectorOptions">Tiles</label> */}
                 <select
                   class="custom-select"
                   id="tileLayersNameSelectorOptions"
                 >
-                  <option value="Wikimedia">Wikimedia</option>
-                  <option value="OSM">OSM</option>
-                  <option value="Humanitarian_OSM">Humanitarian OSM</option>
-                  <option value="Stamen_without_labels">Stamen without labels</option>
-                  <option value="Stamen_BW">Stamen Black and White</option>
-                  <option value="CartoDB Light">
-                    CartoDB Light
-                  </option>
+                  <optgroup label="Stamen">
+                    <option value="Stamen_without_labels">Stamen without labels</option>
+                    <option value="Stamen_Light">Stamen Black and White</option>
+                    <option value="Stamen_Dark">Stamen Dark</option>
+                    <option value="Stamen_terrain">Stamen Terrain and Label</option>
+                    <option value="Stamen_watercolor">Stamen Watercolor</option>
+                  </optgroup>
+                  <optgroup label="OSM">
+                    <option value="Humanitarian_OSM">Humanitarian OSM</option>
+                    <option value="Wikimedia">Wikimedia</option>
+                    <option value="OSM">OSM</option>
+                  </optgroup>
+                  <optgroup label="CartoDB">
+                    <option value="CartoDB Light">
+                      CartoDB Light
+                    </option>
+                    <option value="CartoDB_Voyager_no_label">
+                      CartoDB Voyager No labels
+                    </option>
+                    <option value="CartoDB_Voyager_labeled">
+                      CartoDB Voyager with labels
+                    </option>
+                  </optgroup>
+                  <optgroup label="ESRI">
+                    <option value="ESRI_World_Street_map">
+                      ESRI World Street map
+                    </option>
+                    <option value="ESRI_World_Topo_map">
+                      ESRI World Topo map
+                    </option>
+                    <option value="ESRI_World_Imagery">
+                      ESRI World Imagery
+                    </option>
+                    <option value="ESRI_NatGeo_World">
+                      ESRI NatGeo World Map
+                    </option>
+                  </optgroup>
                 </select>
                 <div class="invalid-feedback">
                   This layer has already been loaded

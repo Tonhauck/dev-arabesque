@@ -6,7 +6,6 @@ import Multiselect from "react-bootstrap-multiselect";
 const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
-
     return (
       <div
         ref={ref}
@@ -153,12 +152,16 @@ export const CategorialFilter = (props) => {
   }
 
   let toggle_button_mode;
+  console.log(props)
   if (props.mode === "add") toggle_button_mode = "success";
   else if (props.mode === "remove") toggle_button_mode = "danger";
+  let layer = $("#filteredLayer :selected").text()
+  console.log(layer.toLowerCase());
+  let img = "./assets/svg/si-glyph-" + layer.toLowerCase() + ".svg";
   return [
     <img
       class="flowFilterIcon"
-      src="./assets/svg/si-glyph-link.svg"
+      src={img}
       style={{ width: "1em" }}
     ></img>,
     <label for="filterorigin" class="filterTitle">

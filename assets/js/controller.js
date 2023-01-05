@@ -2,6 +2,7 @@ import BarChartFilter from "./barchartfilter.js";
 import { CategorialFilter } from "../react/filters/categorial_filter";
 import { NewTileLayerModal } from "../react/layers/new_tile_layer_modal";
 import { NewGeojsonLayerModal } from "../react/layers/new_geojson_layer_modal";
+import { NewReferenceLayerModal } from "../react/layers/new_reference_layer_modal";
 import ReactDOM from "react-dom";
 import React from "react";
 import * as turf from "@turf/turf";
@@ -76,6 +77,11 @@ export default class Controller {
             .getElementById("thumbnail-card")
             .addEventListener("click", this.load_thumbnail_zip.bind(this));
 
+        document
+            .getElementById("Filters")
+            .addEventListener("change", this.update_stats.bind(this));
+
+
         for (let button of document.getElementsByClassName("addLayerButton"))
             button.addEventListener("click", this.addLayer.bind(this));
 
@@ -117,7 +123,7 @@ export default class Controller {
 
     import_nodes() {
         let nodesfile = document.getElementById("NodesImportFile").files[0];
-        console.log(document.getElementById("NodesImportFile").files)
+
         let id, lat, long;
         if (nodesfile.type === "text/csv") {
             id = document.getElementById("NodeImportID").value.replace(/\"/g, "");
@@ -151,11 +157,11 @@ export default class Controller {
     import_nodes_preset() {
         // When a level is select, we import the value
         let level = document.querySelector('input[name="NodesImportPresetFile"]:checked').value;
-        console.log(level)
+
         let dataset = document.getElementById(level).value
-        console.log(dataset)
+
         let nodeId = document.getElementById(dataset + 'ID').value;
-        console.log(nodeId)
+
 
         // The previous inputs are needing to get the correct file.
         let nodesGeojsonPreset = './public/arabesque-datasets-presets/geom/' + level + '/' + dataset + '.geojson';
@@ -176,7 +182,6 @@ export default class Controller {
                 this.model.set_nodes_varnames(nodeId, null, null),
                 this.view.import_links())
     }
-
 
     import_links_file() {
         let linksfile = document.getElementById("LinksImportFile").files[0];
@@ -266,11 +271,11 @@ export default class Controller {
         const that = this;
         var blob;
         var request = new XMLHttpRequest();
-        request.open("GET", "./public/data/suisse2.zip");
+        request.open("GET", "./public/data/mobiscol.zip");
         request.responseType = "blob";
         request.onload = function () {
             blob = request.response;
-            var file = new File([blob], "suisse.zip");
+            var file = new File([blob], "mobiscol.zip");
 
             that.import_zip(null, file);
         };
@@ -481,6 +486,7 @@ export default class Controller {
     }
 
     render_filters(render_all) {
+
         document.getElementById("Filters").innerHTML = "";
 
         // this.model.config.filters = [{ id: "origin" }];
@@ -493,6 +499,14 @@ export default class Controller {
             let target = filters[i].target;
 
             let filter_div, filter_instance;
+            if (type === "numeral") {
+                [filter_div, filter_instance] = this.barchart_filter(
+                    target,
+                    variable,
+                    type,
+                    render_all
+                );
+            }
             if (type === "numeral") {
                 [filter_div, filter_instance] = this.barchart_filter(
                     target,
@@ -516,7 +530,15 @@ export default class Controller {
                 document.getElementById("Filters").append(filter_div);
                 //Fill the div with filter
                 this.categorial_filter(target, variable, filter_id, "remove");
-            } else filter_div = "< div > Lol < /div>";
+            } else {
+                [filter_div, filter_instance] = this.barchart_filter(
+                    target,
+                    variable,
+                    type,
+                    render_all
+                )
+            };
+            // console.log(filter_div = "< div > Lol < /div>";
 
             document.getElementById("Filters").append(filter_div);
             if (type === "numeral")
@@ -524,7 +546,9 @@ export default class Controller {
         }
     }
     add_filter(target, variable, type) {
-        const filter_id = "filter-" + target + "-" + variable + "-" + type;
+
+        this.model.config.filters.target = document.getElementById("filteredLayer").value
+        const filter_id = "filter-" + this.model.config.filters.target + "-" + variable + "-" + type;
         const filter_container = document.getElementById(filter_id);
         //Checking is the filter already exists
         if (filter_container !== null) {
@@ -569,11 +593,72 @@ export default class Controller {
                 filter_id: "filter-" + target + "-" + variable + "-" + type,
                 range: range,
             };
+        } else if (type === "continuous") {
+            filter_div = this.barchart_filter(
+                target,
+                variable,
+                type,
+                this.render_all.bind(this)
+            )[0];
+            document.getElementById("Filters").append(filter_div);
+
+            let dimension = this.model.data.filters[
+                `filter-${target}-${variable}-${type}`
+            ];
+            //Saving the range
+            let values = dimension
+                .group()
+                .all()
+                .map((e) => parseFloat(e.key));
+
+            let min = d3.min(values);
+            let max = d3.max(values);
+
+            let range = [min, max];
+
+            filter = {
+                target: target,
+                id: variable,
+                type: type,
+                filter_id: "filter-" + target + "-" + variable + "-" + type,
+                range: range,
+            };
+        } else if (type === "discrete") {
+            filter_div = document.createElement("div");
+            const filter_id = "filter-" + target + "-" + variable + "-" + type;
+            filter_div.id = filter_id;
+            filter_div.className = "discreteFilter";
+            document.getElementById("Filters").append(filter_div);
+            //Fill the div with filter
+            this.categorial_filter(target, variable, filter_id, "add");
+
+            filter = {
+                target: target,
+                id: variable,
+                type: type,
+                filter_id: "filter-" + target + "-" + variable + "-" + type,
+
+            };
         } else if (type === "categorial") {
             filter_div = document.createElement("div");
             const filter_id = "filter-" + target + "-" + variable + "-" + type;
             filter_div.id = filter_id;
             filter_div.className = "categorialFilter";
+            document.getElementById("Filters").append(filter_div);
+            //Fill the div with filter
+            this.categorial_filter(target, variable, filter_id, "add");
+
+            filter = {
+                target: target,
+                id: variable,
+                type: type,
+                filter_id: "filter-" + target + "-" + variable + "-" + type,
+            };
+        } else if (type === "temporal") {
+            filter_div = document.createElement("div");
+            const filter_id = "filter-" + target + "-" + variable + "-" + type;
+            filter_div.id = filter_id;
+            filter_div.className = "temporalFilter";
             document.getElementById("Filters").append(filter_div);
             //Fill the div with filter
             this.categorial_filter(target, variable, filter_id, "add");
@@ -671,7 +756,9 @@ export default class Controller {
             this.model.config.styles.nodes,
             this.update_bars.bind(this),
             filtered_range,
-            complete_data
+            complete_data,
+            type,
+            target
         );
         let filter_div = f.render();
 
@@ -769,6 +856,17 @@ export default class Controller {
             />,
                 document.getElementById("ModalNewGeojson")
             );
+        else if (e.target.id === "baseLayerButton") {
+
+
+            ReactDOM.render(<
+                NewReferenceLayerModal save_layer={this.saveLayer.bind(this)}
+                layers={this.model.config.layers}
+            />,
+                document.getElementById("ModalNewReference")
+            );
+            document.getElementById('geojsonReferenceModal').setAttribute("style", "display:block")
+        }
     }
     saveLayer(type, name, config = null) {
         //We'll add it in the background
@@ -874,5 +972,10 @@ export default class Controller {
             else l.z_index = -i;
             return l;
         });
+    }
+
+    update_stats() {
+        console.log(this.model.get_nodes(),
+            this.model.get_links())
     }
 }

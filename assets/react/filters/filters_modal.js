@@ -39,17 +39,18 @@ export const NewFilterModal = (props) => {
     //(it is only for numeral values)
     if (isNaN(props.links_properties[linksVariable]))
       typeOptions = [
-        { value: "categorial", label: "Add" },
-        { value: "remove", label: "Remove" },
-        // { value: "temporal", label: "One Category" },
+        { value: "categorial", label: "Categorial" },
+        // { value: "remove", label: "Remove" },
+        //{ value: "temporal", label: "Temporal" },
         // { value: "timeLapse", label: "Temporal" },
       ];
     else
       typeOptions = [
-        { value: "categorial", label: "Add" },
-        { value: "numeral", label: "Bar Chart" },
-        { value: "remove", label: "Remove" },
-        // { value: "temporal", label: "One Category" },
+        { value: "categorial", label: "Categorial" }, // drop down
+        { value: "discrete", label: "Discrete" }, // bar chart
+        // { value: "remove", label: "Remove" },
+        { value: "continuous", label: "Continuous" }, // histogramme
+        // { value: "temporal", label: "Temporal" }, // drop down
         // { value: "timeLapse", label: "Temporal" },
       ];
   } else if (targetLayer === "nodes")
@@ -89,9 +90,9 @@ export const NewFilterModal = (props) => {
                 <select
                   class="custom-select"
                   id="filteredLayer"
-                  onChange={(e) => setFilterLayer(e.target.value)}
+                //(e.target.value)}
                 >
-                  <option value="links" selected>
+                  <option value="links" selected="selected">
                     Links
                   </option>
                   <option value="nodes">Nodes</option>

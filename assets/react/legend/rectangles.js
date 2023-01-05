@@ -14,6 +14,7 @@ function placeRectangle(size, nb_rect, container_height, height) {
 
     return offset_y - height_pc / 2 + "%";
   }
+
   if (size === "small") {
     let height_px = height;
     let height_pc = (height_px / container_height) * 100;
@@ -83,9 +84,20 @@ function smallAndBigRectangles(
         id="bigRectangle"
         class="legendSizeDrawing"
         x="35%"
-        y={placeRectangle("big", 2, container_height, max_height)}
+        y="30%"// {placeRectangle("big", 2, container_height, max_height)}
         //-2 to include the border
         height={max_height - 2}
+        width="50%"
+        fill="none"
+        stroke="black"
+        strokeWidth="1px"
+      ></rect>
+      <rect
+        id="midRectangle"
+        class="legendSizeDrawing"
+        x="35%"
+        y="70%" //</svg>{placeRectangle("mid", 2, container_height, max_height)}
+        height={((((max_height - smallRectangleHeight) / 2) + smallRectangleHeight) - 2)}
         width="50%"
         fill="none"
         stroke="black"
@@ -95,21 +107,21 @@ function smallAndBigRectangles(
         id="smallRectangle"
         class="legendSizeDrawing"
         x="35%"
-        y={placeRectangle("small", 2, container_height, smallRectangleHeight)}
+        y="95%"
         height={smallRectangleHeight - 2}
         width="50%"
         fill="none"
         stroke="black"
         strokeWidth="1px"
       ></rect>
-    </svg>,
+    </svg >,
     <div class="circleTwoLabels">
       <div
         style={{
-          height: "68%",
+          height: "45%",
           width: "100%",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
         }}
       >
         <div style={{ fontSize: "80%" }}>
@@ -119,17 +131,33 @@ function smallAndBigRectangles(
       </div>
       <div
         style={{
-          height: "24%",
+          height: "40%",
           width: "100%",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
         }}
       >
         {" "}
         <div style={{ fontSize: "80%" }}>
           {" "}
           {round_and_shorten(
-            pixelWidthToValue(smallRectangleHeight, scale, map)
+            parseInt(pixelWidthToValue(((((max_height - smallRectangleHeight) / 2) + smallRectangleHeight) - 2), scale, map))
+          )}
+        </div>
+      </div>
+      <div
+        style={{
+          height: "24%",
+          width: "100%",
+          display: "flex",
+          alignItems: "flex-end",
+        }}
+      >
+        {" "}
+        <div style={{ fontSize: "80%" }}>
+          {" "}
+          {round_and_shorten(
+            parseInt(pixelWidthToValue(smallRectangleHeight, scale, map))
           )}
         </div>
       </div>

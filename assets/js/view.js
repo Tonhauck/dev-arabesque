@@ -195,12 +195,6 @@ export default class View {
         this.ModalImportStats.innerHTML = this.import_stats_modal(import_stats);
         $("#importStatsModal").modal();
 
-        let mean = d3.max(links.map((l) => l.value)) * (90 / 100)
-        console.log(mean)
-
-        console.log(d3.max(links.map((l) => l.value)))
-        let filtered = links.filter(function(a) { return a.value >= mean; });
-        console.log(filtered)
 
         this.home.style.display = "none";
         this.map_container.style.display = "block";
@@ -301,6 +295,7 @@ export default class View {
     }
 
     new_filter(nodes_properties, links_properties, callback) {
+        console.log(links_properties)
         ReactDOM.render( <
             NewFilterModal nodes_properties = { nodes_properties }
             links_properties = { links_properties }
