@@ -295,6 +295,7 @@ export default class View {
     }
 
     new_filter(nodes_properties, links_properties, callback) {
+        console.log(links_properties)
         ReactDOM.render( <
             NewFilterModal nodes_properties = { nodes_properties }
             links_properties = { links_properties }

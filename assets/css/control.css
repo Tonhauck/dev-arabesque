@@ -49,6 +49,10 @@ nav {
     font-weight: bolder;
 }
 
+.logo {
+    height: 3vh;
+}
+
 .home-title {
     font-size: 6em;
     font-family: "arabesque";
@@ -114,8 +118,8 @@ nav {
 
 #scaleLine {
     position: absolute;
-    top: 95%;
-    right: 5%;
+    top: 89%;
+    right: 1%;
     width: 30%;
     height: 5%;
     z-index: 5;
@@ -220,13 +224,17 @@ nav {
 #ExportMap {
     top: 5em;
     left: 0.5em;
-    background-image: url("/../assets/svg/si-glyph-end-page.svg");
+    background-image: url("../../public/si-glyph-end-page.png");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #ExportMapPdf {
     top: 7em;
     left: 0.5em;
-    background-image: url("/../assets/svg/si-glyph-image.svg");
+    background-image: url("../../public/si-glyph-image.png");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 #ExportMapPdf:hover {

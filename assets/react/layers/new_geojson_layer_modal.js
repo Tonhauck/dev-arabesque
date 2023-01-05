@@ -42,8 +42,9 @@ export const NewGeojsonLayerModal = (props) => {
           document.getElementById("geoJson").classList.remove("is-invalid");
 
         config.file = geojson_file;
+        console.log(name);
         props.save_layer("geojson", name, config);
-        $("#geojsonModal").modal("hide");
+        $("#ModalNewReference").modal("hide");
       };
       reader.onerror = function (e) {
         console.log(e);

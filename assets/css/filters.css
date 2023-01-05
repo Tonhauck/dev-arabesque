@@ -5,14 +5,6 @@
     overflow-y: auto;
 }
 
-.filterMinInput {
-    width: 50%;
-}
-
-.filterMaxInput {
-    width: 50%;
-}
-
 .barchart {
     height: 10em;
     width: 70%;
@@ -70,4 +62,26 @@
 .axis {
     font-size: 100%;
     font-family: quicksand, ubuntu, sans-serif;
+}
+
+
+/* Update filter min - Max */
+
+.filterMinInput {
+    width: 100%;
+}
+
+.filterMaxInput {
+    width: 100%;
+}
+
+.maxMinContainer {
+    width: 50%;
+    float: left;
+    padding: 10px;
+    /*   border: 2px solid red; just for checking the div positions*/
+}
+
+#filterMinMax {
+    height: 120px;
 }

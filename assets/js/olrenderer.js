@@ -1169,16 +1169,17 @@ export default class OlRenderer {
         this.map.removeLayer(this.get_layer("links"));
 
 
-        let mean = d3.max(links.map((l) => l.value)) * (90 / 100)
-        console.log(mean)
+        let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
+        let mean = d3.mean(links.map((l) => l.value))
 
-        console.log(d3.max(links.map((l) => l.value)))
-        let filtered = links.filter(function(a) { return a.value >= mean; });
-        console.log(filtered)
+        let filtered = links.filter(function(a) { return a.value <= max_90percent; });
+
+
 
         let arrows = this.create_arrows(filtered, lstyle);
 
 
+        console.log(links)
         let links_shapes = arrows.map((a) => {
             let polygon = new Polygon([a]);
             let feature = new Feature(polygon);
@@ -1319,13 +1320,49 @@ export default class OlRenderer {
         } else if (layer.name === "Stamen_without_labels") {
             url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        } else if (layer.name === "Stamen_BW") {
+        } else if (layer.name === "Stamen_Light") {
             url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "CartoDB Light") {
             url = "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "CartoDB_Voyager_no_label") {
+            url = "https://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "CartoDB_Voyager_labeled") {
+            url = "https://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "Stamen_terrain") {
+            url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "Stamen_watercolor") {
+            url = " https: //stamen-tiles-{a-d}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "Stamen_Dark") {
+            url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/toner/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "ESRI_World_Street_map") {
+            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "ESRI_World_Topo_map") {
+            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "ESRI_World_Imagery") {
+            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+        } else if (layer.name === "ESRI_NatGeo_World") {
+            url = "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         }
+
+
+
+
+
+
+
+
+
 
 
         let tileLayer = new TileLayer({

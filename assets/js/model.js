@@ -150,6 +150,7 @@ export default class Model {
         }
         var zip = new JSZip();
         // delete this.config.legend
+
         zip.file(
             "arabesque.json",
             JSON.stringify({
@@ -215,7 +216,7 @@ export default class Model {
                     callback();
 
                 };
-                console.log(file)
+
                 reader.readAsText(file);
             } else {
                 const reader = new FileReader();
@@ -425,23 +426,30 @@ export default class Model {
 
     async import_zip(file, callback) {
         var that = this;
+
         JSZip.loadAsync(file)
             .then(function(zip) {
+
                 return zip.file("arabesque.json").async("string");
             })
             .then(function(data) {
+
                 let saved_data = JSON.parse(data);
+
 
                 that.config = saved_data.config;
 
                 that.data.nodes = saved_data.nodes;
                 that.data.links = saved_data.links;
+
+
                 for (let p = 0; p < that.data.nodes.length; p++) {
                     that.data.nodes_hash[that.data.nodes[p].id] = that.data.nodes[p];
                 }
 
                 // crossfilter creation
                 that.data.crossfilters = crossfilter(that.data.links);
+
 
                 // create dimension on o,d for links aggregation
                 that.data.od_dim = that.data.crossfilters.dimension(
@@ -506,10 +514,14 @@ export default class Model {
 
     get_nodes() {
         // this.update_nodes_stats();
+        let percentageNodesData = (this.data.nodes.length / this.data.nodes.length) * 100
+        $("#percentageNodeData").html(percentageNodesData.toFixed(2) + " % " + "(" + this.data.nodes.length.toLocaleString('fr-FR') + " nodes)")
+
         return this.data.nodes;
     }
 
     get_links() {
+
         //Getting all the filtered flows and format them
         let filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
             return {
@@ -519,7 +531,14 @@ export default class Model {
                 value: parseFloat(link[this.config.varnames.vol]),
             };
         });
+        let sum = d3.sum(filteredFlows.map((l) => l.value))
+        let globalSum = d3.sum(this.data.links.map((l) => l[this.config.varnames.vol]))
 
+        let percentageLinkData = (filteredFlows.length / this.data.links.length) * 100
+        let percentageVolumeData = (sum / globalSum) * 100
+        $("#percentageVolumeData").html(percentageVolumeData.toFixed(2) + " %")
+
+        $("#percentageLinkData").html(percentageLinkData.toFixed(2) + " % " + "(" + filteredFlows.length.toLocaleString('fr-FR') + " links)")
         return filteredFlows;
     }
 
