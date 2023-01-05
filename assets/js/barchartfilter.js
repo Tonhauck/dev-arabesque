@@ -37,7 +37,7 @@ export default class BarChartFilter {
             g = parseFloat(g);
         }
         //Sort the groups
-        ga.sort(function (a, b) {
+        ga.sort(function(a, b) {
             return a.key - b.key;
         });
 
@@ -69,7 +69,7 @@ export default class BarChartFilter {
     }
 
     brush_listener(that) {
-        return function () {
+        return function() {
             const g = d3.select(this.parentNode);
             const brushRange = d3.event.selection || d3.brushSelection(this); // attempt to read brush range
             let activeRange = brushRange;
@@ -98,7 +98,7 @@ export default class BarChartFilter {
             // filter the active dimension to the range extents
 
             that.dimension.filterAll();
-            that.dimension.filterFunction(function (d) {
+            that.dimension.filterFunction(function(d) {
                 return parseFloat(d) >= extents[0] && d <= extents[1];
             });
 
@@ -123,7 +123,7 @@ export default class BarChartFilter {
     chart(div, scale) {
 
 
-        console.log(scale)
+
 
         const data_groups = this.group_for_barchart();
 
@@ -136,14 +136,14 @@ export default class BarChartFilter {
             this.y = d3.scaleLog().range([100, 0]);
 
             this.y.domain([1, d3.max(data_groups.map((g) => g.value))]);
-            console.log(this.y.domain());
+
 
         } else {
             //Log scale
             this.x = d3
                 .scaleLog()
                 .range([0, 250])
-            // .domain([this.domain[0], this.domain[1]]);
+                // .domain([this.domain[0], this.domain[1]]);
             this.y = d3.scaleLinear().range([100, 0]);
             this.y.domain(d3.extent(data_groups, d => d.value));
             this.x.domain([1, d3.max(data_groups, d => d.key)]);
@@ -421,9 +421,9 @@ export default class BarChartFilter {
 
         title_icon.src = "./assets/svg/si-glyph-" + layer.toLowerCase() + ".svg";
 
-        console.log(title_icon.src.includes("si-glyph-.svg"))
+
         if (title_icon.src.includes("si-glyph-.svg") == true) {
-            console.log("change")
+
             title_icon.src = "./assets/svg/si-glyph-links.svg";
         }
 
@@ -510,7 +510,7 @@ export default class BarChartFilter {
         document.getElementsByClassName("barchart")[0].remove();
         var container = document.getElementById("barchartContainer");
         container.appendChild(chart_div)
-        // this.filter_div.appendChild(chart_div);
+            // this.filter_div.appendChild(chart_div);
     }
 
     render_minmax_inputs() {
