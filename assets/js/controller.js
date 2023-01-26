@@ -157,11 +157,8 @@ export default class Controller {
     import_nodes_preset() {
         // When a level is select, we import the value
         let level = document.querySelector('input[name="NodesImportPresetFile"]:checked').value;
-
         let dataset = document.getElementById(level).value
-
         let nodeId = document.getElementById(dataset + 'ID').value;
-
 
         // The previous inputs are needing to get the correct file.
         let nodesGeojsonPreset = './public/arabesque-datasets-presets/geom/' + level + '/' + dataset + '.geojson';
