@@ -75,9 +75,9 @@ export const NewTileLayerModal = (props) => {
                   id="tileLayersNameSelectorOptions"
                 >
                   <optgroup label="Stamen">
-                    <option value="Stamen_without_labels">Stamen without labels</option>
-                    <option value="Stamen_Light">Stamen Black and White</option>
-                    <option value="Stamen_Dark">Stamen Dark</option>
+                {/*     <option value="Stamen_without_labels">Stamen without labels</option> */}
+                    <option value="Stamen_Light">Stamen Light</option>
+                    <option value="Stadia_Stamen_Dark">Stadia Dark</option>
                     <option value="Stamen_terrain">Stamen Terrain and Label</option>
                     <option value="Stamen_watercolor">Stamen Watercolor</option>
                   </optgroup>

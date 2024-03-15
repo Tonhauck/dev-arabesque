@@ -4,11 +4,14 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 var config = {
+    optimization: {
+        minimize: false
+    },
     context: __dirname, // `__dirname` is root of project and `/src` is source
     entry: "./assets/js/app.js",
 
     output: {
-        path: path.resolve("./"), // `/dist` is the destination
+        path: path.resolve("./dist"), // `/dist` is the destination
         filename: "bundle.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
     },
 
