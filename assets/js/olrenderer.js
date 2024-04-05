@@ -5,6 +5,7 @@ import TileLayer from "ol/layer/Tile";
 import { Polygon, Circle, Point } from "ol/geom.js";
 import { Fill, Stroke, Text, Style, RegularShape } from "ol/style.js";
 import CircleStyle from "ol/style/Circle";
+import Overlay from 'ol/Overlay';
 
 import { TileImage, TileWMS } from 'ol/source';
 import { Tile, Vector as VectorLayer } from "ol/layer.js";
@@ -32,6 +33,7 @@ export default class OlRenderer {
 
 
 
+
         this.map = new Map({
             controls: defaultControls().extend([
                 this.exportButton(),
@@ -40,6 +42,7 @@ export default class OlRenderer {
                 this.scaleLine(),
                 this.exportPdfButton(),
             ]),
+
             target: "Mapcontainer",
             layers: [],
             renderer: "webgl",
@@ -53,6 +56,14 @@ export default class OlRenderer {
                 constrainOnlyCenter: true,
             }),
         });
+
+        this._popup = new Overlay({
+            element: document.getElementById('popup'),
+            positioning: 'bottom-center',
+            stopEvent: true
+        });
+
+        this.map.addOverlay(this._popup);
 
         // this._extent_size = 10000000;
         this._node_scale_types = { size: "Sqrt", opacity: "Linear" };
@@ -121,6 +132,7 @@ export default class OlRenderer {
 
         return legendButtonControl;
     }
+
     exportPdfButton() {
         //Create export button
         var exportButtonDiv = document.createElement("div");
@@ -528,6 +540,21 @@ export default class OlRenderer {
     }
 
     add_nodes(nodes, nstyle) {
+
+        /**
+         * Elements that make up the popup.
+         */
+        const container2 = document.getElementById('popup');
+        const content = document.getElementById('popup-content');
+        const closer = document.getElementById('popup-closer');
+
+
+        // Ajouter un événement de clic pour fermer le popup
+        closer.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêcher le comportement par défaut du lien
+            container2.style.display = 'none'; // Cacher le popup
+        });
+
         //On enregistre le max et min pour la définition de l'échelle
         this.nodes_max_value = d3.max(
             nodes.map((n) => n.properties[this._node_var.size])
@@ -588,13 +615,18 @@ export default class OlRenderer {
 
         // création des ronds
         let nodes_vector = new VectorSource({
-            features: proj_nodes.map((co) => {
+            features: proj_nodes.map((co, i) => {
                 let feature = new Feature(new Circle(co.center, co.radius));
                 //We set a style for every feature, because it can be conditional
                 feature.setStyle(this.nodeStyle(co, nstyle));
+                feature.setProperties({
+                    nodeData: nodes[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+                });
                 return feature;
             }),
         });
+
+
 
         // création de la couche
         let nodesLayer = new VectorLayer({
@@ -606,9 +638,60 @@ export default class OlRenderer {
         nodesLayer.setZIndex(0);
         // ajout de la couche
         this.map.addLayer(nodesLayer);
-
-        //
         this.map.getView().fit(boundingExtent(proj_nodes.map((co) => co.center)));
+
+
+
+        // Ajouter un écouteur d'événement pour le survol
+        this.map.on('pointermove', function(event) {
+            this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
+        });
+
+        let popup = this._popup
+        console.log(popup)
+
+        // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function(evt) {
+            // Déterminer le layer sur lequel le clic s'est produit
+            this.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+
+                if (layer.values_.name === 'nodes') {
+
+                    if (feature) {
+                        // Sélection de l'élément select
+                        var selectElement = document.getElementById("semioSelectorSizeChangeLink");
+
+                        // Affichage de la valeur récupérée
+                        if (!selectElement) {
+                            var selectedValue = "count"
+                        } else {
+                            // Récupération de la valeur sélectionnée
+                            var selectedValue = selectElement.value;
+                        }
+
+                        // Construire le contenu du popup avec les informations de l'entité
+                        let popupContent = '<h4 class="popup-title" > ID du lien : <br>' + feature.values_.nodeData.id + '</h4>';
+                        popupContent += '<hr>';
+                        popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.nodeData.properties.balance).toFixed(2) + '</p>';
+
+
+                        // Mettre à jour le contenu du popup
+                        content.innerHTML = popupContent;
+
+                        // Définir la position du popup sur le clic de la souris
+                        console.log(evt.coordinate)
+                        popup.setPosition(evt.coordinate);
+
+                        // Afficher le popup
+                        container2.style.display = 'block';
+                    } else {
+                        // Si aucun entité n'a été cliqué, cacher le popup
+                        container2.style.display = 'none';
+                    }
+                }
+
+            });
+        })
     }
     update_nodes(nodes, nstyle, z_index) {
         //Update nodes_var with discretization variables
@@ -824,6 +907,7 @@ export default class OlRenderer {
     }
 
     linkStyle(link, lstyle) {
+
         //OPACITY (we need to have rounded numbers)
         let opacity;
         if (lstyle.opacity.mode === "fixed") {
@@ -1146,6 +1230,21 @@ export default class OlRenderer {
     }
 
     add_links(links, lstyle, link_data_range) {
+
+        /**
+         * Elements that make up the popup.
+         */
+        const container = document.getElementById('popup');
+        const content = document.getElementById('popup-content');
+        const closer = document.getElementById('popup-closer');
+
+        // Ajouter un événement de clic pour fermer le popup
+        closer.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêcher le comportement par défaut du lien
+            container.style.display = 'none'; // Cacher le popup
+        });
+
+
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
         if (link_data_range !== undefined) {
@@ -1167,25 +1266,25 @@ export default class OlRenderer {
         }
 
         this.map.removeLayer(this.get_layer("links"));
-
-
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
 
         let filtered = links.filter(function(a) { return a.value <= max_90percent; });
 
-
-
         let arrows = this.create_arrows(filtered, lstyle);
+        let links_shapes = arrows.map((a, i) => {
 
-
-        console.log(links)
-        let links_shapes = arrows.map((a) => {
             let polygon = new Polygon([a]);
             let feature = new Feature(polygon);
             let link_index = arrows.indexOf(a);
+            // Ajouter les informations supplémentaires aux entités géographiques
+
             let link = filtered[link_index];
             feature.setStyle(this.linkStyle(link, lstyle));
+            // Ajouter les informations supplémentaires aux entités géographiques
+            feature.setProperties({
+                linkData: links[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+            });
             return feature;
         }, this);
 
@@ -1200,7 +1299,56 @@ export default class OlRenderer {
         });
         linksLayer.setZIndex(-1);
         this.map.addLayer(linksLayer);
+
+
+        // Ajouter un écouteur d'événement pour le survol
+        this.map.on('pointermove', function(event) {
+            this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
+        });
+
+        let popup = this._popup
+
+
+        // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function(evt) {
+            // Déterminer le layer sur lequel le clic s'est produit
+            this.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                if (layer.values_.name === 'links') {
+                    if (feature) {
+                        // Sélection de l'élément select
+                        var selectElement = document.getElementById("semioSelectorSizeChangeLink");
+
+                        // Affichage de la valeur récupérée
+                        if (!selectElement) {
+                            var selectedValue = "count"
+                        } else {
+                            // Récupération de la valeur sélectionnée
+                            var selectedValue = selectElement.value;
+                        }
+
+                        // Construire le contenu du popup avec les informations de l'entité
+                        let popupContent = '<h4 class="popup-title" > ID du lien : <br>' + feature.values_.linkData.key + '</h4>';
+                        popupContent += '<hr>';
+                        popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.linkData.value).toFixed(2) + '</p>';
+
+
+                        // Mettre à jour le contenu du popup
+                        content.innerHTML = popupContent;
+
+                        // Définir la position du popup sur le clic de la souris
+                        popup.setPosition(evt.coordinate);
+
+                        // Afficher le popup
+                        container.style.display = 'block';
+                    } else {
+                        // Si aucun entité n'a été cliqué, cacher le popup
+                        container.style.display = 'none';
+                    }
+                }
+            })
+        });
     }
+
 
     update_links(links, lstyle, z_index) {
         //Update the discretization variable
@@ -1220,12 +1368,19 @@ export default class OlRenderer {
 
         let arrows = this.create_arrows(links, lstyle);
 
-        let links_shapes = arrows.map((a) => {
+        let links_shapes = arrows.map((a, i) => {
+
             let polygon = new Polygon([a]);
             let feature = new Feature(polygon);
             let link_index = arrows.indexOf(a);
+            // Ajouter les informations supplémentaires aux entités géographiques
+
             let link = links[link_index];
             feature.setStyle(this.linkStyle(link, lstyle));
+            // Ajouter les informations supplémentaires aux entités géographiques
+            feature.setProperties({
+                linkData: links[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+            });
             return feature;
         }, this);
 
@@ -1241,11 +1396,10 @@ export default class OlRenderer {
         this.map.addLayer(linksLayer);
         linksLayer.setZIndex(z_index);
     }
+
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
-
         const item = global.projections[proj].extent;
-
         olproj.setExtent(item);
 
 
