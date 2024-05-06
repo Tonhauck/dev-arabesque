@@ -96,7 +96,33 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="card layers-card mt-2 mb-2">
+                            <div align="center" ; class="card-header close collapsed addLayerButton" id="addTitle" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" aria-label="Close">
+                                Customize
+                                <button type="button" class="close" aria-label="Close">
+                                        </button>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingTwo">
+                                <div class="input-group mb-3 mt-3">
+                                    <div class="input-group-prepend">
+                                        <label for="titleMap">Title:</label>
+                                        <input type="text" id="titleMap" name="Title">
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label for="authorMap">Author:</label>
+                                        <input type="text" id="authorMap" name="Author">
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label for="sourceMap">Source:</label>
+                                        <input type="text" id="sourceMap" name="Source">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card layers-card mt-2 mb-2">
                             <div align="center" ; class="card-header close collapsed" id="addLayersButton" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" aria-label="Close">
                                 Layers
@@ -133,6 +159,9 @@
                             </div>
                             <div id="legendDiv"> </div>
                             <div id="scaleLine"></div>
+                            <div id="sourceDiv" class="legendAttrib">
+                                <span id="sourceText"></span>
+                                <span id="authorText"></span> </div>
                         </div>
                     </div>
                     <div class="col-sm-3 filterColumn" id="filterDiv">

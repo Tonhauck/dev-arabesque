@@ -273,7 +273,7 @@ export default class Controller {
         var request = new XMLHttpRequest();
         request.open("GET", "./public/data/mobiscol.zip");
         request.responseType = "blob";
-        request.onload = function () {
+        request.onload = function() {
             blob = request.response;
             var file = new File([blob], "mobiscol.zip");
 
@@ -313,13 +313,13 @@ export default class Controller {
         document.getElementById("projection").innerHTML = projs
             .map(
                 (p) =>
-                    "<option id='projection-" +
-                    p +
-                    "' value='" +
-                    p +
-                    "''>" +
-                    global.projections[p].name +
-                    "</option>"
+                "<option id='projection-" +
+                p +
+                "' value='" +
+                p +
+                "''>" +
+                global.projections[p].name +
+                "</option>"
             )
             .join("");
     }
@@ -458,9 +458,7 @@ export default class Controller {
     toggle_legend() {
         let legendDiv = document.getElementById("legend");
         let style = getComputedStyle(legendDiv);
-
         let legendButtonDiv = document.getElementById("legendButton");
-
         if (style.display !== "none") {
             legendDiv.style.display = "none";
             legendButtonDiv.style.display = "flex";
@@ -777,7 +775,7 @@ export default class Controller {
 
             let tempCrossfilter = crossfilter(filtered_data);
 
-            let tempDimension = tempCrossfilter.dimension(function (d) {
+            let tempDimension = tempCrossfilter.dimension(function(d) {
                 return d[chart.variable];
             });
 
@@ -804,14 +802,14 @@ export default class Controller {
                 (node) => node.properties.variable
             );
 
-        ReactDOM.render(<
-            CategorialFilter variable={variable}
-            filtering_properties={filtering_properties}
-            dimension={dimension}
-            render_all={this.render_all.bind(this)}
-            delete_filter={this.delete_filter.bind(this)}
-            mode={mode}
-        />,
+        ReactDOM.render( <
+            CategorialFilter variable = { variable }
+            filtering_properties = { filtering_properties }
+            dimension = { dimension }
+            render_all = { this.render_all.bind(this) }
+            delete_filter = { this.delete_filter.bind(this) }
+            mode = { mode }
+            />,
             document.getElementById(filter_id)
         );
     }
@@ -843,26 +841,26 @@ export default class Controller {
 
     addLayer(e) {
         if (e.target.id === "tileLayerButton")
-            ReactDOM.render(<
-                NewTileLayerModal save_layer={this.saveLayer.bind(this)}
-                layers={this.model.config.layers}
-            />,
+            ReactDOM.render( <
+                NewTileLayerModal save_layer = { this.saveLayer.bind(this) }
+                layers = { this.model.config.layers }
+                />,
                 document.getElementById("ModalNewLayer")
             );
         else if (e.target.id === "importLayerbutton")
-            ReactDOM.render(<
-                NewGeojsonLayerModal save_layer={this.saveLayer.bind(this)}
-                layers={this.model.config.layers}
-            />,
+            ReactDOM.render( <
+                NewGeojsonLayerModal save_layer = { this.saveLayer.bind(this) }
+                layers = { this.model.config.layers }
+                />,
                 document.getElementById("ModalNewGeojson")
             );
         else if (e.target.id === "baseLayerButton") {
 
 
-            ReactDOM.render(<
-                NewReferenceLayerModal save_layer={this.saveLayer.bind(this)}
-                layers={this.model.config.layers}
-            />,
+            ReactDOM.render( <
+                NewReferenceLayerModal save_layer = { this.saveLayer.bind(this) }
+                layers = { this.model.config.layers }
+                />,
                 document.getElementById("ModalNewReference")
             );
             document.getElementById('geojsonReferenceModal').setAttribute("style", "display:block")
@@ -952,16 +950,16 @@ export default class Controller {
 
     render_layers_cards() {
         //Display the layers cards
-        ReactDOM.render(<
-            LayerCardsContainer layers={this.model.config.layers}
-            map={this.view.renderer.map}
-            delete_layer={this.delete_layer.bind(this)}
-            change_layer_visibility={this.change_layer_visibility.bind(this)}
-            show_nodes_semio={this.show_nodes_semio.bind(this)}
-            show_links_semio={this.show_links_semio.bind(this)}
-            show_links_shape={this.show_links_shape.bind(this)}
-            show_geojson_semio={this.show_geojson_semio.bind(this)}
-        />,
+        ReactDOM.render( <
+            LayerCardsContainer layers = { this.model.config.layers }
+            map = { this.view.renderer.map }
+            delete_layer = { this.delete_layer.bind(this) }
+            change_layer_visibility = { this.change_layer_visibility.bind(this) }
+            show_nodes_semio = { this.show_nodes_semio.bind(this) }
+            show_links_semio = { this.show_links_semio.bind(this) }
+            show_links_shape = { this.show_links_shape.bind(this) }
+            show_geojson_semio = { this.show_geojson_semio.bind(this) }
+            />,
             document.getElementById("accordionLayerControl")
         );
     }

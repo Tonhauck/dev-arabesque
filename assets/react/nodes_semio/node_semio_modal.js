@@ -197,6 +197,10 @@ export const NodesSemioModalComponent = (props) => {
           </div>
           <div class="modal-body">
             {/* Call the colorcontainer with nodes_properties for displaying in a select div */}
+
+            <label for="select" class="h4 strong">
+              Color
+            </label>
             <ColorContainerComponent
               //Allow to notify is mode is fixed or varied
               notify_state_change={(newState) => (modes.color = newState)}
