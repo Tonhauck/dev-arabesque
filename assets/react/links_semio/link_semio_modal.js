@@ -183,6 +183,7 @@ export const LinksSemioModalComponent = (props) => {
             </h5>
           </div>
           <div class="modal-body">
+            <label for="select" class="h4 strong"> Color </label>
             {/* Call the colorcontainer with links_properties for displaying in a select div */}
             <ColorContainerComponent
               //Allow to notify is mode is fixed or varied

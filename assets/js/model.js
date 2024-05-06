@@ -164,9 +164,22 @@ export default class Model {
                 type: "blob",
             })
             .then(function(content) {
-                // see FileSaver.js
-                saveAs(content, "export_arabesque.zip");
+                // Nom par défaut pour le fichier zip
+                let name = "gflowviz.zip";
+
+                // Sélectionner la div avec la classe 'ol-title ol-unselectable'
+                var titleDiv = document.querySelector('.ol-title.ol-unselectable');
+
+                // Vérifier si la div existe et si elle contient du texte
+                if (titleDiv && titleDiv.textContent.trim() !== '') {
+                    // Utiliser le texte de la div comme nom
+                    name = titleDiv.textContent.trim() + ".zip";
+                }
+
+                // Utiliser le nom pour sauvegarder le contenu
+                saveAs(content, name);
             });
+
     }
 
     // extract varname from csv or geojson and check filetype

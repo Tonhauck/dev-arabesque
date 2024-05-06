@@ -4,6 +4,9 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 var config = {
+    optimization: {
+        minimize: false
+    },
     context: __dirname, // `__dirname` is root of project and `/src` is source
     entry: "./assets/js/app.js",
 

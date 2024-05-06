@@ -5,7 +5,8 @@ import TileLayer from "ol/layer/Tile";
 import { Polygon, Circle, Point } from "ol/geom.js";
 import { Fill, Stroke, Text, Style, RegularShape } from "ol/style.js";
 import CircleStyle from "ol/style/Circle";
-
+import Overlay from 'ol/Overlay';
+import CanvasTitle from "ol-ext/control/CanvasTitle";
 import { TileImage, TileWMS } from 'ol/source';
 import { Tile, Vector as VectorLayer } from "ol/layer.js";
 import { OSM, Vector as VectorSource, XYZ } from "ol/source.js";
@@ -32,14 +33,20 @@ export default class OlRenderer {
 
 
 
+
+        this.customizeMapSource();
+        this.customizeMapAuthor();
+
         this.map = new Map({
             controls: defaultControls().extend([
                 this.exportButton(),
                 new FullScreen(),
                 this.toggleLegendButton(),
                 this.scaleLine(),
+                this.customizeMapTitle(),
                 this.exportPdfButton(),
             ]),
+
             target: "Mapcontainer",
             layers: [],
             renderer: "webgl",
@@ -53,6 +60,14 @@ export default class OlRenderer {
                 constrainOnlyCenter: true,
             }),
         });
+
+        this._popup = new Overlay({
+            element: document.getElementById('popup'),
+            positioning: 'bottom-center',
+            stopEvent: true
+        });
+
+        this.map.addOverlay(this._popup);
 
         // this._extent_size = 10000000;
         this._node_scale_types = { size: "Sqrt", opacity: "Linear" };
@@ -103,6 +118,75 @@ export default class OlRenderer {
         });
         return control;
     }
+    customizeMapTitle() {
+        // CanvasTitle control
+        var titleControl = // CanvasTitle control
+            new CanvasTitle({
+                style: new Style({
+                    text: new Text({
+                        offsetY: 20,
+                        top: 'unset',
+                        bottom: '0',
+                        width: 50,
+                        right: 0,
+                        visibility: 'hidden',
+                        text: '',
+                        font: '30px Arial', // Taille de police 50px
+                    }),
+                })
+            });
+        document.getElementById('titleMap').addEventListener("input", function() {
+            // 
+            global.title = this.value
+            titleControl.setTitle(this.value);
+        });
+
+        return titleControl
+    }
+
+    customizeMapAuthor() {
+
+
+
+        let authorTextSpan;
+        // Écouteur d'événements pour l'élément avec l'ID 'authorMap'
+        document.getElementById('authorMap').addEventListener("input", function() {
+            var author = this.value;
+
+            // Sélectionner le 'span' dans 'sourceDiv'
+            var authorTextSpan = document.getElementById('authorText');
+
+            if (authorTextSpan) {
+                // Ajouter le texte de 'authorMap' au 'span'
+                authorTextSpan.textContent = author;
+            }
+
+        });
+        return authorTextSpan;
+    }
+
+
+    customizeMapSource() {
+
+        let sourceTextSpan;
+        // Écouteur d'événements pour l'élément avec l'ID 'sourceMap'
+        document.getElementById('sourceMap').addEventListener("input", function() {
+            var source = this.value;
+
+            // Sélectionner le 'span' dans 'sourceDiv'
+            var sourceTextSpan = document.getElementById('sourceText');
+
+            if (sourceTextSpan) {
+                // Ajouter le texte de 'sourceMap' au 'span'
+                sourceTextSpan.textContent = source;
+            }
+        });
+
+        return sourceTextSpan;
+    }
+
+
+
     exportButton() {
         //Create export button
         var exportButtonDiv = document.createElement("div");
@@ -121,6 +205,7 @@ export default class OlRenderer {
 
         return legendButtonControl;
     }
+
     exportPdfButton() {
         //Create export button
         var exportButtonDiv = document.createElement("div");
@@ -151,12 +236,19 @@ export default class OlRenderer {
         //Adding a width and height to svg elements so they will be rendered
 
         var svgElements = document.body.querySelectorAll("#legendShapes");
+        var svgElements2 = document.body.querySelectorAll("#sourceDiv");
         svgElements.forEach(function(item) {
             item.setAttribute("width", item.getBoundingClientRect().width);
             item.setAttribute("height", item.getBoundingClientRect().height);
         });
 
+        svgElements2.forEach(function(item) {
+            item.setAttribute("width", item.getBoundingClientRect().width);
+            item.setAttribute("height", item.getBoundingClientRect().height);
+        });
+
         var map_canvas = $(".ol-viewport canvas")[0];
+
         var map_img = map_canvas.toDataURL("image/png");
         const map_div = document.getElementById("Mapcontainer");
         const map_height = parseFloat(
@@ -185,29 +277,53 @@ export default class OlRenderer {
         // TODO Here, we can work on the PDF export 
         doc.addImage(map_img, "PNG", 10, 10, map_final_width, map_final_height);
 
+
+        var attrib = document.getElementById("sourceDiv");
+
+        //Converting legend to canvas and add it to doc
+        html2canvas(attrib, {
+            scrollX: -window.scrollX,
+            scrollY: -window.scrollY,
+            allowTaint: true,
+        }).then((attrib_canvas) => {
+            let attrib_div = attrib_canvas.toDataURL("image/png");
+            let width_attrib = doc_width + margin_right - 10 - attrib.clientWidth
+            console.log(width_attrib)
+            doc.addImage(attrib_div, "JPEG", width_attrib, map_final_height + 20);
+            svgElements2.forEach(function(item) {
+                item.removeAttribute("width");
+                item.removeAttribute("height");
+            });
+        });
+
         var legendDiv = document.getElementById("legend");
         let legendButtonDiv = document.getElementById("legendButton");
+
         let style = getComputedStyle(legendDiv);
         if (style.display === "none") {
             legendDiv.style.display = "flex";
             legendButtonDiv.style.display = "none";
         }
 
-        //Converting legend to canvas and add it to doc
-        html2canvas(legend, {
-            scrollX: -window.scrollX,
-            scrollY: -window.scrollY,
-            allowTaint: true,
-        }).then((legend_canvas) => {
-            let legend_img = legend_canvas.toDataURL("image/png");
+        setTimeout(() => {
+            //Converting legend to canvas and add it to doc
+            html2canvas(legend, {
+                scrollX: -window.scrollX,
+                scrollY: -window.scrollY,
+                allowTaint: true,
+            }).then((legend_canvas) => {
+                let legend_img = legend_canvas.toDataURL("image/png");
 
-            doc.addImage(legend_img, "JPEG", 10, map_final_height + 20);
-            doc.save("map.pdf");
-            svgElements.forEach(function(item) {
-                item.removeAttribute("width");
-                item.removeAttribute("height");
+                doc.addImage(legend_img, "JPEG", 10, map_final_height + 20);
+                doc.save("map.pdf");
+                svgElements.forEach(function(item) {
+                    item.removeAttribute("width");
+                    item.removeAttribute("height");
+                });
             });
-        });
+        }, 400)
+
+
     }
 
     // ON ZOOM //
@@ -348,9 +464,9 @@ export default class OlRenderer {
                     color: this.add_opacity_to_color(nstyle.color.fixed, opacity),
                 }),
                 text: new Text({
-                    text: node.properties[nstyle.text.var],
+                    text: node.id,
 
-                    font: "12px Calibri,sans-serif",
+                    font: 'bold 13px Calibri,sans-serif',
                     fill: new Fill({ color: "#000" }),
                     stroke: new Stroke({
                         color: "#fff",
@@ -378,9 +494,9 @@ export default class OlRenderer {
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
                     }),
                     text: new Text({
-                        text: node.properties[nstyle.text.var],
+                        text: node.id,
 
-                        font: "12px Calibri,sans-serif",
+                        font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
                         stroke: new Stroke({
                             color: "#fff",
@@ -405,9 +521,9 @@ export default class OlRenderer {
                         ),
                     }),
                     text: new Text({
-                        text: node.properties[nstyle.text.var],
+                        text: node.id,
 
-                        font: "12px Calibri,sans-serif",
+                        font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
                         stroke: new Stroke({
                             color: "#fff",
@@ -528,6 +644,7 @@ export default class OlRenderer {
     }
 
     add_nodes(nodes, nstyle) {
+
         //On enregistre le max et min pour la définition de l'échelle
         this.nodes_max_value = d3.max(
             nodes.map((n) => n.properties[this._node_var.size])
@@ -588,27 +705,152 @@ export default class OlRenderer {
 
         // création des ronds
         let nodes_vector = new VectorSource({
-            features: proj_nodes.map((co) => {
+            features: proj_nodes.map((co, i) => {
                 let feature = new Feature(new Circle(co.center, co.radius));
                 //We set a style for every feature, because it can be conditional
                 feature.setStyle(this.nodeStyle(co, nstyle));
+                feature.setProperties({
+                    nodeData: nodes[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+                });
                 return feature;
             }),
         });
 
-        // création de la couche
+
+
+
+        const labelStyle = new Style({
+            text: new Text({
+                font: '13px Calibri,sans-serif',
+                fill: new Fill({
+                    color: '#000',
+                }),
+                stroke: new Stroke({
+                    color: '#fff',
+                    width: 4,
+                }),
+            }),
+        });
+
+        const countryStyle = new Style({
+            fill: new Fill({
+                color: 'rgba(255, 255, 255, 0.6)',
+            }),
+            stroke: new Stroke({
+                color: '#319FD3',
+                width: 1,
+            }),
+        });
+        const style = [countryStyle, labelStyle];
+
+        console.log(nodes_vector)
+
+        // Création de la couche
         let nodesLayer = new VectorLayer({
             name: "nodes",
             source: nodes_vector,
             renderMode: "image",
-            // style: this.nodeStyle(nstyle),
+            style: (feature) => {
+                const nodeData = feature.get('nodeData'); // Récupération des données supplémentaires
+                const labelText = nodeData.id + ' people/mi²'; // Création du texte de l'étiquette en fonction des données de la feature
+                return new Style({
+                    fill: new Fill({ color: 'rgba(43, 146, 190, 0.4)' }),
+                    stroke: new Stroke({
+                        width: 3,
+                        color: 'rgba(43, 146, 190, 1)',
+                    }),
+                    text: new Text({
+                        font: '13px Calibri,sans-serif',
+                        fill: new Fill({ color: '#fff' }),
+                        stroke: new Stroke({
+                            color: '#000',
+                            width: 2,
+                        }),
+                        text: labelText, // Utilisation du texte dynamique en fonction des données de la feature
+                        overflow: true,
+                    }),
+                });
+            },
         });
-        nodesLayer.setZIndex(0);
-        // ajout de la couche
-        this.map.addLayer(nodesLayer);
 
-        //
+
+        nodesLayer.setZIndex(0);
+
+        this.map.addLayer(nodesLayer);
         this.map.getView().fit(boundingExtent(proj_nodes.map((co) => co.center)));
+
+
+
+        // Ajouter un écouteur d'événement pour le survol
+        this.map.on('pointermove', function(event) {
+            this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
+        });
+
+        // Sauvegarder une référence à this avant la fonction de rappel
+        const self = this;
+        // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function(evt) {
+            self.add_popup_nodes(evt)
+        })
+    }
+    add_popup_nodes(evt) {
+        let popup = this._popup
+            /**
+             * Elements that make up the popup.
+             */
+        const container2 = document.getElementById('popup');
+        const content = document.getElementById('popup-content');
+        const closer = document.getElementById('popup-closer');
+
+
+        // Ajouter un événement de clic pour fermer le popup
+        closer.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêcher le comportement par défaut du lien
+            container2.style.display = 'none'; // Cacher le popup
+        });
+
+        // Déterminer le layer sur lequel le clic s'est produit
+        this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+
+            if (layer.values_.name === 'nodes') {
+
+                if (feature) {
+                    // Sélection de l'élément select
+                    var selectElement = document.getElementById("semioSelectorSizeChangenode");
+
+                    // Affichage de la valeur récupérée
+                    if (!selectElement) {
+                        var selectedValue = "indegree"
+                    } else {
+                        // Récupération de la valeur sélectionnée
+                        var selectedValue = selectElement.value;
+                    }
+
+                    console.log(feature)
+
+                    // Construire le contenu du popup avec les informations de l'entité
+                    let popupContent = '<h4 class="popup-title" > ID : <br>' + feature.values_.nodeData.id + '</h4>';
+                    popupContent += '<hr>';
+                    popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.nodeData.properties[selectedValue]).toFixed(2) + '</p>';
+
+
+                    // Mettre à jour le contenu du popup
+                    content.innerHTML = popupContent;
+
+                    // Définir la position du popup sur le clic de la souris
+                    console.log(evt.coordinate)
+                    popup.setPosition(evt.coordinate);
+
+                    // Afficher le popup
+                    container2.style.display = 'block';
+                } else {
+                    // Si aucun entité n'a été cliqué, cacher le popup
+                    container2.style.display = 'none';
+                }
+            }
+
+        });
+
     }
     update_nodes(nodes, nstyle, z_index) {
         //Update nodes_var with discretization variables
@@ -649,10 +891,13 @@ export default class OlRenderer {
         this.proj_nodes_hash = {};
         proj_nodes.forEach((n) => (this.proj_nodes_hash[n.id] = n));
         let nodes_vector = new VectorSource({
-            features: proj_nodes.map((co) => {
+            features: proj_nodes.map((co, i) => {
                 let circle = new Circle(co.center, co.radius);
 
                 let feature = new Feature(circle);
+                feature.setProperties({
+                    nodeData: nodes[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+                });
                 feature.setStyle(this.nodeStyle(co, nstyle));
                 return feature;
             }),
@@ -665,6 +910,13 @@ export default class OlRenderer {
         });
         this.map.addLayer(nodesLayer);
         nodesLayer.setZIndex(z_index);
+
+        // Sauvegarder une référence à this avant la fonction de rappel
+        const self = this;
+        // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function(evt) {
+            self.add_popup_nodes(evt)
+        })
     }
 
     //Update the variables according to which the color, size, text and opacity will vary
@@ -824,6 +1076,7 @@ export default class OlRenderer {
     }
 
     linkStyle(link, lstyle) {
+
         //OPACITY (we need to have rounded numbers)
         let opacity;
         if (lstyle.opacity.mode === "fixed") {
@@ -1146,6 +1399,10 @@ export default class OlRenderer {
     }
 
     add_links(links, lstyle, link_data_range) {
+
+
+
+
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
         if (link_data_range !== undefined) {
@@ -1167,25 +1424,25 @@ export default class OlRenderer {
         }
 
         this.map.removeLayer(this.get_layer("links"));
-
-
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
 
         let filtered = links.filter(function(a) { return a.value <= max_90percent; });
 
-
-
         let arrows = this.create_arrows(filtered, lstyle);
+        let links_shapes = arrows.map((a, i) => {
 
-
-        console.log(links)
-        let links_shapes = arrows.map((a) => {
             let polygon = new Polygon([a]);
             let feature = new Feature(polygon);
             let link_index = arrows.indexOf(a);
+            // Ajouter les informations supplémentaires aux entités géographiques
+
             let link = filtered[link_index];
             feature.setStyle(this.linkStyle(link, lstyle));
+            // Ajouter les informations supplémentaires aux entités géographiques
+            feature.setProperties({
+                linkData: links[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+            });
             return feature;
         }, this);
 
@@ -1200,7 +1457,74 @@ export default class OlRenderer {
         });
         linksLayer.setZIndex(-1);
         this.map.addLayer(linksLayer);
+
+
+        // Ajouter un écouteur d'événement pour le survol
+        this.map.on('pointermove', function(event) {
+            this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
+        });
+
+        const self = this
+            // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function(evt) {
+            self.add_popup_links(evt)
+        });
     }
+
+    add_popup_links(evt) {
+
+        let popup = this._popup
+            /**
+             * Elements that make up the popup.
+             */
+        const container = document.getElementById('popup');
+        const content = document.getElementById('popup-content');
+        const closer = document.getElementById('popup-closer');
+
+        // Ajouter un événement de clic pour fermer le popup
+        closer.addEventListener('click', function(event) {
+            event.preventDefault(); // Empêcher le comportement par défaut du lien
+            container.style.display = 'none'; // Cacher le popup
+        });
+
+        // Déterminer le layer sur lequel le clic s'est produit
+        this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+            if (layer.values_.name === 'links') {
+                if (feature) {
+                    // Sélection de l'élément select
+                    var selectElement = document.getElementById("semioSelectorSizeChangeLink");
+
+                    // Affichage de la valeur récupérée
+                    if (!selectElement) {
+                        var selectedValue = "count"
+                    } else {
+                        // Récupération de la valeur sélectionnée
+                        var selectedValue = selectElement.value;
+                    }
+                    console.log(feature.values_)
+                        // Construire le contenu du popup avec les informations de l'entité
+                    let popupContent = '<h4 class="popup-title" > ID du lien : <br>' + feature.values_.linkData.key + '</h4>';
+                    popupContent += '<hr>';
+                    popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.linkData.value).toFixed(2) + '</p>';
+
+
+                    // Mettre à jour le contenu du popup
+                    content.innerHTML = popupContent;
+
+                    // Définir la position du popup sur le clic de la souris
+                    popup.setPosition(evt.coordinate);
+
+                    // Afficher le popup
+                    container.style.display = 'block';
+                } else {
+                    // Si aucun entité n'a été cliqué, cacher le popup
+                    container.style.display = 'none';
+                }
+            }
+        })
+
+    }
+
 
     update_links(links, lstyle, z_index) {
         //Update the discretization variable
@@ -1220,12 +1544,19 @@ export default class OlRenderer {
 
         let arrows = this.create_arrows(links, lstyle);
 
-        let links_shapes = arrows.map((a) => {
+        let links_shapes = arrows.map((a, i) => {
+
             let polygon = new Polygon([a]);
             let feature = new Feature(polygon);
             let link_index = arrows.indexOf(a);
+            // Ajouter les informations supplémentaires aux entités géographiques
+
             let link = links[link_index];
             feature.setStyle(this.linkStyle(link, lstyle));
+            // Ajouter les informations supplémentaires aux entités géographiques
+            feature.setProperties({
+                linkData: links[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+            });
             return feature;
         }, this);
 
@@ -1240,12 +1571,19 @@ export default class OlRenderer {
         });
         this.map.addLayer(linksLayer);
         linksLayer.setZIndex(z_index);
+
+
+
+        const self = this
+            // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function(evt) {
+            self.add_popup_links(evt)
+        });
     }
+
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
-
         const item = global.projections[proj].extent;
-
         olproj.setExtent(item);
 
 
@@ -1313,46 +1651,46 @@ export default class OlRenderer {
             // url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
         } else if (layer.name === "Humanitarian_OSM") {
             url = "https://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Wikimedia") {
             url = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_without_labels") {
             url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_Light") {
             url = "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "CartoDB Light") {
             url = "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "CartoDB_Voyager_no_label") {
             url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "CartoDB_Voyager_labeled") {
             url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_terrain") {
             url = "https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_watercolor") {
             url = "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stadia_Stamen_Dark") {
             url = "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_World_Street_map") {
             url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_World_Topo_map") {
             url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_World_Imagery") {
             url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_NatGeo_World") {
             url = "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: "Anonymous" });
+            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         }
 
 

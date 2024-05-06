@@ -13,6 +13,7 @@ export default class View {
 
         this.body = document.getElementsByTagName("body")[0];
         this.home = document.getElementById("home");
+
         this.map_container = document.getElementById("map");
 
         // modal import nodes
