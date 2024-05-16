@@ -11776,5 +11776,10 @@ chart {
     stroke: #666;
 }
 
+.input-customize {
+    text-align: left;
+    font-style: italic;
+}
+
 
 /*# sourceMappingURL=main.css.map*/

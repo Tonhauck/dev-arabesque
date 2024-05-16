@@ -829,9 +829,15 @@ export default class OlRenderer {
                     console.log(feature)
 
                     // Construire le contenu du popup avec les informations de l'entité
-                    let popupContent = '<h4 class="popup-title" > ID : <br>' + feature.values_.nodeData.id + '</h4>';
+                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.nodeData.id + '</h4>';
                     popupContent += '<hr>';
-                    popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.nodeData.properties[selectedValue]).toFixed(2) + '</p>';
+                    popupContent += '<table class="popup-table table table-striped">';
+                    let i = 0;
+                    for (var key in feature.values_.nodeData.properties) {
+                        popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.nodeData.properties[key] + '</td></tr>';
+                        i++;
+                    }
+                    popupContent += '</table>';
 
 
                     // Mettre à jour le contenu du popup
@@ -1400,11 +1406,7 @@ export default class OlRenderer {
 
     add_links(links, lstyle, link_data_range) {
 
-
-
-
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
-
         if (link_data_range !== undefined) {
             this.links_min_value = link_data_range[0];
             this.links_max_value = link_data_range[1];
@@ -1412,7 +1414,6 @@ export default class OlRenderer {
             this.links_min_value = d3.min(links.map((l) => l.value));
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
-
 
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
@@ -1494,18 +1495,19 @@ export default class OlRenderer {
                     // Sélection de l'élément select
                     var selectElement = document.getElementById("semioSelectorSizeChangeLink");
 
-                    // Affichage de la valeur récupérée
-                    if (!selectElement) {
-                        var selectedValue = "count"
-                    } else {
-                        // Récupération de la valeur sélectionnée
-                        var selectedValue = selectElement.value;
-                    }
-                    console.log(feature.values_)
-                        // Construire le contenu du popup avec les informations de l'entité
-                    let popupContent = '<h4 class="popup-title" > ID du lien : <br>' + feature.values_.linkData.key + '</h4>';
+                    // Construire le contenu du popup avec les informations de l'entité
+                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.linkData.key + '</h4>';
                     popupContent += '<hr>';
-                    popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.linkData.value).toFixed(2) + '</p>';
+                    popupContent += '<table class="popup-table table table-striped">';
+                    let i = 0;
+                    for (var key in feature.values_.linkData) {
+                        if (key != 'key') {
+                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.linkData[key] + '</td></tr>';
+                            i++;
+                        }
+                    }
+                    popupContent += '</table>';
+
 
 
                     // Mettre à jour le contenu du popup

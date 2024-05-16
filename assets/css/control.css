@@ -333,3 +333,8 @@ nav {
     background: rgba(0, 0, 0, 0.1);
     opacity: 0.6;
 }
+
+.input-customize {
+    text-align: left;
+    font-style: italic;
+}
