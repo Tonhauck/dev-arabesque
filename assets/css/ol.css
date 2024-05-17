@@ -326,6 +326,8 @@
         min-width: 200px;
         left: -50px;
         bottom: 12px;
+        max-height: 300px;
+        overflow-y: auto;
     }
     /* Style pour le titre du popup */
     
@@ -360,13 +362,6 @@
         margin-left: -10px;
     }
     
-    .ol-popup:before {
-        border-top-color: #cccccc;
-        border-width: 11px;
-        left: 48px;
-        margin-left: -11px;
-    }
-    
     .ol-popup-closer {
         text-decoration: none;
         position: absolute;
@@ -398,5 +393,9 @@
         /* Aligne le contenu à gauche */
         justify-content: flex-end;
         /* Pour être cohérent avec align-items */
+    }
+    
+    canvas.ol-unselectable {
+        background-color: #fff;
     }
     /*# sourceMappingURL=ol.css.map */

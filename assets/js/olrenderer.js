@@ -97,7 +97,7 @@ export default class OlRenderer {
             opacity: "degree",
         };
         this._link_scale_types = { size: "Sqrt", opacity: "Linear" };
-        this._scale_link_size = d3.scaleSqrt();
+      //  this._scale_link_size = d3.scaleSqrt();
         this._link_size_ratio = 100;
         this._scale_link_color = d3.scaleLinear();
         this._scale_link_size = d3.scaleLinear();
@@ -288,7 +288,7 @@ export default class OlRenderer {
         }).then((attrib_canvas) => {
             let attrib_div = attrib_canvas.toDataURL("image/png");
             let width_attrib = doc_width + margin_right - 10 - attrib.clientWidth
-            console.log(width_attrib)
+  
             doc.addImage(attrib_div, "JPEG", width_attrib, map_final_height + 20);
             svgElements2.forEach(function(item) {
                 item.removeAttribute("width");
@@ -338,7 +338,9 @@ export default class OlRenderer {
     }
 
     update_links_height(links, lstyle) {
+        
         let resolution_m = this.map.getView().getResolution();
+      
 
         for (let link of links) {
             let height_m = this.linkSize(link, lstyle);
@@ -743,7 +745,7 @@ export default class OlRenderer {
         });
         const style = [countryStyle, labelStyle];
 
-        console.log(nodes_vector)
+     
 
         // Création de la couche
         let nodesLayer = new VectorLayer({
@@ -826,8 +828,7 @@ export default class OlRenderer {
                         var selectedValue = selectElement.value;
                     }
 
-                    console.log(feature)
-
+          
                     // Construire le contenu du popup avec les informations de l'entité
                     let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.nodeData.id + '</h4>';
                     popupContent += '<hr>';
@@ -844,7 +845,7 @@ export default class OlRenderer {
                     content.innerHTML = popupContent;
 
                     // Définir la position du popup sur le clic de la souris
-                    console.log(evt.coordinate)
+            
                     popup.setPosition(evt.coordinate);
 
                     // Afficher le popup
@@ -1082,7 +1083,6 @@ export default class OlRenderer {
     }
 
     linkStyle(link, lstyle) {
-
         //OPACITY (we need to have rounded numbers)
         let opacity;
         if (lstyle.opacity.mode === "fixed") {
@@ -1141,12 +1141,18 @@ export default class OlRenderer {
         }
     }
     linkSize(link, lstyle) {
+  
         if (lstyle.size.mode === "fixed") {
             return lstyle.size.fixed * (this._extent_size / 1000);
         } else if (lstyle.size.mode === "varied") {
             if (this._link_scale_types.size === "Log")
+              
                 return this._scale_link_size(link.value + 1);
-            else return this._scale_link_size(link.value);
+            else
+            //    console.log(this._scale_link_size(link.value))
+            // WRONG VALUE : 18514652.80567934 
+            // TRUE VALUE : 42576.57656879198
+                return this._scale_link_size(link.value);
         }
     }
 
@@ -1172,8 +1178,15 @@ export default class OlRenderer {
     update_link_scales_types(lstyle) {
             this._link_scale_types.size = lstyle.size.varied.scale;
             this._link_scale_types.opacity = lstyle.opacity.varied.scale;
-        }
+    }
+    
+    update_links_min_max(links) {
+            this.links_min_value = d3.min(links.map((l) => l.value));
+            this.links_max_value = d3.max(links.map((l) => l.value));
+        
+    }
         //Updates scales for sizing elements according to link_var
+        
     update_links_scales(links, lstyle) {
         //COLORS
 
@@ -1241,12 +1254,14 @@ export default class OlRenderer {
             domain_size = [1, this.links_max_value];
         else domain_size = [this.links_min_value, this.links_max_value];
 
+       
         // definition de l'échelle pour la taille
         this._scale_link_size = this._scales[this._link_scale_types.size]
             .copy()
             .range([0, (this._extent_size / 100) * (this._link_size_ratio / 100)])
             .domain(domain_size);
 
+      
         //Opacité
 
         // definition de l'échelle pour la taille
@@ -1267,6 +1282,7 @@ export default class OlRenderer {
         let orientation = lstyle.shape.orientation;
         let shape_type = lstyle.shape.type;
 
+      
         //Attach link width (in px) for the scalability in the legend
         this.update_links_height(links, lstyle);
 
@@ -1284,11 +1300,15 @@ export default class OlRenderer {
             ratioBounds: 0.9,
         };
 
+       
         if (orientation === "oriented" && shape_type === "StraightArrow") {
-            let arrows = links.map(function(l) {
+            
+            let arrows = links.map(function (l) {
+               
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
                 let width = this.linkSize(l, lstyle);
+               
                 let arrow = orientedStraightArrow(
                     style,
                     nodes_hash[from].center,
@@ -1297,8 +1317,47 @@ export default class OlRenderer {
                     nodes_hash[to].radius,
                     width
                 );
+                //LE FAIL : 
+/* :
+            (2)[243119.4712635476, 5761201.252804503]
+            1
+:
+            (2)[96380.22981532369, 5742385.841700313]
+            2
+:
+            (2)[-3362351.3011204167, 33298246.869102307]
+            3
+:
+            (2)[-2184984.2505671326, 24116095.76181901]
+            4
+:
+            (2)[-2111614.629843021, 24125503.467371102]
+            5
+:
+            (2)[243119.4712635476, 5761201.252804503] */
+
+        /*
+        width = 18514652.80567934
+        value : 7704
+        this._scale_link_size(link.value) = 
+        18514652.80567934
+        
+        92 OBJECT FAIL = center : [
+    173389.13231686543,
+    5752257.92007945
+    radius :
+    70301.51751411689
+
+    75 OBJECT FAIL = center : [
+    180842.17211077412,
+    5753213.574520037
+    radius :85153.15313758395
+] */
+              
+           
                 return arrow;
             }, this);
+
             return arrows;
         } else if (orientation === "noOriented" && shape_type === "StraightArrow") {
             let arrows = links.map(function(l) {
@@ -1407,13 +1466,19 @@ export default class OlRenderer {
     add_links(links, lstyle, link_data_range) {
 
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
+        console.log(link_data_range)
         if (link_data_range !== undefined) {
+
             this.links_min_value = link_data_range[0];
             this.links_max_value = link_data_range[1];
+            console.log(this.links_min_value, this.links_max_value)
+          
         } else {
+            console.log(link_data_range)
             this.links_min_value = d3.min(links.map((l) => l.value));
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
+     
 
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
@@ -1423,7 +1488,6 @@ export default class OlRenderer {
         if (lstyle.color.varied.type === "qualitative") {
             this.create_link_color_groups(links);
         }
-
         this.map.removeLayer(this.get_layer("links"));
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
@@ -1531,6 +1595,7 @@ export default class OlRenderer {
     update_links(links, lstyle, z_index) {
         //Update the discretization variable
         this.update_links_var(lstyle);
+        this.update_links_min_max(links);
         //Update scale types for size and opacity (linear, pow etc)
         this.update_link_scales_types(lstyle);
         //update the actual scales
@@ -1545,7 +1610,6 @@ export default class OlRenderer {
         this.map.removeLayer(this.get_layer("links"));
 
         let arrows = this.create_arrows(links, lstyle);
-
         let links_shapes = arrows.map((a, i) => {
 
             let polygon = new Polygon([a]);
@@ -1585,6 +1649,7 @@ export default class OlRenderer {
 
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
+  
         const item = global.projections[proj].extent;
         olproj.setExtent(item);
 
@@ -1849,7 +1914,9 @@ export default class OlRenderer {
             z_indexes[l.name] = l.z_index;
         }
 
+        
         for (let layer of this.map.getLayers().array_) {
+            
             layer.setZIndex(z_indexes[layer.values_.name]);
         }
     }

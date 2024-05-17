@@ -537,6 +537,7 @@ export default class Model {
 
         //Getting all the filtered flows and format them
         let filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
+
             return {
                 key: link[this.config.varnames.linkID[0]] +
                     "->" +
@@ -544,6 +545,9 @@ export default class Model {
                 value: parseFloat(link[this.config.varnames.vol]),
             };
         });
+
+        let link_data_range = [d3.min(filteredFlows.map((l) => l.value)), d3.max(filteredFlows.map((l) => l.value))];
+
         let sum = d3.sum(filteredFlows.map((l) => l.value))
         let globalSum = d3.sum(this.data.links.map((l) => l[this.config.varnames.vol]))
 
