@@ -90,7 +90,7 @@ export const SizeContainerComponent = (props) => {
             id="semioSelectorSizeChangeLink"
             // defaultValue={props.semio.size.varied.var}
           >
-            <option value="count">count</option>
+            <option value="volume">volume</option>
           </select>
         </div>
         <div id="semioSizeRatioCatChangeLink" class="col-md-4">

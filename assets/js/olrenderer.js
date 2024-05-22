@@ -97,7 +97,7 @@ export default class OlRenderer {
             opacity: "degree",
         };
         this._link_scale_types = { size: "Sqrt", opacity: "Linear" };
-        this._scale_link_size = d3.scaleSqrt();
+      //  this._scale_link_size = d3.scaleSqrt();
         this._link_size_ratio = 100;
         this._scale_link_color = d3.scaleLinear();
         this._scale_link_size = d3.scaleLinear();
@@ -288,7 +288,7 @@ export default class OlRenderer {
         }).then((attrib_canvas) => {
             let attrib_div = attrib_canvas.toDataURL("image/png");
             let width_attrib = doc_width + margin_right - 10 - attrib.clientWidth
-            console.log(width_attrib)
+  
             doc.addImage(attrib_div, "JPEG", width_attrib, map_final_height + 20);
             svgElements2.forEach(function(item) {
                 item.removeAttribute("width");
@@ -338,7 +338,9 @@ export default class OlRenderer {
     }
 
     update_links_height(links, lstyle) {
+        
         let resolution_m = this.map.getView().getResolution();
+      
 
         for (let link of links) {
             let height_m = this.linkSize(link, lstyle);
@@ -454,6 +456,13 @@ export default class OlRenderer {
         }
 
         //COLOR
+        let label = node.id;
+       
+        if (document.getElementById("semioSelectorTextChangenode")) {
+            if (document.getElementById("semioSelectorTextChangenode").value != null) {
+                label = document.getElementById("semioSelectorTextChangenode").value;
+            }
+        }
         if (nstyle.color.mode === "fixed") {
             let style = new Style({
                 stroke: new Stroke({
@@ -464,8 +473,7 @@ export default class OlRenderer {
                     color: this.add_opacity_to_color(nstyle.color.fixed, opacity),
                 }),
                 text: new Text({
-                    text: node.id,
-
+                    text: label,
                     font: 'bold 13px Calibri,sans-serif',
                     fill: new Fill({ color: "#000" }),
                     stroke: new Stroke({
@@ -494,7 +502,7 @@ export default class OlRenderer {
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
                     }),
                     text: new Text({
-                        text: node.id,
+                        text: label,
 
                         font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
@@ -521,7 +529,7 @@ export default class OlRenderer {
                         ),
                     }),
                     text: new Text({
-                        text: node.id,
+                        text: label,
 
                         font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
@@ -743,7 +751,7 @@ export default class OlRenderer {
         });
         const style = [countryStyle, labelStyle];
 
-        console.log(nodes_vector)
+     
 
         // Création de la couche
         let nodesLayer = new VectorLayer({
@@ -826,19 +834,24 @@ export default class OlRenderer {
                         var selectedValue = selectElement.value;
                     }
 
-                    console.log(feature)
-
+          
                     // Construire le contenu du popup avec les informations de l'entité
-                    let popupContent = '<h4 class="popup-title" > ID : <br>' + feature.values_.nodeData.id + '</h4>';
+                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.nodeData.id + '</h4>';
                     popupContent += '<hr>';
-                    popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.nodeData.properties[selectedValue]).toFixed(2) + '</p>';
+                    popupContent += '<table class="popup-table table table-striped">';
+                    let i = 0;
+                    for (var key in feature.values_.nodeData.properties) {
+                        popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.nodeData.properties[key] + '</td></tr>';
+                        i++;
+                    }
+                    popupContent += '</table>';
 
 
                     // Mettre à jour le contenu du popup
                     content.innerHTML = popupContent;
 
                     // Définir la position du popup sur le clic de la souris
-                    console.log(evt.coordinate)
+            
                     popup.setPosition(evt.coordinate);
 
                     // Afficher le popup
@@ -1076,7 +1089,6 @@ export default class OlRenderer {
     }
 
     linkStyle(link, lstyle) {
-
         //OPACITY (we need to have rounded numbers)
         let opacity;
         if (lstyle.opacity.mode === "fixed") {
@@ -1135,12 +1147,18 @@ export default class OlRenderer {
         }
     }
     linkSize(link, lstyle) {
+  
         if (lstyle.size.mode === "fixed") {
             return lstyle.size.fixed * (this._extent_size / 1000);
         } else if (lstyle.size.mode === "varied") {
             if (this._link_scale_types.size === "Log")
+              
                 return this._scale_link_size(link.value + 1);
-            else return this._scale_link_size(link.value);
+            else
+            //    console.log(this._scale_link_size(link.value))
+            // WRONG VALUE : 18514652.80567934 
+            // TRUE VALUE : 42576.57656879198
+                return this._scale_link_size(link.value);
         }
     }
 
@@ -1166,8 +1184,15 @@ export default class OlRenderer {
     update_link_scales_types(lstyle) {
             this._link_scale_types.size = lstyle.size.varied.scale;
             this._link_scale_types.opacity = lstyle.opacity.varied.scale;
-        }
+    }
+    
+    update_links_min_max(links) {
+            this.links_min_value = d3.min(links.map((l) => l.value));
+            this.links_max_value = d3.max(links.map((l) => l.value));
+        
+    }
         //Updates scales for sizing elements according to link_var
+        
     update_links_scales(links, lstyle) {
         //COLORS
 
@@ -1235,12 +1260,14 @@ export default class OlRenderer {
             domain_size = [1, this.links_max_value];
         else domain_size = [this.links_min_value, this.links_max_value];
 
+       
         // definition de l'échelle pour la taille
         this._scale_link_size = this._scales[this._link_scale_types.size]
             .copy()
             .range([0, (this._extent_size / 100) * (this._link_size_ratio / 100)])
             .domain(domain_size);
 
+      
         //Opacité
 
         // definition de l'échelle pour la taille
@@ -1261,6 +1288,7 @@ export default class OlRenderer {
         let orientation = lstyle.shape.orientation;
         let shape_type = lstyle.shape.type;
 
+      
         //Attach link width (in px) for the scalability in the legend
         this.update_links_height(links, lstyle);
 
@@ -1278,11 +1306,15 @@ export default class OlRenderer {
             ratioBounds: 0.9,
         };
 
+       
         if (orientation === "oriented" && shape_type === "StraightArrow") {
-            let arrows = links.map(function(l) {
+            
+            let arrows = links.map(function (l) {
+               
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
                 let width = this.linkSize(l, lstyle);
+               
                 let arrow = orientedStraightArrow(
                     style,
                     nodes_hash[from].center,
@@ -1291,8 +1323,47 @@ export default class OlRenderer {
                     nodes_hash[to].radius,
                     width
                 );
+                //LE FAIL : 
+/* :
+            (2)[243119.4712635476, 5761201.252804503]
+            1
+:
+            (2)[96380.22981532369, 5742385.841700313]
+            2
+:
+            (2)[-3362351.3011204167, 33298246.869102307]
+            3
+:
+            (2)[-2184984.2505671326, 24116095.76181901]
+            4
+:
+            (2)[-2111614.629843021, 24125503.467371102]
+            5
+:
+            (2)[243119.4712635476, 5761201.252804503] */
+
+        /*
+        width = 18514652.80567934
+        value : 7704
+        this._scale_link_size(link.value) = 
+        18514652.80567934
+        
+        92 OBJECT FAIL = center : [
+    173389.13231686543,
+    5752257.92007945
+    radius :
+    70301.51751411689
+
+    75 OBJECT FAIL = center : [
+    180842.17211077412,
+    5753213.574520037
+    radius :85153.15313758395
+] */
+              
+           
                 return arrow;
             }, this);
+
             return arrows;
         } else if (orientation === "noOriented" && shape_type === "StraightArrow") {
             let arrows = links.map(function(l) {
@@ -1400,19 +1471,20 @@ export default class OlRenderer {
 
     add_links(links, lstyle, link_data_range) {
 
-
-
-
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
-
+        console.log(link_data_range)
         if (link_data_range !== undefined) {
+
             this.links_min_value = link_data_range[0];
             this.links_max_value = link_data_range[1];
+            console.log(this.links_min_value, this.links_max_value)
+          
         } else {
+            console.log(link_data_range)
             this.links_min_value = d3.min(links.map((l) => l.value));
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
-
+     
 
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
@@ -1422,7 +1494,6 @@ export default class OlRenderer {
         if (lstyle.color.varied.type === "qualitative") {
             this.create_link_color_groups(links);
         }
-
         this.map.removeLayer(this.get_layer("links"));
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
@@ -1494,18 +1565,21 @@ export default class OlRenderer {
                     // Sélection de l'élément select
                     var selectElement = document.getElementById("semioSelectorSizeChangeLink");
 
-                    // Affichage de la valeur récupérée
-                    if (!selectElement) {
-                        var selectedValue = "count"
-                    } else {
-                        // Récupération de la valeur sélectionnée
-                        var selectedValue = selectElement.value;
-                    }
-                    console.log(feature.values_)
-                        // Construire le contenu du popup avec les informations de l'entité
-                    let popupContent = '<h4 class="popup-title" > ID du lien : <br>' + feature.values_.linkData.key + '</h4>';
+                    // Construire le contenu du popup avec les informations de l'entité
+                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.linkData.key + '</h4>';
                     popupContent += '<hr>';
-                    popupContent += '<p class="popup-value">' + selectedValue + ' : ' + (feature.values_.linkData.value).toFixed(2) + '</p>';
+                    popupContent += '<table class="popup-table table table-striped">';
+                    let i = 0;
+                    for (var key in feature.values_.linkData) {
+                      
+                        if (key != 'key') {
+                 
+                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + "count" + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.linkData[key].toFixed(2) + '</td></tr>';
+                            i++;
+                        }
+                    }
+                    popupContent += '</table>';
+
 
 
                     // Mettre à jour le contenu du popup
@@ -1529,6 +1603,7 @@ export default class OlRenderer {
     update_links(links, lstyle, z_index) {
         //Update the discretization variable
         this.update_links_var(lstyle);
+        this.update_links_min_max(links);
         //Update scale types for size and opacity (linear, pow etc)
         this.update_link_scales_types(lstyle);
         //update the actual scales
@@ -1543,7 +1618,6 @@ export default class OlRenderer {
         this.map.removeLayer(this.get_layer("links"));
 
         let arrows = this.create_arrows(links, lstyle);
-
         let links_shapes = arrows.map((a, i) => {
 
             let polygon = new Polygon([a]);
@@ -1583,6 +1657,7 @@ export default class OlRenderer {
 
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
+  
         const item = global.projections[proj].extent;
         olproj.setExtent(item);
 
@@ -1650,16 +1725,16 @@ export default class OlRenderer {
             source = new OSM();
             // url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
         } else if (layer.name === "Humanitarian_OSM") {
-            url = "https://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
+            url = "http://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Wikimedia") {
-            url = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
+            url = "http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_without_labels") {
-            url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
+            url = "http://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_Light") {
-            url = "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png";
+            url = "http://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "CartoDB Light") {
             url = "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
@@ -1671,25 +1746,25 @@ export default class OlRenderer {
             url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_terrain") {
-            url = "https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png";
+            url = "http://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stamen_watercolor") {
-            url = "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
+            url = "http://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "Stadia_Stamen_Dark") {
-            url = "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png";
+            url = "http://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_World_Street_map") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_World_Topo_map") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_World_Imagery") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         } else if (layer.name === "ESRI_NatGeo_World") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
             source = new XYZ({ url: url, crossOrigin: 'anonymous' });
         }
 
@@ -1847,7 +1922,9 @@ export default class OlRenderer {
             z_indexes[l.name] = l.z_index;
         }
 
+        
         for (let layer of this.map.getLayers().array_) {
+            
             layer.setZIndex(z_indexes[layer.values_.name]);
         }
     }

@@ -34,6 +34,7 @@ export const LayerCardsContainer = (props) => {
 
     //Empty the layers container and append the divs in the right order
     layersContainer.innerHTML = "";
+    console.log(sorted_layers)
     for (const div of sorted_layers) layersContainer.appendChild(div);
 
     set_z_indexes(sorted_layers);
