@@ -247,6 +247,7 @@ export const NodesSemioModalComponent = (props) => {
                         .map((p) => (
                           <option value={p}>{p}</option>
                         ))}
+            
                     </select>
                   </div>
                 </div>
