@@ -1723,49 +1723,49 @@ export default class OlRenderer {
         let source;
         if (layer.name === "OSM") {
             source = new OSM();
-            // url = "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
+            // url = "http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png";
         } else if (layer.name === "Humanitarian_OSM") {
-            url = "https://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://{a-b}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "Wikimedia") {
-            url = "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "Stamen_without_labels") {
-            url = "https://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "Stamen_Light") {
-            url = "https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "CartoDB Light") {
-            url = "https://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "CartoDB_Voyager_no_label") {
-            url = "https://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "CartoDB_Voyager_labeled") {
-            url = "https://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "Stamen_terrain") {
-            url = "https://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://tiles.stadiamaps.com/tiles/stamen_terrain_background/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "Stamen_watercolor") {
-            url = "https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "Stadia_Stamen_Dark") {
-            url = "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "ESRI_World_Street_map") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "ESRI_World_Topo_map") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "ESRI_World_Imagery") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         } else if (layer.name === "ESRI_NatGeo_World") {
-            url = "https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
-            source = new XYZ({ url: url, crossOrigin: 'anonymous' });
+            url = "http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
+            source = new XYZ({ url: url, crossOrigin: 'null' });
         }
 
 
