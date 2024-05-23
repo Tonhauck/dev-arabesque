@@ -1,0 +1,87 @@
+.filterColumn {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.barchart {
+    height: 10em;
+    width: 70%;
+    overflow: visible;
+}
+
+.barchartContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.barchartTrashIcon {
+    width: 20px;
+    position: absolute;
+    top: 30%;
+    right: 0;
+}
+
+.categorialTrashIcon {
+    position: absolute;
+    top: 45%;
+    right: 0;
+}
+
+#selectFilterButton {
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.categorialFilter {
+    position: relative;
+}
+
+.barchartFilter {
+    position: relative;
+}
+
+.flowFilterIcon {
+    width: 1em;
+}
+
+.filterTitle {
+    margin-left: 5%;
+    font-weight: bold;
+}
+
+.filterBottomLine {
+    margin-bottom: 10%;
+    margin-top: 10%;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+}
+
+.axis {
+    font-size: 100%;
+    font-family: quicksand, ubuntu, sans-serif;
+}
+
+
+/* Update filter min - Max */
+
+.filterMinInput {
+    width: 100%;
+}
+
+.filterMaxInput {
+    width: 100%;
+}
+
+.maxMinContainer {
+    width: 50%;
+    float: left;
+    padding: 10px;
+    /*   border: 2px solid red; just for checking the div positions*/
+}
+
+#filterMinMax {
+    height: 120px;
+}

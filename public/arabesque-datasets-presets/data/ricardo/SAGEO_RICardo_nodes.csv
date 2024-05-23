@@ -1,0 +1,436 @@
+id,name,type,continent,lat,long,wikidata
+Aden,Aden,country,Asia,12.8,45.033333333333,Q131694
+Afghanistan,Afghanistan,country,Asia,34,66,Q889
+Alaska,Alaska,country,America,64,-150,Q797
+Albania,Albania,country,Europe,41,20,Q222
+Aleppo,Aleppo,country,Asia,36.2,37.15,Q41183
+Algeria,Algeria,country,Africa,28,1,Q262
+AmericanSamoa,American Samoa,country,Oceania,-14.295833,-170.7075,Q16641
+Ancona,Ancona,country,Europe,43.616666666667,13.516666666667,Q3415
+AndamanandNicobarIs.,Andaman and Nicobar Is.,country,Asia,11.68,92.77,Q40888
+Andorra,Andorra,country,Europe,42.558333333333,1.5552777777778,Q228
+Angola,Angola,country,Africa,-12.35,17.35,Q916
+Anjouan,Anjouan,country,Africa,-12.25,44.416666666667,Q231324
+AntiguaandBarbuda,Antigua and Barbuda,country,America,17.116666666667,-61.85,Q781
+Argentina,Argentina,country,America,-34,-64,Q414
+Armenia,Armenia,country,Europe,40.383333,44.95,Q399
+AscensionI.,Ascension I.,country,Atlantic,-7.9425,-14.368055555556,Q46197
+AshmoreandCartierIs,Ashmore and Cartier Is,country,Oceania,-12.258333333333,123.04166666667,Q133888
+Australia,Australia,country,Oceania,-28,137,Q408
+Austria,Austria,country,Europe,48,14,Q40
+Austria-Hungary,Austria-Hungary,country,Europe,48.2,16.35,Q28513
+AzoresWesternIsles,Azores (Western Isles),country,Europe,38.5,-28,Q25263
+Baden,Baden,country,Europe,49.01666667,8.4,Q6877935
+Bahamas,Bahamas,country,America,23.7,-76.4,Q778
+Bahrain,Bahrain,country,Asia,26.0675,50.551111,Q398
+Bali,Bali,country,Asia,-8.335,115.08805555556,Q4648
+BanjermassinDutchBorneo,Banjermassin (Dutch Borneo),country,Asia,-3.3333333333333,114.58333333333,Q14182
+Barbados,Barbados,country,America,13.17,-59.5525,Q244
+Bavaria,Bavaria,country,Europe,48.7775,11.431111111111,Q980
+Belgium,Belgium,country,Europe,50.641111111111,4.6680555555556,Q31
+BelizeBritishHonduras,Belize (British Honduras),country,America,17.066666666667,-88.7,Q242
+BeninDahomey,Benin (Dahomey),country,Africa,8.8333333333333,2.1833333333333,Q962
+Berbice,Berbice,country,America,6.23369,-57.543,Q675322
+Bermuda,Bermuda,country,America,32.333333,-64.75,Q23635
+Bokhara,Bokhara,country,Asia,39.774722222222,64.428611111111,Q746558
+Bolivia,Bolivia,country,America,-17.056869611111,-64.991228611111,Q750
+Bosnia,Bosnia,country,Europe,43.86666667,18.41666667,Q188736
+Bosnia-Herzegovina,Bosnia-Herzegovina,country,Europe,44,18,Q225
+BotswanaBechuanaland,Botswana (Bechuanaland),country,Africa,-22.2,23.7,Q963
+Brazil,Brazil,country,America,-14,-53,Q155
+Bremen,Bremen,country,Europe,53.347266666667,8.5913,Q1209
+BritishCameroons,British Cameroons,country,Africa,4.166667,9.233333,Q1028835
+BritishColumbia,British Columbia,country,America,54.5,-124.5,Q1974
+BritishKaffraria,British Kaffraria,country,Africa,-32.88333333,27.4,Q918121
+BritishSomalilandSomalilandRepublic,British Somaliland (Somaliland Republic),country,Africa,9.55,44.066666666667,Q662653
+Brunei,Brunei,country,Asia,4.4,114.566667,Q921
+Brunswick,Brunswick,country,Europe,52.269167,10.521111,Q326029
+BuenosAires,Buenos Aires,country,America,-34.599722222222,-58.381944444444,Q1486
+Bulgaria,Bulgaria,country,Europe,42.75,25.5,Q219
+BurmaMyanmar,Burma (Myanmar),country,Asia,22,96,Q836
+CaliforniaGreatBearRepublic,California (Great Bear Republic),country,America,37,-120,Q99
+CamerounFrenchCameroons,Cameroun (French Cameroons),country,Africa,3.866419,11.520563,Q1028848
+Canada,Canada,country,America,56,-109,Q16
+CanaryIs.,Canary Is.,country,Africa,28.536,-15.749,Q5813
+CapeColony,Cape Colony,country,Africa,-33,18,Q370736
+CapeVerde,Cape Verde,country,Africa,15.916666666667,-24.083333333333,Q1011
+CarolineIs.,Caroline Is.,country,Oceania,-9.9666666666667,-150.21138888889,Q822151
+CaymanIs.,Cayman Is.,country,America,19.5,-80.5,Q5785
+Ceuta,Ceuta,country,Africa,35.886667,-5.3,Q5823
+Chafarinas,Chafarinas,country,Africa,35.183333333333,-2.4333333333333,Q130574
+Chile,Chile,country,America,-33,-71,Q298
+ChinaPeople'sRepublicofChina,China (People's Republic of China),country,Asia,35,103,Q148
+ChristmasI.,Christmas I.,country,Asia,-10.483333333333,105.63333333333,Q31063
+ClippertonI.,Clipperton I.,country,America,10.293888888889,-109.21722222222,Q161258
+CochinChina,Cochin China,country,Asia,14.955,110.940,Q505503
+CocosKeelingIs.,Cocos (Keeling) Is.,country,Oceania,-12.116666666667,96.9,Q36004
+ColombiaGranColombia,Colombia (Gran Colombia),country,America,4,-74,Q739
+CongoBrazzavilleFrenchCongoMiddleCongo,Congo (Brazzaville) (French Congo) (Middle Congo),country,Africa,-0.75,15.383330555556,Q971
+CookIs.,Cook Is.,country,Oceania,-15,-161,Q26988
+CoromandelCoastPosts,Coromandel Coast Posts,country,Asia,13.366666666667,80.333333333333,Q182561
+CostaRica,Costa Rica,country,America,10,-84,Q800
+Cracow,Cracow,country,Europe,50.061388888889,19.937222222222,Q31487
+Crete,Crete,country,Europe,35.309722222222,24.893333333333,Q34374
+CrozetIs.,Crozet Is.,country,Oceania,-46.388979,51.7053,Q201698
+Cuba,Cuba,country,America,22,-79.5,Q241
+Curacao,Curacao,country,America,12.166666666667,-68.966666666667,Q25279
+Cyprus,Cyprus,country,Europe,35,33,Q229
+Czechoslovakia,Czechoslovakia,country,Europe,50.083333333333,14.416666666667,Q33946
+Danzig,Danzig,country,Europe,54.366666666667,18.633333333333,Q1792
+Dardanelles-Istanbul,Dardanelles-Istanbul,country,Asia,41.01,28.960277777778,Q406
+Denmark,Denmark,country,Europe,56,10,Q35
+DjiboutiAfarandIssasFrenchSomaliland,Djibouti (Afar and Issas) (French Somaliland),country,Africa,11.8,42.433333,Q977
+DodecaneseIs.AegeanIs.,Dodecanese Is. (Aegean Is.),country,Europe,36.373,27.218,Q131555
+Dominica,Dominica,country,America,15.416667,-61.333333,Q784
+DominicanRepublicSantoDomingo,Dominican Republic (Santo Domingo),country,America,18.8,-70.2,Q786
+DutchPostsGoldCoast,Dutch Posts (Gold Coast),country,Africa,7.870,-0.994,Q770776
+EasternRumelia,Eastern Rumelia,country,Europe,,,Q459780
+Ecuador,Ecuador,country,America,-1,-78,Q736
+EgyptUnitedArabRepublic,Egypt/United Arab Republic,country,Africa,27,29,Q79
+ElSalvador,El Salvador,country,America,13.668889,-88.866111,Q792
+Eritrea,Eritrea,country,Africa,15.483333,38.25,Q986
+Estonia,Estonia,country,Europe,59,26,Q191
+EthiopiaAbyssinia,Ethiopia (Abyssinia),country,Africa,9,40,Q115
+FaeroeIs.,Faeroe Is.,country,Europe,61.969944444444,-6.8444805555556,Q4628
+FalklandIs.,Falkland Is.,country,America,-51.75,-59,Q9648
+FanningI.,Fanning I.,country,Oceania,3.86,-159.36444444444,Q127335
+FarEasternRepublic,Far Eastern Republic,country,Europe,51.83333333,107.6,Q61292
+FederalRepublicofCentralAmerica,Federal Republic of Central America,country,America,,,
+FederatedMalayStates,Federated Malay States,country,Asia,3.1597222222222,101.7,Q1400154
+FernandoPoBioko,Fernando Po (Bioko),country,Africa,3.5,8.7,Q205022
+Fiji,Fiji,country,Oceania,-18,178,Q712
+Finland,Finland,country,Europe,65,27,Q33
+Fiume,Fiume,country,Europe,45.329722222222,14.432222222222,Q1647
+France,France,country,Europe,47,2,Q142
+Frankfurt,Frankfurt,country,Europe,50.113611111111,8.6797222222222,Q1794
+FrenchEquatorialAfrica,French Equatorial Africa,country,Africa,-4.26666667,15.28333333,Q271894
+FrenchGuyana,French Guyana,country,America,3.99886,-52.99994,Q3769
+FrenchIndia,French India,country,Asia,,,Q646374
+FrenchIndochina,French Indochina,country,Asia,21.033333333333,105.85,Q185682
+FrenchWestAfrica,French West Africa,country,Africa,14.492626,-5.660918,Q210682
+Gabon,Gabon,country,Africa,-0.68333055555556,11.5,Q1000
+Gambia,Gambia,country,Africa,13.5,-15.5,Q1005
+Georgia,Georgia,country,Europe,42.016669444444,43.733330555556,Q230
+Germany,Germany,country,Europe,51,10,Q183
+GermanyZollverein,Germany (Zollverein),country,Europe,,,Q155707
+GhanaGoldCoast,Ghana (Gold Coast),country,Africa,8,-0.5,Q117
+Gibraltar,Gibraltar,country,Europe,36.13775,-5.3453611111111,Q1410
+GilbertandElliceIs.,Gilbert and Ellice Is.,country,Oceania,1.26,173.02,Q1050859
+GoldCoast-TogolandNeutralZone,Gold Coast-Togoland (Neutral Zone),country,Africa,6.272,1.187,Q161062
+Goree,Goree,country,Africa,14.666944444444,-17.398333333333,Q244347
+Greece,Greece,country,Europe,38.5,23,Q41
+Greenland,Greenland,country,America,72,-40,Q223
+Grenada,Grenada,country,America,12.116667,-61.666667,Q769
+Guadeloupe,Guadeloupe,country,America,16.25,-61.583333333333,Q17012
+Guam,Guam,country,Oceania,13.5,144.8,Q16635
+Guatemala,Guatemala,country,America,15.5,-90.25,Q774
+GuineaFrenchGuineaRivieresduSud,Guinea (French Guinea) (Rivieres du Sud),country,Africa,9.50916666667,-13.71222222222,Q797433
+Guinea-BissauPortugueseGuinea,Guinea-Bissau (Portuguese Guinea),country,Africa,12,-15,Q1007
+GuyanaBr.Guiana,Guyana (Br. Guiana),country,America,5.733333,-59.316667,Q734
+Haiti,Haiti,country,America,19,-72.8,Q790
+Hamburg,Hamburg,country,Europe,53.55,10,Q1055
+Hanover,Hanover,country,Europe,52.374444444444,9.7386111111111,Q1715
+Hawaii,Hawaii,country,America,21.311388888889,-157.79638888889,Q782
+Heligoland,Heligoland,country,Europe,54.1825,7.8852777777778,Q3038
+Holstein,Holstein,country,Europe,54.1667,9.66667,Q111224
+Honduras,Honduras,country,America,14.633333,-86.816667,Q783
+HongKong,Hong Kong,country,Asia,22.278333333333,114.15861111111,Q8646
+Hungary,Hungary,country,Europe,47,19,Q28
+Iceland,Iceland,country,Europe,65,-19,Q189
+India,India,country,Asia,22,77,Q668
+IndonesiaDutchEastIndies,Indonesia (Dutch East Indies),country,Asia,-2,118,Q252
+IonianIs.,Ionian Is.,country,Europe,38.5,20.5,Q170295
+IranPersia,Iran (Persia),country,Asia,32,53,Q794
+IraqMesopotamia,Iraq (Mesopotamia),country,Asia,33,43,Q796
+Ireland,Ireland,country,Europe,53,-8,Q27
+Israel,Israel,country,Asia,31,35,Q801
+ItalianSomaliland,Italian Somaliland,country,Africa,2.29889,45.7989,Q319984
+Italy,Italy,country,Europe,42.5,12.5,Q38
+IvoryCoast,Ivory Coast,country,Africa,8,-6,Q1008
+Jamaica,Jamaica,country,America,18.18,-77.4,Q766
+Japan,Japan,country,Asia,35,136,Q17
+Johore,Johore,country,Asia,1.4872222222222,103.78111111111,Q183032
+JordanTransjordan,Jordan (Transjordan),country,Asia,31.2,36.5,Q810
+Kamerun,Kamerun,country,Africa,4.0369,9.6858,Q668294
+KampucheaCambodia,Kampuchea (Cambodia),country,Asia,12.6,105,Q424
+Kedah,Kedah,country,Asia,6.1283333333333,100.36277777778,Q188947
+Kelantan,Kelantan,country,Asia,5.25,102,Q185944
+KenyaBritishEastAfricaProtectorate,Kenya (British East Africa Protectorate),country,Africa,0.1,38,Q114
+KerguelenIs.,Kerguelen Is.,country,Antarctic,-49.25,69.166666666667,Q46772
+Khiva,Khiva,country,Asia,41.378333333333,60.363888888889,Q486195
+Kiauchau,Kiauchau,country,Asia,36.123455555556,120.24563888889,Q489170
+KingdomofSardinia,Kingdom of Sardinia,country,Europe,40.072,8.980,Q165154
+Kiribati,Kiribati,country,Oceania,1.4666666666667,173.03333333333,Q710
+Kokand,Kokand,country,Asia,40.528611111111,70.9425,Q489890
+KoreaChosen,Korea (Chosen),country,Asia,38.316666666667,127.23333333333,Q18097
+Kuwait,Kuwait,country,Asia,29.166667,47.6,Q817
+Kwanchowan,Kwanchowan,country,Asia,21.177277777778,110.41798888889,Q1506615
+KwangtungTerritoryLeased,Kwangtung Territory (Leased),country,Asia,23.4,113.5,Q15175
+Kyrgyzstan,Kyrgyzstan,country,Asia,41,75,Q813
+LabuanI.,Labuan I.,country,Asia,5.315894,115.219033,Q214504
+Lagos,Lagos,country,Africa,6.45,3.4,Q8673
+Latvia,Latvia,country,Europe,57,25,Q211
+Lauenburg,Lauenburg,country,Europe,53.375833333333,10.558888888889,Q492380
+Lebanon,Lebanon,country,Asia,33.833333,35.766667,Q822
+LeewardIs.,Leeward Is.,country,America,17.083333333333332,-61.8,Q1796551
+LesothoBasutoland,Lesotho (Basutoland),country,Africa,-29.55,28.25,Q1013
+Liberia,Liberia,country,Africa,6.533333,-9.75,Q1014
+LibyaTripolitaniaCyrenaicaFezzan,Libya (Tripolitania Cyrenaica Fezzan),country,Africa,27,17,Q1016
+Liechtenstein,Liechtenstein,country,Europe,47.145,9.553889,Q347
+Lithuania,Lithuania,country,Europe,55.2,24,Q37
+Lombok,Lombok,country,Oceania,-8.565,116.351,Q7564
+Lübeck,Lübeck,country,Europe,53.869722222222,10.686388888889,Q2843
+Lucca,Lucca,country,Europe,43.85,10.516666666667,Q13373
+Luxemburg,Luxemburg,country,Europe,49.77,6.13,Q32
+Macao,Macao,country,Asia,22.166666666667,113.55,Q14773
+MacquarieI.,Macquarie I.,country,Oceania,17.083333333333,-61.8,Q29971
+MadeiraIsles,Madeira Isles,country,Africa,32.75,-17,Q26253
+Malacca,Malacca,country,Asia,2.2,102.251,Q185221
+MalagasyRepublicMadagascar,Malagasy Republic (Madagascar),country,Africa,-20,47,Q1019
+MalawiNyasaland,Malawi (Nyasaland),country,Africa,-13,34,Q1020
+MalaysiaMalaya,Malaysia (Malaya),country,Asia,3,108,Q833
+MaldenI.,Malden I.,country,Oceania,-4.0166666666667,-154.93333333333,Q532590
+MaldiveIslands,Maldive Islands,country,Asia,3.25,73,Q17044696
+MaliFrenchSudanUpperSenegalandNiger,Mali (French Sudan) (Upper Senegal and Niger),country,Africa,12.64999962,-8,Q508014
+Malta,Malta,country,Europe,35.883333333333,14.5,Q233
+Manchukuo,Manchukuo,country,Asia,43.883333333333,125.31666666667,Q30623
+Manchuria,Manchuria,country,Asia,45,125,Q81126
+MarianaIs.,Mariana Is.,country,Oceania,16.13333333,145.75,Q153732
+MarshallIs.,Marshall Is.,country,Oceania,7.1166666666667,171.06666666667,Q709
+Martinique,Martinique,country,America,14.666666666667,-61,Q17054
+Mauritius,Mauritius,country,Africa,-20.2,57.5,Q1027
+Mayotte,Mayotte,country,Africa,-12.843055555556,45.138333333333,Q17063
+MecklenburgSchwerin,Mecklenburg Schwerin,country,Europe,,,Q158445
+Melilla,Melilla,country,Africa,35.2825,-2.9475,Q5831
+Memel,Memel,country,Europe,55.7075,21.142777777778,Q776965
+Mexico,Mexico,country,America,23,-102,Q96
+Moldavia,Moldavia,country,Europe,47.25,28.516667,Q217
+Mombassa,Mombassa,country,Africa,-4.05,39.666666666667,Q1112885
+Monaco,Monaco,country,Europe,43.733333333333,7.4166666666667,Q235
+Mongolia,Mongolia,country,Asia,47,104,Q711
+Montenegro,Montenegro,country,Europe,42.766667,19.216667,Q236
+Montserrat,Montserrat,country,America,16.75,-62.2,Q13353
+Moresnet,Moresnet,country,Europe,50.730277777778,6.0133333333333,Q151938
+Morocco,Morocco,country,Africa,32,-6,Q1028
+Mozambique,Mozambique,country,Africa,-19,35,Q1029
+Natal,Natal,country,Africa,-33.91666667,18.41666667,Q1301901
+Nauru,Nauru,country,Oceania,-0.53333333333333,166.93333333333,Q697
+NegriSembilan,Negri Sembilan,country,Asia,2.75,102.25,Q213893
+Netherlands,Netherlands,country,Europe,52.316666666667,5.55,Q55
+NetherlandsAntilles,Netherlands Antilles,country,America,15,-66,Q25227
+Nevis,Nevis,country,America,17.15,-62.583333333333,Q207794
+NewBrunswick,New Brunswick,country,America,46.6,-66,Q1965
+NewCaledoniaandDependencies,New Caledonia and Dependencies,country,Oceania,-21.25,165.3,Q33788
+NewGuineaGermanNewGuineaKaiserWilhelmsland,New Guinea (German New Guinea) (Kaiser Wilhelmsland),country,Oceania,-4.2149,152.1606,Q165008
+NewHebrides,New Hebrides,country,Oceania,-16.633333333333,168.01666666667,Q752431
+NewSouthWales,New South Wales,country,Oceania,-32,147,Q3224
+NewZealand,New Zealand,country,Oceania,-41.2,174,Q664
+Newfoundland,Newfoundland,country,America,53,-60,Q2003
+Nicaragua,Nicaragua,country,America,13,-85,Q811
+Niger,Niger,country,Africa,17,10,Q1032
+Nigeria,Nigeria,country,Africa,9,8,Q1033
+NiueI.,Niue I.,country,Oceania,-19.05,-169.91666666667,Q34020
+NorfolkI.,Norfolk I.,country,Oceania,-29.033333333333,167.94972222222,Q31057
+NorthernNigeria,Northern Nigeria,country,Africa,9.8,6.15,Q585408
+Norway,Norway,country,Europe,65,11,Q20
+NossiBe,Nossi Be,country,Africa,-13.316666666667,48.25,Q1330558
+NovaScotia,Nova Scotia,country,America,45,-63,Q1952
+Odessa,Odessa,country,Europe,46.47747,30.73262,Q1874
+Oldenburg,Oldenburg,country,Europe,53.14388888888889,8.213888888888889,Q693669
+OntarioUpperCanada,Ontario (Upper Canada),country,America,50,-85,Q1904
+OrangeFreeStateOrangeRiverColony,Orange Free State (Orange River Colony),country,Africa,-28,27,Q160284
+OregonCountry,Oregon Country,country,America,48,-122,Q388164
+Pahang,Pahang,country,Asia,3.75,102.5,Q191346
+Palau,Palau,country,Oceania,7.466667,134.55,Q695
+Palembang,Palembang,country,Asia,-2.9833333333333,104.76444444444,Q8131
+Palestine,Palestine,country,Asia,31.779027777778,35.237111111111,Q219060
+Panama,Panama,country,America,8.616667,-80.366667,Q804
+PanamaCanalZone,Panama Canal Zone,country,America,9.1176694444444,-79.720166666667,Q498979
+PapalStates,Papal States,country,Europe,41.904,12.453,Q237
+Papua,Papua,country,Oceania,-2.5333305555556,140.71694444444,Q5095
+PapuaNewGuinea,Papua New Guinea,country,Oceania,-6.3,147,Q691
+Paraguay,Paraguay,country,America,-23.5,-58,Q733
+Parma,Parma,country,Europe,44.801472222222,10.328,Q2683
+Penang,Penang,country,Asia,5.3833305555556,100.25,Q188096
+PenondeVelez,Penon de Velez,country,Africa,35.173111111111,-4.3001944444444,Q191146
+Perak,Perak,country,Asia,4.75,101,Q188953
+PerimI.,Perim I.,country,Asia,12.65975,43.421092,Q1160017
+Peru,Peru,country,America,-9.4,-76,Q419
+Philippines,Philippines,country,Asia,12,123,Q928
+PitcairnIs.,Pitcairn Is.,country,Oceania,-25.0677812,-130.1045778,Q35672
+Poland,Poland,country,Europe,52,19,Q36
+PortoNovo,Porto Novo,country,Africa,6.4833333333333,2.6166666666667,Q3799
+Portugal,Portugal,country,Europe,38.7,-9.1833333333333,Q45
+PortugueseIndiaincl.GoaDiuDaman,Portuguese India (incl. Goa Diu Daman),country,Asia,14.701,71.169,Q323904
+PortugueseTimor,Portuguese Timor,country,Asia,-8.55,125.583333,Q142965
+PrinceEdwardIs.,Prince Edward Is.,country,America,46.25,-63,Q1979
+Prussia,Prussia,country,Europe,,,Q38872
+PuertoRico,Puerto Rico,country,America,18.25,-66.5,Q1183
+QuebecLowerCanada,Quebec (Lower Canada),country,America,52,-72,Q176
+Queensland,Queensland,country,Oceania,-20,143,Q36074
+RepublicofChinaTaiwanFormosa,Republic of China (Taiwan) (Formosa),country,Asia,24,121,Q865
+RepublicofSt.Mark,Republic of St. Mark,country,Europe,45.583,12.683,Q4948
+Reunion,Reunion,country,Africa,-21.114444444444,55.5325,Q17070
+Rhineland,Rhineland,country,Europe,50.276989,6.860735,Q152243
+Riau,Riau,country,Asia,0.53333333333333,101.45,Q2175
+Romania,Romania,country,Europe,46,25,Q218
+Rotterdam,Rotterdam,country,Europe,51.9225,4.47917,Q34370
+Rupert'sLand,Rupert's Land,country,America,57,-92.3,Q738395
+RussiaUSSR,Russia/USSR,country,Europe,62,100,Q159
+Saar,Saar,country,Europe,49.37715,6.8783777777778,Q1201
+SabahNorthBorneo,Sabah (North Borneo),country,Asia,5.25,117,Q179029
+Sambas,Sambas,country,Asia,1.41667,109.33333,Q14164
+Samoa,Samoa,country,Oceania,-14,-172,Q683
+Samos,Samos,country,Europe,37.75,26.8333,Q156882
+SaoTome-Principe,Sao Tome-Principe,country,Africa,0.316667,6.6,Q1039
+Sarawak,Sarawak,country,Asia,3.03805556,113.78111111,Q170462
+SaudiArabiaKingdomofHejazandNedj,Saudi Arabia (Kingdom of Hejaz and Nedj),country,Asia,23.716667,44.116667,Q851
+Saxony,Saxony,country,Europe,51.026944444444,13.358888888889,Q1202
+Schleswig,Schleswig,country,Europe,55.166666666667,9.25,Q26167
+Senegal,Senegal,country,Africa,14.366667,-14.283333,Q1041
+OmanMuscatandOman,Oman (Muscat and Oman),country,Asia,21.5,55,Q842
+Seychelles,Seychelles,country,Africa,-7.1,52.766667,Q1042
+Sicily,Sicily,country,Europe,37.599958333333,14.015377777778,Q1460
+SierraLeone,Sierra Leone,country,Africa,8.5,-11.916667,Q1044
+Sind,Sind,country,Asia,24.87,67.05,Q37211
+Singapore,Singapore,country,Asia,1.3,103.8,Q334
+SocietyIs.,Society Is.,country,Oceania,-17.533333333333,-149.83333333333,Q118920
+SocotraI.,Socotra I.,country,Asia,12.3,53.3,Q2860218
+SolomonIslands,Solomon Islands,country,Oceania,-9.4666666666667,159.81666666667,Q685
+Somalia,Somalia,country,Africa,6,47,Q1045
+SouthAfrica,South Africa,country,Africa,-29,24,Q258
+SouthAustralia,South Australia,country,Oceania,-30,135,Q35715
+SouthWestAfricaGermanWestAfricaNamibia,South West Africa (German West Africa) (Namibia),country,Africa,-23,17,Q953068
+SouthernNigeria,Southern Nigeria,country,Africa,6.45,3.4,Q2062030
+Spain,Spain,country,Europe,40,-3,Q29
+SpanishMorocco,Spanish Morocco,country,Africa,35,-4.5,Q457242
+SpanishWestAfrica,Spanish West Africa,country,Africa,32.7613,-8.4567,Q1191986
+SriLankaCeylon,Sri Lanka (Ceylon),country,Asia,7,81,Q854
+St.Barthelemy,St. Barthelemy,country,America,17.897728,-62.8342438,Q25362
+St.Helena,St. Helena,country,Atlantic,-15.95,-5.7166666666667,Q34497
+St.Kitts,St. Kitts,country,America,17.319722,-62.747222,Q204989
+St.Kitts-Nevis,St. Kitts-Nevis,country,America,17.33,-62.666667,Q763
+St.Lucia,St. Lucia,country,America,13.883333,-61,Q760
+St.MariedeMadagascar,St. Marie de Madagascar,country,Africa,-16.833333333333,49.916666666667,Q1321311
+St.PierreandMiquelon,St. Pierre and Miquelon,country,America,46.825,-56.275,Q34617
+St.VincentandtheGrenadines,St. Vincent and the Grenadines,country,America,13.166666666667,-61.233333333333,Q757
+StraitsSettlements,Straits Settlements,country,Asia,1.3666666666667,103.8,Q376178
+SudanAnglo-Egyptian,Sudan (Anglo-Egyptian),country,Africa,15.633055555556,32.533055555556,Q541455
+SuezCanalZone,Suez Canal Zone,country,Africa,30.705,32.344166666667,Q899
+SuluSultanate,Sulu Sultanate,country,Asia,6.0519444444444,121.00194444444,Q422065
+Surinam,Surinam,country,America,4,-56,Q730
+Swaziland,Swaziland,country,Africa,-26.483333,31.433333,Q1050
+Sweden,Sweden,country,Europe,61,15,Q34
+Switzerland,Switzerland,country,Europe,46.798562,8.231973,Q39
+Syria,Syria,country,Asia,35.216667,38.583333,Q858
+Tahiti,Tahiti,country,Oceania,-17.666666666667,-149.46666666667,Q42000
+Tangier,Tangier,country,Africa,35.784722222222,-5.8125,Q126148
+TanzaniaTanganyikaGermanEastAfrica,Tanzania (Tanganyika) (German East Africa),country,Africa,-6.8324,39.2672,Q153963
+Tasmania,Tasmania,country,Oceania,-42,147,Q34366
+Tetuan,Tetuan,country,Africa,35.566666666667,-5.3666666666667,Q185157
+Texas,Texas,country,America,31,-100,Q1439
+ThailandSiam,Thailand (Siam),country,Asia,14,101,Q869
+Tobago,Tobago,country,America,11.25,-60.667,Q185111
+TogoFrenchTogoland,Togo (French Togoland),country,Africa,8.25,1.183333,Q945
+TokelauIs.,Tokelau Is.,country,Oceania,-9.1666666666667,-171.83333333333,Q36823
+Tonga,Tonga,country,Oceania,-20.587778,-174.810278,Q678
+Tonkin,Tonkin,country,Asia,21.0245,105.84117,Q1858
+Transvaal,Transvaal,country,Africa,-25,30,Q190959
+Trengganu,Trengganu,country,Asia,4.75,103,Q189701
+Trieste,Trieste,country,Europe,45.636111111111,13.804166666667,Q546
+TrinidadandTobago,Trinidad and Tobago,country,America,10.666666666667,-61.516666666667,Q754
+Tripolitania,Tripolitania,country,Africa,32.9,13.183333,Q192435
+Tunisia,Tunisia,country,Africa,34,10,Q948
+Turkey,Turkey,country,Asia,39,36,Q43
+TurksandCaicosIs.,Turks and Caicos Is.,country,America,21.75,-71.583333333333,Q18221
+Tuscany,Tuscany,country,Europe,43.35,11.016666666667,Q1273
+TwoSicilies,Two Sicilies,country,Europe,40.83333333,14.25,Q180393
+Uganda,Uganda,country,Africa,1.28,32.39,Q1036
+Ukraine,Ukraine,country,Europe,49,32,Q212
+UnitedKingdom,United Kingdom,country,Europe,54.6,-2,Q145
+UnitedStatesofAmerica,United States of America,country,America,38.895,-77.036666666667,Q30
+Uruguay,Uruguay,country,America,-32.733333333333,-56.65,Q77
+Uzbekistan,Uzbekistan,country,Asia,41,66,Q265
+Vancouver,Vancouver,country,America,49.25,-123.1,Q24639
+Venezuela,Venezuela,country,America,8,-67,Q717
+ViceroyaltyofLaPlata,Viceroyalty of La Plata,country,America,-34.666667,-58.4,Q210551
+Victoria,Victoria,country,Oceania,-37,144,Q36687
+Vietnam,Vietnam,country,Asia,16,108,Q881
+VirginIslandsDanishWestIndies,Virgin Islands (Danish West Indies),country,America,18.325,-64.835,Q829655
+Wallachia,Wallachia,country,Europe,44.416666666667,26.1,Q171393
+WallisandFutunaIs.,Wallis and Futuna Is.,country,Oceania,-14,-177,Q35555
+WalvisBay,Walvis Bay,country,Africa,-22.949444444444,14.506944444444,Q220843
+Weihaiwei,Weihaiwei,country,Asia,37.5,122.1,Q373023
+WestIrianDutchNewGuinea,West Irian (Dutch New Guinea),country,Oceania,-5,136,Q3845
+WesternAnatolia,Western Anatolia,country,Asia,39,32,Q51614
+WesternAustralia,Western Australia,country,Oceania,-26,121,Q3206
+WesternSamoa,Western Samoa,country,Oceania,-14,-172,Q683
+WindwardIs.,Windward Is.,country,America,13.25,-61.2,Q2660774
+YemenArabRepublicNorthYemen,"Yemen Arab Republic (North Yemen, Kingdom of Yemen)",country,Asia,15.354722222222,44.206666666667,Q1998401
+YugoslaviaSerbia,Yugoslavia/Serbia,country,Europe,44.820555555556,20.462222222222,Q36704
+ZaireKinshasaBelgianCongo,Zaire (Kinshasa) (Belgian Congo),country,Africa,-2.88,23.656,Q974
+ZambiaNorthernRhodesia,Zambia (Northern Rhodesia),country,Africa,-14.116666666667,27.633333333333,Q953903
+Zanzibar,Zanzibar,country,Africa,-6.1333333333333,39.316666666667,Q1774
+ZimbabweRhodesiaSouthernRhodesia,Zimbabwe (Rhodesia) (Southern Rhodesia),country,Africa,-19.016666666667,30.016666666667,Q750583
+GermanSolomonIs.,German Solomon Is.,country,Oceania,-69.38111,76.16167,Q21472116
+Serbia,Serbia,country,Europe,43.95,20.933333333333,Q403
+HanseTowns,Hanse Towns,country,Europe,53.869,10.223,Q42908
+Annam,Annam,country,Asia,,,Q10828323
+Aruba,Aruba,country,America,12.51106253,-69.97422388,Q21203
+Assab,Assab,country,Africa,13.007777777778,42.741111111111,Q738496
+Assam,Assam,country,Asia,26,93,Q1164
+BaluchistanKalat,Baluchistan (Kalat),country,Asia,28,66,Q2336399
+Bhutan,Bhutan,country,Asia,27.45,90.5,Q917
+Bonaire,Bonaire,country,America,12.183333333333,-68.25,Q25396
+CapeBretonI.,Cape Breton I.,country,America,46.166666666667,-60.75,Q188489
+Captaincy-generalofnorthAfrica,Captaincy-general of north Africa,country,Africa,,,
+Comoros,Comoros,country,Africa,-12.183333,44.233333,Q970
+Corfu,Corfu,country,Europe,39.623888888889,19.82,Q121378
+Croatia,Croatia,country,Europe,45.25,15.466667,Q224
+Cyrenaica,Cyrenaica,country,Africa,32.530316,21.2146,Q165198
+DemeraraandEssequibo,Demerara and Essequibo,country,America,6.8121,-58.1701,Q5255160
+DutchWindwardIs.,Dutch Windward Is.,country,America,18.0167,-63.0333,Q3277444
+FederationofSouthArabia,Federation of South Arabia,country,Asia,15.33,48.076,Q834486
+FrenchPolynesia,French Polynesia,country,Oceania,-17.533333333333,-149.56666666667,Q30971
+HejazSultanate,Hejaz Sultanate,country,Asia,21.4225,39.82611111,Q956357
+Milan,Milan,country,Europe,45.466944444444,9.19,Q490
+Modena,Modena,country,Europe,,,Q252580
+Nepal,Nepal,country,Asia,28,84,Q837
+Obock,Obock,country,Africa,11.971667,43.293333,Q844929
+Pakistan,Pakistan,country,Asia,30,71,Q843
+Perlis,Perlis,country,Asia,6.5,100.25,Q213467
+Rwanda-Urundi,Rwanda-Urundi,country,Africa,-2.7442,29.8993,Q590743
+SaxeAltenburg,Saxe Altenburg,country,Europe,,,Q158151
+SaxeCoburgandGotha,Saxe Coburg and Gotha,country,Europe,,,Q3462133
+SaxeMeiningen,Saxe Meiningen,country,Europe,50.5734,10.4155,Q157710
+SaxeWeimar,Saxe Weimar,country,Europe,,,Q315667
+SintEustatius,Sint Eustatius,country,America,17.483333333333,-62.966666666667,Q26180
+SvalbardIs.,Svalbard Is.,country,Arctic,78,16,Q25231
+Tadjoura,Tadjoura,country,Africa,11.783333333333,42.883333333333,Q820972
+UnitedArabEmiratesTrucialOman,United Arab Emirates (Trucial Oman),country,Asia,23.783333333333,54,Q1852345
+ViceroyaltyofNewSpain,Viceroyalty of New Spain,country,America,27.732,-103.293,Q170603
+Vladivostok,Vladivostok,country,Europe,43.116666666667,131.9,Q959
+Selangore,Selangore,country,Asia,3.3333333333333,101.5,Q189710
+VanuatuNewHebrides,Vanuatu (New Hebrides),country,Oceania,-16.633330555556,168.01666944444,Q686
+MacedoniaFormerYugoslavRepublicof,Macedonia Former Yugoslav Republic of,country,Asia,42,21.43333333,Q240592
+KuriaMuriaIs.,Kuria Muria Is.,country,Asia,17.5,56,Q521176
+Alhucemas,Alhucemas,country,Africa,35.215,-3.89611111,Q1184963
+Bolivia-PeruConfederation,Bolivia-Peru Confederation,country,America,-16.373,-68.665,Q899706
+UnitedStatesofCentralAmerica,United States of Central America,country,America,14.616666666667,-90.516666666667,Q190025
+U.S.PacificTrustTerritories,U. S. Pacific Trust Territories,country,Asia,10.5,152,Q129237
+RossDependency,Ross Dependency,country,Oceania,-75,-175,Q203073
+GermanTogoland,German Togoland,country,Africa,6.272,1.187,Q161062
+NicobarIs.,Nicobar Is.,country,Asia,7.8666666666667,93.5,Q157286
+TranquebarandSerampore,Tranquebar and Serampore,country,Asia,11.0325,79.85305556,Q732594
+AbuDhabi,Abu Dhabi,country,Asia,23.5237,53.876953,Q187712
+Ajman,Ajman,country,Asia,25.4,55.5,Q159477
+Ceuta_Melilla,Ceuta & Melilla,country,Europe,35.8943,-5.3302,Q28868874
+Dubai,Dubai,country,Asia,25.264444444444,55.311666666667,Q613
+Fujairah,Fujairah,country,Asia,25.133333,56.333333,Q4091
+YemenPeople'sRepublic,Yemen People's Republic,country,Asia,12.8,45.033333333333,Q199841
+Qatar,Qatar,country,Asia,25.269535,51.212767,Q846
+RasalKhaimah,Ras al Khaimah,country,Asia,25.783333333333,55.95,Q170024
+SaudiArabiaNejdWahabbidEmpire,Saudi Arabia (Nejd Wahabbid Empire),country,Asia,23.716667,44.116667,Q851
+Sharjah,Sharjah,country,Asia,25.35,55.433333,Q188810
+Sikkim,Sikkim,country,Asia,27.33,88.62,Q1505
+EquatorialGuineaSpanishGuinea,Equatorial Guinea (Spanish Guinea),country,Africa,1.5833333333333,10.35,Q1232509
