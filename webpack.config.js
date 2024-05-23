@@ -11,7 +11,7 @@ var config = {
     entry: "./assets/js/app.js",
 
     output: {
-        path: path.resolve("./dist"), // `/dist` is the destination
+        path: path.resolve("./"), // `/dist` is the destination
         filename: "bundle.js", // bundle created by webpack it will contain all our app logic. we will link to this .js file from our html page.
     },
 
