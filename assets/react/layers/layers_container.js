@@ -34,18 +34,22 @@ export const LayerCardsContainer = (props) => {
 
     //Empty the layers container and append the divs in the right order
     layersContainer.innerHTML = "";
-    console.log(sorted_layers)
     for (const div of sorted_layers) layersContainer.appendChild(div);
 
     set_z_indexes(sorted_layers);
   }
   function set_z_indexes(sorted_layers) {
+   
     const map_layers = props.map.getLayers().array_;
     // const model_layers = props.layers;
     let z_indexes = {};
     for (let div of sorted_layers) {
       //Extract the name of layer from the id of his card
-      z_indexes[div.id.split("card")[1]] = -sorted_layers.indexOf(div);
+      if (sorted_layers.indexOf(div) === 0) {
+        z_indexes[div.id.split("card")[1]] = 0;
+      }
+      else { z_indexes[div.id.split("card")[1]] = -sorted_layers.indexOf(div); }
+      
     }
 
     //Set the z-indexes on map layers
@@ -54,7 +58,7 @@ export const LayerCardsContainer = (props) => {
     }
 
     for (let layer of props.layers) layer.z_index = z_indexes[layer.name];
-    console.log(props.layers);
+  
   }
 
   function remove_layer(e) {
