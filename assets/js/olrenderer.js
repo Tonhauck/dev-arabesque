@@ -1730,11 +1730,11 @@ export default class OlRenderer {
         } else if (layer.name === "Wikimedia") {
             url = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        } /* else if (layer.name === "Stamen_without_labels") {
+        }  else if (layer.name === "Stamen_without_labels") {
             url = "http://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Stamen_Light") {
-            url = "http://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png";
+            url = "http://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png?api_key=8bc2069e-6d06-44c0-b43e-4b7de4bbcc3a";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "CartoDB Light") {
             url = "http://{1-4}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png";
@@ -1745,14 +1745,14 @@ export default class OlRenderer {
         } else if (layer.name === "CartoDB_Voyager_labeled") {
             url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        } */ else if (layer.name === "Stamen_terrain") {
-            url = "http://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.png";
+        }  else if (layer.name === "Stamen_terrain") {
+            url = "http://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.png?api_key=8bc2069e-6d06-44c0-b43e-4b7de4bbcc3a";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        } /* else if (layer.name === "Stamen_watercolor") {
-            url = "http://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg";
+        }  else if (layer.name === "Stamen_watercolor") {
+            url = "http://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg?api_key=8bc2069e-6d06-44c0-b43e-4b7de4bbcc3a";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Stadia_Stamen_Dark") {
-            url = "http://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png";
+            url = "http://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}.png?api_key=8bc2069e-6d06-44c0-b43e-4b7de4bbcc3a";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "ESRI_World_Street_map") {
             url = "http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
@@ -1766,7 +1766,7 @@ export default class OlRenderer {
         } else if (layer.name === "ESRI_NatGeo_World") {
             url = "http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        } */
+        }
 
 
 
