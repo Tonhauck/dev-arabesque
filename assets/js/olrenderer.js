@@ -1155,9 +1155,7 @@ export default class OlRenderer {
               
                 return this._scale_link_size(link.value + 1);
             else
-            //    console.log(this._scale_link_size(link.value))
-            // WRONG VALUE : 18514652.80567934 
-            // TRUE VALUE : 42576.57656879198
+          
                 return this._scale_link_size(link.value);
         }
     }
@@ -1469,18 +1467,14 @@ export default class OlRenderer {
         }
     }
 
-    add_links(links, lstyle, link_data_range) {
+    add_links(links, lstyle, link_data_range, z_index) {
 
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
-        console.log(link_data_range)
+      
         if (link_data_range !== undefined) {
-
             this.links_min_value = link_data_range[0];
-            this.links_max_value = link_data_range[1];
-            console.log(this.links_min_value, this.links_max_value)
-          
+            this.links_max_value = link_data_range[1];    
         } else {
-            console.log(link_data_range)
             this.links_min_value = d3.min(links.map((l) => l.value));
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
@@ -1526,7 +1520,13 @@ export default class OlRenderer {
             // style: this.linkStyle(lstyle),
             renderMode: "image",
         });
-        linksLayer.setZIndex(-1);
+        console.log(z_index)
+        if (z_index != undefined) {
+            linksLayer.setZIndex(z_index);
+        }
+        else {
+            linksLayer.setZIndex(-1);
+        }
         this.map.addLayer(linksLayer);
 
 
@@ -1601,13 +1601,13 @@ export default class OlRenderer {
 
 
     update_links(links, lstyle, z_index) {
+      
         //Update the discretization variable
         this.update_links_var(lstyle);
         this.update_links_min_max(links);
         //Update scale types for size and opacity (linear, pow etc)
         this.update_link_scales_types(lstyle);
         //update the actual scales
-
         this.update_links_scales(links, lstyle);
 
         //Useful for qualitative color grouping
@@ -1699,14 +1699,32 @@ export default class OlRenderer {
 
         let nstyle = config.styles.nodes;
         let lstyle = config.styles.links;
-        this.add_nodes(nodes, nstyle);
-        this.add_links(links, lstyle, link_data_range);
+        let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
+        this.add_nodes(nodes, nstyle, layer_z_indexes.nodes);
+        this.add_links(links, lstyle, link_data_range, layer_z_indexes.links);
     }
 
-    render(nodes, links, nstyle, lstyle) {
-        this.update_nodes(nodes, nstyle);
-        this.update_links(links, lstyle);
+    render(nodes, links, nstyle, lstyle, link_data_range) {
+      
+    
+       let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
+        //Envoyer les z-index aux nodes et aux links
+        this.add_nodes(nodes, nstyle, layer_z_indexes.nodes);
+        this.add_links(links, lstyle, link_data_range, layer_z_indexes.links);
     }
+    get_layer_z_indexes(map_layers) {
+    let layer_z_indexes = {};
+    for (let layer of map_layers) {
+        if (layer instanceof VectorLayer) {
+            let layer_name = layer.values_.name;
+            if (layer_name === "nodes" || layer_name === "links") {
+                layer_z_indexes[layer_name] = layer.getZIndex();
+            }
+        }
+    }
+    return layer_z_indexes;
+}
+
 
     //LAYERS //
 
@@ -1782,8 +1800,6 @@ export default class OlRenderer {
             name: layer.name,
             source: source,
         });
-
-
         tileLayer.setZIndex(layer.z_index);
         this.map.addLayer(tileLayer);
     }
@@ -1895,7 +1911,6 @@ export default class OlRenderer {
 
     render_layers(layers, styles) {
 
-
         for (let layer of layers) {
             //Skip the iteration if it's nodes or links (they are added in add_nodes and add_links functions)
             if (layer.name !== "nodes" || layer.name !== "links") {
@@ -1922,7 +1937,7 @@ export default class OlRenderer {
             z_indexes[l.name] = l.z_index;
         }
 
-        
+        console.log(z_indexes);        
         for (let layer of this.map.getLayers().array_) {
             
             layer.setZIndex(z_indexes[layer.values_.name]);
