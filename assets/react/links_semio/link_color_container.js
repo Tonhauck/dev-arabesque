@@ -34,6 +34,7 @@ export const ColorContainerComponent = (props) => {
 
   //Both color menu and container change according to the color mode (fixed or varied)
   let color_menu, color_container;
+ 
   if (color_mode === "fixed") {
     //Notify SemioModalComponent of the changes
     props.notify_state_change("fixed");
@@ -80,7 +81,7 @@ export const ColorContainerComponent = (props) => {
         <select
           class="custom-select"
           id="linkColorVariable"
-          // defaultValue={props.semio.color.varied.var}
+         defaultValue={props.semio.color.varied.var}
         >
           <option value="count">count</option>
         </select>

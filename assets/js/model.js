@@ -26,6 +26,7 @@ export default class Model {
                     type: "quantitative",
                 },
             },
+            stroke: { color: "grey", size: '0' },
             size: {
                 mode: "varied",
                 varied: { var: "degree", scale: "Sqrt", maxval: 100 },
@@ -57,6 +58,7 @@ export default class Model {
                     type: "quantitative",
                 },
             },
+            stroke: { color: "grey", size: '0' },
             size: {
                 mode: "varied",
                 varied: { var: "count", scale: "Sqrt", maxval: 100 },

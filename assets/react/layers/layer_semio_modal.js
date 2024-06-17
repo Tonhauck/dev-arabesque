@@ -8,14 +8,15 @@ export const LayerSemioModal = (props) => {
 
     const opacity = document.getElementById("opacityLayerChange").value;
     const fill = document.getElementById("fillColorpickerChange").value;
+    const stroke = document.getElementById("linkSingleColorStrokePicker").value;
     const border_color = document.getElementById("layerStrokeColorPickerChange")
       .value;
     const config = {
       fill: fill,
+      stroke: stroke,
       border: border_color,
       opacity: opacity,
     };
-    console.log(config);
 
     //Sending back the style to the view and to the controller
     props.update_geojson(props.layer_name, config);
@@ -76,18 +77,6 @@ export const LayerSemioModal = (props) => {
                   id="fillColorpickerChange"
                   // onchange="clickColor(0, -1, -1, 5)"
                   defaultValue={props.semio.fill}
-                ></input>
-              </div>
-              <div class="col-md-6">
-                <label class="text-muted h5" for="customRange3">
-                  Stroke
-                </label>
-
-                <input
-                  type="color"
-                  id="layerStrokeColorPickerChange"
-                  // onchange="clickColor(0, -1, -1, 5)"
-                  defaultValue={props.semio.border}
                 ></input>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { StrokeComponent } from "./link_stroke_container";
 import { ColorContainerComponent } from "./link_color_container";
 import { SizeContainerComponent } from "./link_size_container";
 import { OpacityContainerComponent } from "./link_opacity_container";
@@ -15,10 +15,13 @@ export const LinksSemioModalComponent = (props) => {
     color_type: null,
     size: "fixed",
     opacity: "fixed",
+    stroke: {color:"grey"},
   };
 
   function extract_colors(semio) {
     //Extract colors
+    let color_picker_stroke = document.getElementById("linkSingleColorStrokePicker");
+    semio.stroke.color = color_picker_stroke.value;
     if (modes.color === "fixed") {
       semio.color.mode = "fixed";
       let color_picker = document.getElementById("linkSingleColorPicker");
@@ -55,6 +58,8 @@ export const LinksSemioModalComponent = (props) => {
     }
   }
   function extract_size(semio) {
+    let size_picker_stroke = document.getElementById("sizeStrokeLink");
+    semio.stroke.size = size_picker_stroke.value;
     if (modes.size === "fixed") {
       semio.size.mode = "fixed";
       let width = document.getElementById("ratioMinMaxSizeChangeLink").value;
@@ -193,7 +198,13 @@ export const LinksSemioModalComponent = (props) => {
               links_properties={links_properties}
               semio={semio}
             />
-
+            <hr></hr>
+            <label for="select" class="h4 strong"> Stroke </label>
+            <StrokeComponent
+              //Allow to notify is mode is fixed or varied
+              links_properties={links_properties}
+              semio={semio}
+            />
             <hr></hr>
             <label for="select" class="h4 strong">
               Size
