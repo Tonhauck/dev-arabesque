@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { ColorContainerComponent } from "./node_color_container";
 import { SizeContainerComponent } from "./node_size_container";
 import { OpacityContainerComponent } from "./node_opacity_container";
-
+import { StrokeComponent } from "./node_stroke_container";
 export const NodesSemioModalComponent = (props) => {
   //Props is what you receive from parent component
   let nodes_properties = props.nodes_properties;
   let semio = props.semio;
+
 
   //Keep track of the different modes in the modal (fixed/varied)
   let modes = {
@@ -14,6 +15,7 @@ export const NodesSemioModalComponent = (props) => {
     color_type: null,
     size: "fixed",
     opacity: "fixed",
+    stroke: { color: "grey" },
   };
 
   function filter_float(value) {
@@ -24,6 +26,8 @@ export const NodesSemioModalComponent = (props) => {
 
   function extract_colors(semio) {
     //Extract colors
+    let color_picker_stroke = document.getElementById("nodeSingleColorStrokePicker");
+    semio.stroke.color = color_picker_stroke.value;
     if (modes.color === "fixed") {
       semio.color.mode = "fixed";
       let color_picker = document.getElementById("singleColorPicker");
@@ -61,6 +65,8 @@ export const NodesSemioModalComponent = (props) => {
     }
   }
   function extract_size(semio) {
+    let size_picker_stroke = document.getElementById("sizeStrokeNode");
+    semio.stroke.size = size_picker_stroke.value;
     if (modes.size === "fixed") {
       semio.size.mode = "fixed";
       let width = document.getElementById("ratioMinMaxSizeChangenode").value;
@@ -212,6 +218,14 @@ export const NodesSemioModalComponent = (props) => {
 
             <hr></hr>
 
+            <label for="select" class="h4 strong"> Stroke </label>
+            <StrokeComponent
+              //Allow to notify is mode is fixed or varied
+              nodes_properties={nodes_properties}
+              semio={semio}
+            />
+            <hr></hr>
+
             <label for="select" class="h4 strong">
               Size
             </label>
@@ -237,16 +251,15 @@ export const NodesSemioModalComponent = (props) => {
                     >
                       <option value="" selected></option>
                       {/* We can iterate on the nodes properties to fill the select div  */}
-                      {Object.keys(nodes_properties)
-                        .filter((p) => {
-                          //Checking if the property is a number
+                      {Object.keys(nodes_properties).map((p) => {
+                        //Checking if the property is a number
+                        const is_number = isNaN(filter_float(nodes_properties[p]));
+                        if (is_number === false) {
                           return (
-                            isNaN(filter_float(nodes_properties[p])) === true
+                            <option value={p}>{p}</option>
                           );
-                        })
-                        .map((p) => (
-                          <option value={p}>{p}</option>
-                        ))}
+                        }
+                      })}
             
                     </select>
                   </div>

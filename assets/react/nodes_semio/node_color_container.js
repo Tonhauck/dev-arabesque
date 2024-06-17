@@ -71,8 +71,8 @@ export const ColorContainerComponent = (props) => {
           onChange={(e) => set_color_mode(e.target.value)}
           defaultValue={color_mode}
         >
-          <option value="fixed">Constant</option>
-          <option value="varied">Conditional</option>
+          <option value="fixed">Fixed</option>
+          <option value="varied">Varied</option>
         </select>
 
         <label class="text-muted h5" for="colorVariable">

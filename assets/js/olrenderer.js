@@ -454,20 +454,23 @@ export default class OlRenderer {
                 opacity = 0;
             }
         }
+   
 
         //COLOR
         let label = node.id;
-       
         if (document.getElementById("semioSelectorTextChangenode")) {
             if (document.getElementById("semioSelectorTextChangenode").value != null) {
-                label = document.getElementById("semioSelectorTextChangenode").value;
+                let selectedLabel = document.getElementById("semioSelectorTextChangenode").value;
+                label = node.properties[selectedLabel]
             }
         }
+    
+        console.log(nstyle)
         if (nstyle.color.mode === "fixed") {
             let style = new Style({
                 stroke: new Stroke({
-                    color: "grey",
-                    width: 0,
+                    color: nstyle.stroke.color,
+                    width: nstyle.stroke.size,
                 }),
                 fill: new Fill({
                     color: this.add_opacity_to_color(nstyle.color.fixed, opacity),
@@ -495,8 +498,8 @@ export default class OlRenderer {
                 let color_array = nstyle.color.varied.colors;
                 return new Style({
                     stroke: new Stroke({
-                        color: "grey",
-                        width: 0,
+                        color: nstyle.stroke.color,
+                        width: nstyle.stroke.size,
                     }),
                     fill: new Fill({
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
@@ -519,8 +522,8 @@ export default class OlRenderer {
                 let node_group = node.properties[this._node_var.color];
                 return new Style({
                     stroke: new Stroke({
-                        color: "grey",
-                        width: 0,
+                        color: nstyle.stroke.color,
+                        width: nstyle.stroke.size,
                     }),
                     fill: new Fill({
                         color: this.add_opacity_to_color(
@@ -652,6 +655,7 @@ export default class OlRenderer {
     }
 
     add_nodes(nodes, nstyle) {
+       // console.log(nodes)
 
         //On enregistre le max et min pour la définition de l'échelle
         this.nodes_max_value = d3.max(
@@ -760,7 +764,7 @@ export default class OlRenderer {
             renderMode: "image",
             style: (feature) => {
                 const nodeData = feature.get('nodeData'); // Récupération des données supplémentaires
-                const labelText = nodeData.id + ' people/mi²'; // Création du texte de l'étiquette en fonction des données de la feature
+                const labelText = nodeData.id
                 return new Style({
                     fill: new Fill({ color: 'rgba(43, 146, 190, 0.4)' }),
                     stroke: new Stroke({
@@ -995,7 +999,7 @@ export default class OlRenderer {
             this._node_scale_types.opacity === "Log"
         ) {
             if (
-                this._node_scale_types.size === "Log" &&
+                this._node_scale_types.size === "Log" ||
                 this._node_scale_types.opacity !== "Log"
             ) {
                 [min_size, max_size] = this.handle_log_scale_size_range(
@@ -1005,7 +1009,7 @@ export default class OlRenderer {
                     "#semioNodes"
                 );
             } else if (
-                this._node_scale_types.size !== "Log" &&
+                this._node_scale_types.size !== "Log" ||
                 this._node_scale_types.opacity === "Log"
             ) {
                 [min_opa, max_opa] = this.handle_log_scale_opacity_range(
@@ -1014,7 +1018,7 @@ export default class OlRenderer {
                     "#semioNodes"
                 );
             } else if (
-                this._node_scale_types.size === "Log" &&
+                this._node_scale_types.size === "Log" ||
                 this._node_scale_types.opacity === "Log"
             ) {
                 [min_size, max_size] = this.handle_log_scale_size_range(
@@ -1089,6 +1093,7 @@ export default class OlRenderer {
     }
 
     linkStyle(link, lstyle) {
+    
         //OPACITY (we need to have rounded numbers)
         let opacity;
         if (lstyle.opacity.mode === "fixed") {
@@ -1101,9 +1106,21 @@ export default class OlRenderer {
         }
 
         //COLOR
+        let stroke;
+       // console.log(link)
 
+        if (lstyle.stroke.size != '0') {
+            if (link.key.split('->')[0] != link.key.split('->')[1]) {
+                stroke = new Stroke({
+                    color: lstyle.stroke.color,
+                    width: lstyle.stroke.size,
+                });
+            }
+        }
         if (lstyle.color.mode === "fixed") {
+           // console.log(lstyle)
             return new Style({
+                stroke: stroke,
                 fill: new Fill({
                     color: this.add_opacity_to_color(lstyle.color.fixed, opacity),
                 }),
@@ -1117,10 +1134,7 @@ export default class OlRenderer {
                 let color_array = lstyle.color.varied.colors;
 
                 return new Style({
-                    // stroke: new Stroke({
-                    //   color: "grey",
-                    //   width: 0,
-                    // }),
+                     stroke: stroke,
                     fill: new Fill({
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
                     }),
@@ -1132,10 +1146,7 @@ export default class OlRenderer {
                 let link_group = link.value;
                 color_array[this._link_color_groups[link_group]];
                 return new Style({
-                    // stroke: new Stroke({
-                    //   color: "grey",
-                    //   width: 0,
-                    // }),
+                     stroke: stroke,
                     fill: new Fill({
                         color: this.add_opacity_to_color(
                             color_array[this._link_color_groups[link_group]],
@@ -1213,7 +1224,7 @@ export default class OlRenderer {
             this._link_scale_types.opacity === "Log"
         ) {
             if (
-                this._link_scale_types.size === "Log" &&
+                this._link_scale_types.size === "Log" ||
                 this._link_scale_types.opacity !== "Log"
             ) {
                 [min_count_size, max_count_size] = this.handle_log_scale_size_range(
@@ -1223,7 +1234,7 @@ export default class OlRenderer {
                     "#semioLinks"
                 );
             } else if (
-                this._link_scale_types.size !== "Log" &&
+                this._link_scale_types.size !== "Log" ||
                 this._link_scale_types.opacity === "Log"
             ) {
                 [min_count_opa, max_count_opa] = this.handle_log_scale_opacity_range(
@@ -1232,7 +1243,7 @@ export default class OlRenderer {
                     "#semioLinks"
                 );
             } else if (
-                this._link_scale_types.size === "Log" &&
+                this._link_scale_types.size === "Log" ||
                 this._link_scale_types.opacity === "Log"
             ) {
                 [min_count_size, max_count_size] = this.handle_log_scale_size_range(
@@ -1305,7 +1316,7 @@ export default class OlRenderer {
         };
 
        
-        if (orientation === "oriented" && shape_type === "StraightArrow") {
+        if (orientation === "oriented" || shape_type === "StraightArrow") {
             
             let arrows = links.map(function (l) {
                
@@ -1321,49 +1332,12 @@ export default class OlRenderer {
                     nodes_hash[to].radius,
                     width
                 );
-                //LE FAIL : 
-/* :
-            (2)[243119.4712635476, 5761201.252804503]
-            1
-:
-            (2)[96380.22981532369, 5742385.841700313]
-            2
-:
-            (2)[-3362351.3011204167, 33298246.869102307]
-            3
-:
-            (2)[-2184984.2505671326, 24116095.76181901]
-            4
-:
-            (2)[-2111614.629843021, 24125503.467371102]
-            5
-:
-            (2)[243119.4712635476, 5761201.252804503] */
-
-        /*
-        width = 18514652.80567934
-        value : 7704
-        this._scale_link_size(link.value) = 
-        18514652.80567934
-        
-        92 OBJECT FAIL = center : [
-    173389.13231686543,
-    5752257.92007945
-    radius :
-    70301.51751411689
-
-    75 OBJECT FAIL = center : [
-    180842.17211077412,
-    5753213.574520037
-    radius :85153.15313758395
-] */
-              
            
                 return arrow;
             }, this);
 
             return arrows;
-        } else if (orientation === "noOriented" && shape_type === "StraightArrow") {
+        } else if (orientation === "noOriented" || shape_type === "StraightArrow") {
             let arrows = links.map(function(l) {
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
@@ -1381,7 +1355,7 @@ export default class OlRenderer {
 
             return arrows;
         } else if (
-            orientation === "oriented" &&
+            orientation === "oriented" ||
             shape_type === "StraightNoHookArrow"
         ) {
             let arrows = links.map(function(l) {
@@ -1399,7 +1373,7 @@ export default class OlRenderer {
                 return arrow;
             }, this);
             return arrows;
-        } else if (orientation === "oriented" && shape_type === "TriangleArrow") {
+        } else if (orientation === "oriented" || shape_type === "TriangleArrow") {
             let arrows = links.map(function(l) {
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
@@ -1415,7 +1389,7 @@ export default class OlRenderer {
                 return arrow;
             }, this);
             return arrows;
-        } else if (orientation === "oriented" && shape_type === "CurveArrow") {
+        } else if (orientation === "oriented" || shape_type === "CurveArrow") {
             let arrows = links.map(function(l) {
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
@@ -1431,7 +1405,7 @@ export default class OlRenderer {
                 return arrow;
             }, this);
             return arrows;
-        } else if (orientation === "oriented" && shape_type === "CurveOneArrow") {
+        } else if (orientation === "oriented" || shape_type === "CurveOneArrow") {
             let arrows = links.map(function(l) {
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
@@ -1447,7 +1421,7 @@ export default class OlRenderer {
                 return arrow;
             }, this);
             return arrows;
-        } else if (orientation === "noOriented" && shape_type === "CurveArrow") {
+        } else if (orientation === "noOriented" || shape_type === "CurveArrow") {
             let arrows = links.map(function(l) {
                 let from = l.key.split("->")[0];
                 let to = l.key.split("->")[1];
@@ -1520,7 +1494,7 @@ export default class OlRenderer {
             // style: this.linkStyle(lstyle),
             renderMode: "image",
         });
-        console.log(z_index)
+
         if (z_index != undefined) {
             linksLayer.setZIndex(z_index);
         }
@@ -1601,7 +1575,6 @@ export default class OlRenderer {
 
 
     update_links(links, lstyle, z_index) {
-      
         //Update the discretization variable
         this.update_links_var(lstyle);
         this.update_links_min_max(links);
@@ -1678,8 +1651,8 @@ export default class OlRenderer {
         //Selecting every vectorlayers other than nodes and links (so geojson or baselayers)
         for (let vectorLayer of this.map.getLayers().array_.filter((l) => {
                 return (
-                    l instanceof VectorLayer &&
-                    l.values_.name !== "nodes" &&
+                    l instanceof VectorLayer ||
+                    l.values_.name !== "nodes" ||
                     l.values_.name !== "links"
                 );
             })) {
@@ -1705,13 +1678,13 @@ export default class OlRenderer {
     }
 
     render(nodes, links, nstyle, lstyle, link_data_range) {
-      
-    
        let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
         //Envoyer les z-index aux nodes et aux links
         this.add_nodes(nodes, nstyle, layer_z_indexes.nodes);
         this.add_links(links, lstyle, link_data_range, layer_z_indexes.links);
     }
+
+
     get_layer_z_indexes(map_layers) {
     let layer_z_indexes = {};
     for (let layer of map_layers) {
@@ -1724,7 +1697,6 @@ export default class OlRenderer {
     }
     return layer_z_indexes;
 }
-
 
     //LAYERS //
 
@@ -1936,8 +1908,7 @@ export default class OlRenderer {
         for (let l of layers) {
             z_indexes[l.name] = l.z_index;
         }
-
-        console.log(z_indexes);        
+   
         for (let layer of this.map.getLayers().array_) {
             
             layer.setZIndex(z_indexes[layer.values_.name]);

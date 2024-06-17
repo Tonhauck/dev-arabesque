@@ -226,7 +226,15 @@ export default class Controller {
     post_import_zip(res, config) {
         //Updating styles
         let nstyle = config.styles.nodes;
+
         let lstyle = config.styles.links;
+
+        if (!lstyle.stroke) {
+            lstyle.stroke = { color: "grey", size: '0' }
+        }
+        if (!nstyle.stroke) {
+            nstyle.stroke = { color: "grey", size: '0' }
+        }
         this.model.update_nodes_style(nstyle);
 
         //Add filters
@@ -267,6 +275,7 @@ export default class Controller {
             link_data_range
         );
     }
+
     load_thumbnail_zip() {
         const that = this;
         var blob;
@@ -281,6 +290,7 @@ export default class Controller {
         };
         request.send();
     }
+
     render_all() {
         let proj_sel = document.getElementById("projection");
         let proj = proj_sel.options[proj_sel.selectedIndex].value;
@@ -422,6 +432,7 @@ export default class Controller {
             this.save_geojson_semio.bind(this)
         );
     }
+
     save_geojson_semio(layer_name, new_semio) {
         //updateing the model style
         this.model.config.styles.geojson[layer_name] = new_semio;
@@ -455,6 +466,7 @@ export default class Controller {
             this.toggle_legend
         );
     }
+
     toggle_legend() {
         let legendDiv = document.getElementById("legend");
         let style = getComputedStyle(legendDiv);
