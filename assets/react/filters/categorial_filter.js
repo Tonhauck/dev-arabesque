@@ -37,6 +37,7 @@ export const CategorialFilter = (props) => {
   function handleItemSelect(e) {
     let new_selection;
     let id = e.target.id;
+  
     //If the element is already selected, we remove it from the selected items
     if (selectedItems.includes(id)) {
       new_selection = selectedItems.filter((e) => e !== id);
@@ -51,11 +52,14 @@ export const CategorialFilter = (props) => {
       e.target.classList.add("active");
     }
     //According to the mode, we add or remove items from selection
-    if (props.mode === "add") addItems(new_selection);
-    else if (props.mode === "remove") removeItems(new_selection);
+    if (props.mode === "add") addItems(new_selection,id);
+    else if (props.mode === "remove") removeItems(new_selection,id);
   }
 
-  function addItems(new_selection) {
+
+
+  function addItems(new_selection, id) {
+  
     //If there is no items selected, we just render every record of the dimension
     if (new_selection.length === 0) {
       props.dimension.filterAll();
@@ -65,14 +69,16 @@ export const CategorialFilter = (props) => {
 
     props.dimension.filterAll();
     // Else we render only the selected ones
-    props.dimension.filterFunction(function (d) {
-      return new_selection.includes(d.toString());
+
+    props.dimension.filter(function (d) {
+     let valueToCheck = d;
+      return new_selection.includes(valueToCheck);
     });
 
     props.render_all();
   }
 
-  function removeItems(new_selection) {
+  function removeItems(new_selection,id) {
     //If there is no items selected, we just render every record of the dimension
     if (new_selection.length === 0) {
       props.dimension.filterAll();
@@ -152,11 +158,9 @@ export const CategorialFilter = (props) => {
   }
 
   let toggle_button_mode;
-  console.log(props)
   if (props.mode === "add") toggle_button_mode = "success";
   else if (props.mode === "remove") toggle_button_mode = "danger";
   let layer = $("#filteredLayer :selected").text()
-  console.log(layer.toLowerCase());
   let img = "./assets/svg/si-glyph-" + layer.toLowerCase() + ".svg";
   return [
     <img

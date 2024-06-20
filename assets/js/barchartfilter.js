@@ -31,7 +31,6 @@ export default class BarChartFilter {
             this.filtered_range = filtered_range.map((el) => parseFloat(el));
 
         let ga = group.all();
-
         //Transform keys to float to prevent problems
         for (let g of ga) {
             g = parseFloat(g);
