@@ -1469,7 +1469,7 @@ export default class OlRenderer {
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
 
-        let filtered = links.filter(function(a) { return a.value <= max_90percent; });
+        let filtered = links.filter(function (a) { return a.value <= max_90percent; });
 
         let arrows = this.create_arrows(filtered, lstyle);
         let links_shapes = arrows.map((a, i) => {
