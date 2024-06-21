@@ -451,9 +451,9 @@ export default class BarChartFilter {
         radiobox.type = 'radio';
         radiobox.id = 'log';
         radiobox.class = 'maxMinContainer';
-        radiobox.class = 'radioLogLin';
+        radiobox.class = 'radioLogLin' + this.filter_id;
         radiobox.value = 'log';
-        radiobox.name = 'log_or_lin';
+        radiobox.name = 'log_or_lin' + this.filter_id;
 
         var label = document.createElement('label')
         label.htmlFor = 'log';
@@ -467,9 +467,9 @@ export default class BarChartFilter {
         radiobox2.type = 'radio';
         radiobox2.id = 'linear';
         radiobox2.class = 'maxMinContainer';
-        radiobox2.class = 'radioLogLin';
+        radiobox2.class = 'radioLogLin' + this.filter_id;
         radiobox2.value = 'linear';
-        radiobox2.name = 'log_or_lin';
+        radiobox2.name = 'log_or_lin' + this.filter_id;
         radiobox2.checked = true;
 
         var label2 = document.createElement('label')
@@ -503,14 +503,24 @@ export default class BarChartFilter {
     }
 
     onLogLinChange(event) {
-        console.log(event.target.value)
+        console.log(event.target.value);
+
         let chart_div = document.createElement("div");
+
         this.chart(chart_div, event.target.value);
-        document.getElementsByClassName("barchart")[0].remove();
-        var container = document.getElementById("barchartContainer");
-        container.appendChild(chart_div)
-            // this.filter_div.appendChild(chart_div);
+
+        let parent_div = document.getElementById(this.filter_id);
+
+        let container = parent_div.querySelector(".barchartContainer");
+
+        // Supprimez l'ancien chart s'il existe
+        let old_chart = container.querySelector(".barchart");
+        if (old_chart) {
+            old_chart.remove();
+        }
+        container.appendChild(chart_div);
     }
+
 
     render_minmax_inputs() {
 
