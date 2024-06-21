@@ -97,7 +97,7 @@ export default class OlRenderer {
             opacity: "degree",
         };
         this._link_scale_types = { size: "Sqrt", opacity: "Linear" };
-      //  this._scale_link_size = d3.scaleSqrt();
+        this._scale_link_size = d3.scaleSqrt();
         this._link_size_ratio = 100;
         this._scale_link_color = d3.scaleLinear();
         this._scale_link_size = d3.scaleLinear();
@@ -465,7 +465,7 @@ export default class OlRenderer {
             }
         }
     
-        console.log(nstyle)
+      
         if (nstyle.color.mode === "fixed") {
             let style = new Style({
                 stroke: new Stroke({
@@ -1158,15 +1158,19 @@ export default class OlRenderer {
         }
     }
     linkSize(link, lstyle) {
-  
         if (lstyle.size.mode === "fixed") {
             return lstyle.size.fixed * (this._extent_size / 1000);
         } else if (lstyle.size.mode === "varied") {
+            if (isNaN(link.value)) {
+                return 0;
+            }
+            if (Number.isNaN(link.value)) {
+                return 0;
+            }
             if (this._link_scale_types.size === "Log")
               
                 return this._scale_link_size(link.value + 1);
             else
-          
                 return this._scale_link_size(link.value);
         }
     }
@@ -1453,7 +1457,6 @@ export default class OlRenderer {
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
      
-
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
         this.update_links_scales(links, lstyle);
@@ -1466,7 +1469,7 @@ export default class OlRenderer {
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
 
-        let filtered = links.filter(function(a) { return a.value <= max_90percent; });
+        let filtered = links.filter(function (a) { return a.value <= max_90percent; });
 
         let arrows = this.create_arrows(filtered, lstyle);
         let links_shapes = arrows.map((a, i) => {
@@ -1547,8 +1550,9 @@ export default class OlRenderer {
                     for (var key in feature.values_.linkData) {
                       
                         if (key != 'key') {
-                 
-                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + "count" + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.linkData[key].toFixed(2) + '</td></tr>';
+                            let value = feature.values_.linkData[key];
+                            let formattedValue = isNaN(value) ? value : value.toFixed(2);
+                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + "count" + '</td><td class="popup-value" style="padding: 0.35em;">' + formattedValue + '</td></tr>';
                             i++;
                         }
                     }

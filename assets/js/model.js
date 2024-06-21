@@ -283,7 +283,6 @@ export default class Model {
                 });
                 that.data.links = links.data;
                 var import_resume = that.import();
-
                 callback(
                     import_resume,
                     that.get_nodes(),
@@ -336,6 +335,7 @@ export default class Model {
     }
 
     import () {
+
         // list of nodes ids. Convert to string so there is no type confusions
         let nodes_ids = this.data.nodes.map(
             (n) => n.properties[this.config.varnames.nodeID]
@@ -380,7 +380,23 @@ export default class Model {
         }
         this.data.nodes = kept_nodes;
 
-        // add distance in links
+        // Ajout des attributs des nodes dans les links
+        this.data.links = this.data.links.map(link => {
+            let kept_nodes = this.data.nodes_hash[link[this.config.varnames.linkID[0]]];
+
+            // Ajoutez les propriétés des nodes source et destination au link
+            if (kept_nodes && kept_nodes.properties) {
+                for (let prop in kept_nodes.properties) {
+                    if (kept_nodes.properties.hasOwnProperty(prop)) {
+                        link[`${prop}`] = kept_nodes.properties[prop];
+                    }
+                }
+            }
+            return link;
+        });
+
+        console.log(this.data.links)
+            // add distance in links
         this.add_links_stats();
 
         // crossfilter creation

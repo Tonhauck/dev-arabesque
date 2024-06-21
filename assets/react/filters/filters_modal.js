@@ -1,74 +1,92 @@
 import React, { useState } from "react";
-import { filter } from "jszip/lib/object";
 
 export const NewFilterModal = (props) => {
-  let [targetLayer, settargetLayer] = useState("links");
-  let [linksVariable, setLinksVariable] = useState("origin");
+  const [targetLayer, setTargetLayer] = useState("links");
+  const [variable, setVariable] = useState("origin");
 
   function save_and_close(e) {
-    let target = targetLayer;
-    let variable = document.getElementById("filterVariableSelect").value;
-    let type = document.getElementById("filterTypeSelect").value;
-
     e.preventDefault();
     e.stopPropagation();
-    props.add_filter(target, variable, type);
-  }
-  function changeLinksVariable(e) {
-    setLinksVariable(e.target.value);
+
+    const selectedVariable = document.getElementById("filterVariableSelect").value;
+    const filterType = document.getElementById("filterTypeSelect").value;
+
+    props.add_filter(targetLayer, selectedVariable, filterType);
+
   }
 
-  //Filling the variable and filter type <select>
+  function handleTargetLayerChange(e) {
+    setTargetLayer(e.target.value);
+    // Reset variable to a default value based on new target layer
+    const newVariable = e.target.value === "links" ? "origin" : Object.keys(props.nodes_properties)[0];
+    setVariable(newVariable);
+  }
+
+  function handleVariableChange(e) {
+    setVariable(e.target.value);
+  }
+
+  // Generate variable select options and type options based on the selected target layer
   let variableSelect, typeOptions;
   if (targetLayer === "links") {
     variableSelect = (
-      <div class="col-md-4">
-        <label for="filterVariableSelect">Variable </label>
+      <div className="col-md-4">
+        <label htmlFor="filterVariableSelect">Variable</label>
         <select
-          class="custom-select"
+          className="custom-select"
           id="filterVariableSelect"
-          onChange={changeLinksVariable}
+          value={variable}
+          onChange={handleVariableChange}
         >
-          {Object.entries(props.links_properties).map((prop) => (
-            <option value={prop[0]}>{prop[0]}</option>
+          {Object.entries(props.links_properties).map(([key]) => (
+            <option key={key} value={key}>
+              {key}
+            </option>
           ))}
         </select>
       </div>
     );
-    //If the selected variable is origin or dest, we can't have a barchart filter
-    //(it is only for numeral values)
-    if (isNaN(props.links_properties[linksVariable]))
-      typeOptions = [
+
+    typeOptions = isNaN(props.links_properties[variable])
+      ? [{ value: "categorial", label: "Categorial" }]
+      : [
         { value: "categorial", label: "Categorial" },
-        // { value: "remove", label: "Remove" },
-        //{ value: "temporal", label: "Temporal" },
-        // { value: "timeLapse", label: "Temporal" },
+        { value: "discrete", label: "Discrete" },
+        { value: "continuous", label: "Continuous" },
       ];
-    else
-      typeOptions = [
-        { value: "categorial", label: "Categorial" }, // drop down
-        { value: "discrete", label: "Discrete" }, // bar chart
-        // { value: "remove", label: "Remove" },
-        { value: "continuous", label: "Continuous" }, // histogramme
-        // { value: "temporal", label: "Temporal" }, // drop down
-        // { value: "timeLapse", label: "Temporal" },
-      ];
-  } else if (targetLayer === "nodes")
+  } else if (targetLayer === "nodes") {
     variableSelect = (
-      <div class="col-md-4">
-        <label for="valueTofilter">Variable </label>
-        <select class="custom-select" id="valueTofilter">
-          {props.nodes_properties.map((p) => (
-            <option value={p}>{p}</option>
+      <div className="col-md-4">
+        <label htmlFor="filterVariableSelect">Variable</label>
+        <select
+          className="custom-select"
+          id="filterVariableSelect"
+          value={variable}
+          onChange={handleVariableChange}
+        >
+          {Object.keys(props.nodes_properties).map((key) => (
+            <option key={key} value={key}>
+              {key}
+            </option>
           ))}
         </select>
       </div>
     );
+
+    typeOptions = isNaN(props.nodes_properties[variable])
+      ? [{ value: "categorial", label: "Categorial" }]
+      : [
+        { value: "categorial", label: "Categorial" },
+        { value: "discrete", label: "Discrete" },
+        { value: "continuous", label: "Continuous" },
+      ];
+  }
+
   return (
     <div
-      class="modal fade show"
+      className="modal fade show"
       id="FilterModal"
-      tabindex="-1"
+      tabIndex="-1"
       role="dialog"
       aria-labelledby="exampleModalLabel"
       style={{ display: "block" }}
@@ -76,34 +94,33 @@ export const NewFilterModal = (props) => {
       aria-hidden="true"
       data-backdrop="true"
     >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
               New Filter
             </h5>
           </div>
-          <div class="modal-body" id="filterLayerBody">
-            <div class="row">
-              <div class="col-md-4">
-                <label for="filteredLayer">Layer </label>
+          <div className="modal-body" id="filterLayerBody">
+            <div className="row">
+              <div className="col-md-4">
+                <label htmlFor="filteredLayer">Layer</label>
                 <select
-                  class="custom-select"
+                  className="custom-select"
                   id="filteredLayer"
-                //(e.target.value)}
+                  value={targetLayer}
+                  onChange={handleTargetLayerChange}
                 >
-                  <option value="links" selected="selected">
-                    Links
-                  </option>
+                  <option value="links">Links</option>
                   <option value="nodes">Nodes</option>
                 </select>
               </div>
               {variableSelect}
-              <div class="col-md-4">
-                <label for="filterTypeSelect">
-                  Type{" "}
+              <div className="col-md-4">
+                <label htmlFor="filterTypeSelect">
+                  Type
                   <img
-                    class="small-icon"
+                    className="small-icon"
                     data-html="true"
                     data-container="body"
                     data-toggle="popover"
@@ -114,19 +131,21 @@ export const NewFilterModal = (props) => {
                     data-original-title="Select the type of filter:"
                   ></img>
                 </label>
-                <select class="custom-select" id="filterTypeSelect">
+                <select className="custom-select" id="filterTypeSelect">
                   {typeOptions.map((opt) => (
-                    <option value={opt.value}>{opt.label}</option>
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
                   ))}
                 </select>
-                <div class="invalid-feedback">
+                <div className="invalid-feedback">
                   A filter already exists for these parameters
                 </div>
               </div>
             </div>
           </div>
           <button
-            class="modal-footer btn btn-dark justify-content-center mt-2"
+            className="modal-footer btn btn-dark justify-content-center mt-2"
             type="button"
             id="addFilterButton"
             onClick={save_and_close}

@@ -139,7 +139,7 @@ export default class Controller {
 
         //Delete "" from values (they are already strings)
 
-        console.log(this)
+
         this.model.set_nodes_varnames(id, lat, long);
         this.model
             .import_nodes(nodesfile, this.view.import_links)
@@ -236,7 +236,7 @@ export default class Controller {
             nstyle.stroke = { color: "grey", size: '0' }
         }
         this.model.update_nodes_style(nstyle);
-
+        this.model.update_links_style(lstyle);
         //Add filters
         this.render_filters(this.render_all.bind(this));
 
@@ -657,7 +657,7 @@ export default class Controller {
             document.getElementById("Filters").append(filter_div);
             //Fill the div with filter
             this.categorial_filter(target, variable, filter_id, "add");
-
+            console.log(target)
             filter = {
                 target: target,
                 id: variable,
@@ -803,19 +803,33 @@ export default class Controller {
         }
     }
     categorial_filter(target, variable, filter_id, mode) {
+        console.log('Target:', target);
+        console.log('Variable:', variable);
+        console.log('Filter ID:', filter_id);
+        console.log('Mode:', mode);
+
         let dimension = this.create_dimension(variable, filter_id);
         let filtering_properties;
+        console.log(this.model.data)
         if (target === "links") {
-            filtering_properties = this.model.data.links.map(
-                (link) => link[variable]
-            );
-        } else if (target === "nodes")
-            filtering_properties = this.model.data.nodes.map(
-                (node) => node.properties.variable
-            );
+
+            filtering_properties = this.model.data.links.map((link) => {
+
+                return link[variable];
+            });
+        } else if (target === "nodes") {
+
+            filtering_properties = this.model.data.nodes.map((node) => {
+
+                return node.properties[variable];
+            });
+        }
+
+        console.log(`Filtering Properties for ${target}:`, filtering_properties);
 
         ReactDOM.render( <
             CategorialFilter variable = { variable }
+            target = { target }
             filtering_properties = { filtering_properties }
             dimension = { dimension }
             render_all = { this.render_all.bind(this) }
@@ -826,7 +840,9 @@ export default class Controller {
         );
     }
 
+
     create_dimension(vname, filter_id) {
+        console.log(vname, filter_id)
         let dim = this.model.data.crossfilters.dimension((l) => l[vname]);
 
         // let range = [
@@ -837,14 +853,14 @@ export default class Controller {
         // dim.filterRange(range);
 
         this.model.data.filters[filter_id] = dim;
-
-        // this.config.filters.push({
-        //   id: vname,
-        //   range: [
-        //     +dim.group().all()[0].key,
-        //     +dim.group().all()[dim.group().all().length - 1].key,
-        //   ],
-        // });
+        console.log(this.model.data.filters)
+            // this.config.filters.push({
+            //   id: vname,
+            //   range: [
+            //     +dim.group().all()[0].key,
+            //     +dim.group().all()[dim.group().all().length - 1].key,
+            //   ],
+            // });
 
         return dim;
     }
