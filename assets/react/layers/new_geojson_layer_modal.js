@@ -77,8 +77,9 @@ export const NewGeojsonLayerModal = (props) => {
           <div class="modal-header">
             <h5 class="modal-title" id="geojsonModalLabel">
               {" "}
-              Import GeoJson <br></br> <i>(the file must be projected in WGS84)
-              </i>
+              Import GeoJson <br></br> <h6><i>(the file must be projected in WGS84)
+              </i></h6>
+              
             </h5>
             <button
               type="button"
