@@ -75,7 +75,7 @@ export const OpacityContainerComponent = (props) => {
             id="semioSelectorOpaChangeLink"
             // defaultValue={props.semio.color.varied.var}
           >
-            <option value="count">count</option>
+            <option value="count">volume</option>
           </select>
         </div>
         <div id="semioOpaRatioCatChangeLink" class="col-md-3">

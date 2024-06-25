@@ -44,7 +44,7 @@ export const NewGeojsonLayerModal = (props) => {
         config.file = geojson_file;
         console.log(name);
         props.save_layer("geojson", name, config);
-        $("#ModalNewReference").modal("hide");
+        $("#geojsonModal").modal("hide");
       };
       reader.onerror = function (e) {
         console.log(e);
@@ -77,7 +77,8 @@ export const NewGeojsonLayerModal = (props) => {
           <div class="modal-header">
             <h5 class="modal-title" id="geojsonModalLabel">
               {" "}
-              Import GeoJson
+              Import GeoJson <br></br> <i>(the file must be projected in WGS84)
+              </i>
             </h5>
             <button
               type="button"

@@ -110,6 +110,7 @@ export default class BarChartFilter {
             ).value = Math.round(extents[1]);
 
             // re-render the other charts accordingly
+
             that.render_all();
 
             //Reset the active range to null so it can be both called by brush move listener

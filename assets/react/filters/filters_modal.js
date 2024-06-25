@@ -112,7 +112,7 @@ export const NewFilterModal = (props) => {
                   onChange={handleTargetLayerChange}
                 >
                   <option value="links">Links</option>
-                  <option value="nodes">Nodes</option>
+                {/*   <option value="nodes">Nodes</option> */}
                 </select>
               </div>
               {variableSelect}
