@@ -574,12 +574,25 @@ export default class Model {
             let values = flowMap.get(flow.key);
             let reverseValues = flowMap.get(reverseKey);
 
-            return {
-                ...flow,
-                balance: values.value - reverseValues.value,
-                grossFlow: values.value + reverseValues.value,
-                volume: values.volume
-            };
+            let balance = values.value - reverseValues.value;
+            let grossFlow = values.value + reverseValues.value;
+
+            // Vérifier si le lien est asymétrique
+            if (balance !== 0) {
+                return {
+                    ...flow,
+                    balance: balance,
+                    grossFlow: grossFlow,
+                    volume: values.volume
+                };
+            } else {
+                return {
+                    ...flow,
+                    balance: 0,
+                    grossFlow: values.value,
+                    volume: values.volume
+                };
+            }
         });
 
         // Calculer les pourcentages de données de lien et de volume
