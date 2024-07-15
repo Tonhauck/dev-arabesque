@@ -10,7 +10,6 @@ import { NewFilterModal } from "../react/filters/filters_modal";
 export default class View {
     constructor(renderer) {
         this.renderer = renderer;
-
         this.body = document.getElementsByTagName("body")[0];
         this.home = document.getElementById("home");
 

@@ -845,6 +845,7 @@ export default class OlRenderer {
                     popupContent += '<table class="popup-table table table-striped">';
                     let i = 0;
                     for (var key in feature.values_.nodeData.properties) {
+                        console.log(key, feature.values_.nodeData.properties[key])
                         popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.nodeData.properties[key] + '</td></tr>';
                         i++;
                     }
@@ -1552,7 +1553,7 @@ export default class OlRenderer {
                         if (key != 'key') {
                             let value = feature.values_.linkData[key];
                             let formattedValue = isNaN(value) ? value : value.toFixed(2);
-                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + "count" + '</td><td class="popup-value" style="padding: 0.35em;">' + formattedValue + '</td></tr>';
+                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + formattedValue + '</td></tr>';
                             i++;
                         }
                     }

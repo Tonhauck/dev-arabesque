@@ -294,6 +294,11 @@ export default class Controller {
     render_all() {
         let proj_sel = document.getElementById("projection");
         let proj = proj_sel.options[proj_sel.selectedIndex].value;
+        //Garder la map à la même position
+        let view = this.view.renderer.map.getView();
+        let center = view.getCenter();
+        let zoom = view.getZoom();
+
 
         this.view.renderer.render(
             this.model.get_nodes(),
@@ -301,7 +306,13 @@ export default class Controller {
             this.model.get_nodes_style(),
             this.model.get_links_style()
         );
+
+        view.setCenter(center);
+        view.setZoom(zoom);
+        //view.setProjection(projection);
     }
+
+
 
     // PROJECTION //
 
@@ -481,7 +492,6 @@ export default class Controller {
     }
 
     // FILTERS //
-
     toggle_new_filter_modal() {
         //We take the first node/link to be able to display properties,
         //as well as filter their types (numeral or string) in the filter modal
@@ -556,7 +566,6 @@ export default class Controller {
         }
     }
     add_filter(target, variable, type) {
-
         this.model.config.filters.target = document.getElementById("filteredLayer").value
         const filter_id = "filter-" + this.model.config.filters.target + "-" + variable + "-" + type;
         const filter_container = document.getElementById(filter_id);
