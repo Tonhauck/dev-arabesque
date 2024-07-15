@@ -1,19 +1,17 @@
 import React, { useState } from "react";
 
 export const LayerSemioModal = (props) => {
-  console.log(props);
+
   function save_and_close(e) {
     e.preventDefault();
     e.stopPropagation();
 
     const opacity = document.getElementById("opacityLayerChange").value;
     const fill = document.getElementById("fillColorpickerChange").value;
-   // const stroke = document.getElementById("linkSingleColorStrokePicker").value;
     const border_color = document.getElementById("layerStrokeColorPickerChange")
       .value;
     const config = {
       fill: fill,
-     // stroke: stroke,
       border: border_color,
       opacity: opacity,
     };

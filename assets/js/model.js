@@ -335,7 +335,6 @@ export default class Model {
     }
 
     import () {
-
         // list of nodes ids. Convert to string so there is no type confusions
         let nodes_ids = this.data.nodes.map(
             (n) => n.properties[this.config.varnames.nodeID]
@@ -380,23 +379,7 @@ export default class Model {
         }
         this.data.nodes = kept_nodes;
 
-        // Ajout des attributs des nodes dans les links
-        this.data.links = this.data.links.map(link => {
-            let kept_nodes = this.data.nodes_hash[link[this.config.varnames.linkID[0]]];
-
-            // Ajoutez les propriétés des nodes source et destination au link
-            if (kept_nodes && kept_nodes.properties) {
-                for (let prop in kept_nodes.properties) {
-                    if (kept_nodes.properties.hasOwnProperty(prop)) {
-                        link[`${prop}`] = kept_nodes.properties[prop];
-                    }
-                }
-            }
-            return link;
-        });
-
-        console.log(this.data.links)
-            // add distance in links
+        // add distance in links
         this.add_links_stats();
 
         // crossfilter creation
@@ -552,10 +535,8 @@ export default class Model {
     }
 
     get_links() {
-
-        //Getting all the filtered flows and format them
+        // Obtenir tous les flux filtrés et les formater
         let filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
-
             return {
                 key: link[this.config.varnames.linkID[0]] +
                     "->" +
@@ -564,16 +545,54 @@ export default class Model {
             };
         });
 
-        let link_data_range = [d3.min(filteredFlows.map((l) => l.value)), d3.max(filteredFlows.map((l) => l.value))];
+        // Calculer balance, gross flows et garder le volume pour les liens asymétriques
+        let flowMap = new Map();
 
-        let sum = d3.sum(filteredFlows.map((l) => l.value))
-        let globalSum = d3.sum(this.data.links.map((l) => l[this.config.varnames.vol]))
+        filteredFlows.forEach(flow => {
+            let [from, to] = flow.key.split("->");
+            let reverseKey = `${to}->${from}`;
 
-        let percentageLinkData = (filteredFlows.length / this.data.links.length) * 100
-        let percentageVolumeData = (sum / globalSum) * 100
-        $("#percentageVolumeData").html(percentageVolumeData.toFixed(2) + " %")
+            if (!flowMap.has(flow.key)) {
+                flowMap.set(flow.key, { value: 0, reverseValue: 0, volume: 0 });
+            }
+            if (!flowMap.has(reverseKey)) {
+                flowMap.set(reverseKey, { value: 0, reverseValue: 0, volume: 0 });
+            }
 
-        $("#percentageLinkData").html(percentageLinkData.toFixed(2) + " % " + "(" + filteredFlows.length.toLocaleString('fr-FR') + " links)")
+            let value = isNaN(flow.value) ? 0 : flow.value;
+
+            flowMap.get(flow.key).value += value;
+            flowMap.get(flow.key).volume += value;
+            flowMap.get(reverseKey).reverseValue += value;
+        });
+
+        // Ajouter les valeurs d'asymétrie à filteredFlows
+        filteredFlows = filteredFlows.map(flow => {
+            let [from, to] = flow.key.split("->");
+            let reverseKey = `${to}->${from}`;
+
+            let values = flowMap.get(flow.key);
+            let reverseValues = flowMap.get(reverseKey);
+
+            return {
+                ...flow,
+                balance: values.value - reverseValues.value,
+                grossFlow: values.value + reverseValues.value,
+                volume: values.volume
+            };
+        });
+
+        // Calculer les pourcentages de données de lien et de volume
+        let link_data_range = [d3.min(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value)), d3.max(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value))];
+        let sum = d3.sum(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value));
+        let globalSum = d3.sum(this.data.links.map((l) => isNaN(l[this.config.varnames.vol]) ? 0 : l[this.config.varnames.vol]));
+
+        let percentageLinkData = (filteredFlows.length / this.data.links.length) * 100;
+        let percentageVolumeData = (sum / globalSum) * 100;
+
+        $("#percentageVolumeData").html(percentageVolumeData.toFixed(2) + " %");
+        $("#percentageLinkData").html(percentageLinkData.toFixed(2) + " % " + "(" + filteredFlows.length.toLocaleString('fr-FR') + " links)");
+
         return filteredFlows;
     }
 
@@ -581,6 +600,7 @@ export default class Model {
     update_nodes_stats() {
         let nto = this.data.nodes_to_aggregated.all();
         for (let i = 0; i < nto.length; i++) {
+
             this.data.nodes_hash[nto[i].key].properties["indegree"] = nto[i].value.n;
             this.data.nodes_hash[nto[i].key].properties["weighted indegree"] =
                 nto[i].value.w;
@@ -605,7 +625,15 @@ export default class Model {
             this.data.nodes[i].properties["weighted balance"] =
                 this.data.nodes[i].properties["weighted indegree"] -
                 this.data.nodes[i].properties["weighted outdegree"];
+            this.data.nodes[i].properties["gross flow"] =
+                this.data.nodes[i].properties["weighted indegree"] +
+                this.data.nodes[i].properties["weighted outdegree"];
+            this.data.nodes[i].properties["assymetry"] =
+                this.data.nodes[i].properties["balance"] /
+                (this.data.nodes[i].properties["weighted indegree"] +
+                    this.data.nodes[i].properties["weighted outdegree"]);
         }
+
     }
 
     init_nodes_stats() {
@@ -618,6 +646,8 @@ export default class Model {
             this.data.nodes[p].properties["outdegree"] = 0;
             this.data.nodes[p].properties["balance"] = 0;
             this.data.nodes[p].properties["degree"] = 0;
+            this.data.nodes[p].properties["gross flow"] = 0;
+            this.data.nodes[p].properties["assymetry"] = 0;
         }
         //let links = this.data.links_aggregated.all();
         //for(let i=0;i<links.length;i++){
@@ -637,7 +667,12 @@ export default class Model {
     add_links_stats() {
         for (let i = 0; i < this.data.links.length; i++) {
             let from = this.data.links[i][this.config.varnames.linkID[0]];
+            //  console.log("FROM :" + from)
             let to = this.data.links[i][this.config.varnames.linkID[1]];
+
+            //   console.log("VOL :" + this.data.links[i][this.config.varnames.vol])
+
+            //    console.log("TO :" + to)
             this.data.links[i]["distance"] = turf.distance(
                 this.data.nodes_hash[from],
                 this.data.nodes_hash[to]
