@@ -1488,7 +1488,7 @@ export default class OlRenderer {
                 }
             }
         }, {
-            hitTolerance: 5 // Augmentez la tolérance de détection si nécessaire
+            hitTolerance: 5 // Augmenter la tolérance de détection
         });
     }
 
