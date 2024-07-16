@@ -633,8 +633,8 @@ export default class Model {
                 this.data.nodes[i].properties["weighted indegree"] +
                 this.data.nodes[i].properties["weighted outdegree"];
             this.data.nodes[i].properties["balance"] =
-                this.data.nodes[i].properties["indegree"] -
-                this.data.nodes[i].properties["outdegree"];
+                this.data.nodes[i].properties["weighted indegree"] -
+                this.data.nodes[i].properties["weighted outdegree"];
             this.data.nodes[i].properties["weighted balance"] =
                 this.data.nodes[i].properties["weighted indegree"] -
                 this.data.nodes[i].properties["weighted outdegree"];
