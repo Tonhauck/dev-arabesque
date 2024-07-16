@@ -824,7 +824,7 @@ export default class OlRenderer {
         // Déterminer le layer sur lequel le clic s'est produit
         this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
 
-            if (layer.values_.name === 'nodes') {
+            if (layer.get('name') === 'nodes') {
 
                 if (feature) {
                     // Sélection de l'élément select
@@ -840,13 +840,13 @@ export default class OlRenderer {
 
           
                     // Construire le contenu du popup avec les informations de l'entité
-                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.nodeData.id + '</h4>';
+                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.get('nodeData').id + '</h4>';
                     popupContent += '<hr>';
                     popupContent += '<table class="popup-table table table-striped">';
                     let i = 0;
-                    for (var key in feature.values_.nodeData.properties) {
-                        console.log(key, feature.values_.nodeData.properties[key])
-                        popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.values_.nodeData.properties[key] + '</td></tr>';
+                    for (var key in feature.get('nodeData').properties) {
+                        console.log(key, feature.get('nodeData').properties[key])
+                        popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.get('nodeData').properties[key] + '</td></tr>';
                         i++;
                     }
                     popupContent += '</table>';
@@ -1320,130 +1320,44 @@ export default class OlRenderer {
             ratioBounds: 0.9,
         };
 
-       
+        let createArrow = (link, arrowFunction) => {
+            let from = link.key.split("->")[0];
+            let to = link.key.split("->")[1];
+            let width = this.linkSize(link, lstyle);
+
+            let arrow = arrowFunction(
+                style,
+                nodes_hash[from].center,
+                nodes_hash[to].center,
+                nodes_hash[from].radius,
+                nodes_hash[to].radius,
+                width
+            );
+
+            return {
+                geometry: arrow,
+                attributes: link
+            };
+        };
+
+        let arrows;
         if (orientation === "oriented" || shape_type === "StraightArrow") {
-            
-            let arrows = links.map(function (l) {
-               
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-               
-                let arrow = orientedStraightArrow(
-                    style,
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-           
-                return arrow;
-            }, this);
-
-            return arrows;
+            arrows = links.map(link => createArrow(link, orientedStraightArrow));
         } else if (orientation === "noOriented" || shape_type === "StraightArrow") {
-            let arrows = links.map(function(l) {
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-
-                let arrow = noOrientedStraightArrow(
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-                return arrow;
-            }, this);
-
-            return arrows;
-        } else if (
-            orientation === "oriented" ||
-            shape_type === "StraightNoHookArrow"
-        ) {
-            let arrows = links.map(function(l) {
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-                let arrow = orientedStraightNoHookArrow(
-                    style,
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-                return arrow;
-            }, this);
-            return arrows;
+            arrows = links.map(link => createArrow(link, noOrientedStraightArrow));
+        } else if (orientation === "oriented" || shape_type === "StraightNoHookArrow") {
+            arrows = links.map(link => createArrow(link, orientedStraightNoHookArrow));
         } else if (orientation === "oriented" || shape_type === "TriangleArrow") {
-            let arrows = links.map(function(l) {
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-                let arrow = orientedTriangleArrow(
-                    style,
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-                return arrow;
-            }, this);
-            return arrows;
+            arrows = links.map(link => createArrow(link, orientedTriangleArrow));
         } else if (orientation === "oriented" || shape_type === "CurveArrow") {
-            let arrows = links.map(function(l) {
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-                let arrow = orientedCurveArrow(
-                    style,
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-                return arrow;
-            }, this);
-            return arrows;
+            arrows = links.map(link => createArrow(link, orientedCurveArrow));
         } else if (orientation === "oriented" || shape_type === "CurveOneArrow") {
-            let arrows = links.map(function(l) {
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-                let arrow = orientedCurveOneArrow(
-                    style,
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-                return arrow;
-            }, this);
-            return arrows;
+            arrows = links.map(link => createArrow(link, orientedCurveOneArrow));
         } else if (orientation === "noOriented" || shape_type === "CurveArrow") {
-            let arrows = links.map(function(l) {
-                let from = l.key.split("->")[0];
-                let to = l.key.split("->")[1];
-                let width = this.linkSize(l, lstyle);
-                let arrow = noOrientedCurveArrow(
-                    style,
-                    nodes_hash[from].center,
-                    nodes_hash[to].center,
-                    nodes_hash[from].radius,
-                    nodes_hash[to].radius,
-                    width
-                );
-                return arrow;
-            }, this);
-
-            return arrows;
+            arrows = links.map(link => createArrow(link, noOrientedCurveArrow));
         }
+
+        return arrows;
     }
 
     add_links(links, lstyle, link_data_range, z_index) {
@@ -1471,21 +1385,20 @@ export default class OlRenderer {
         let mean = d3.mean(links.map((l) => l.value))
 
         let filtered = links.filter(function (a) { return a.value <= max_90percent; });
-
+        // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
         let arrows = this.create_arrows(filtered, lstyle);
         let links_shapes = arrows.map((a, i) => {
-
-            let polygon = new Polygon([a]);
+          
+            let polygon = new Polygon([a.geometry]);
             let feature = new Feature(polygon);
-            let link_index = arrows.indexOf(a);
-            // Ajouter les informations supplémentaires aux entités géographiques
-
-            let link = filtered[link_index];
-            feature.setStyle(this.linkStyle(link, lstyle));
-            // Ajouter les informations supplémentaires aux entités géographiques
             feature.setProperties({
-                linkData: links[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
+                linkData: a.attributes // Ajoutez ici toutes les informations supplémentaires nécessaires
             });
+            let link_index = arrows.indexOf(a);
+            //recupération des styles
+            let link = arrows[link_index].attributes;
+            feature.setStyle(this.linkStyle(link, lstyle));
+           
             return feature;
         }, this);
 
@@ -1538,35 +1451,35 @@ export default class OlRenderer {
 
         // Déterminer le layer sur lequel le clic s'est produit
         this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-            if (layer.values_.name === 'links') {
+            if (layer && layer.get('name') === 'links') {
+                
                 if (feature) {
+                  
+               
                     // Sélection de l'élément select
                     var selectElement = document.getElementById("semioSelectorSizeChangeLink");
-
                     // Construire le contenu du popup avec les informations de l'entité
-                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.values_.linkData.key + '</h4>';
+                    let popupContent = '<h4 class="popup-title" > ID : ' + feature.get('linkData').key + '</h4>';
                     popupContent += '<hr>';
                     popupContent += '<table class="popup-table table table-striped">';
                     let i = 0;
-                    for (var key in feature.values_.linkData) {
-                      
-                        if (key != 'key') {
-                            let value = feature.values_.linkData[key];
+          
+                    for (var key in feature.get('linkData')) {
+                        if (key !== 'key') {
+                            let value = feature.get('linkData')[key];
                             let formattedValue = isNaN(value) ? value : value.toFixed(2);
-                            popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + formattedValue + '</td></tr>';
+                            popupContent += '<tr class="' + (i % 2 === 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + formattedValue + '</td></tr>';
                             i++;
                         }
                     }
                     popupContent += '</table>';
-
-
 
                     // Mettre à jour le contenu du popup
                     content.innerHTML = popupContent;
 
                     // Définir la position du popup sur le clic de la souris
                     popup.setPosition(evt.coordinate);
-
+              
                     // Afficher le popup
                     container.style.display = 'block';
                 } else {
@@ -1574,8 +1487,9 @@ export default class OlRenderer {
                     container.style.display = 'none';
                 }
             }
-        })
-
+        }, {
+            hitTolerance: 5 // Augmentez la tolérance de détection si nécessaire
+        });
     }
 
 
@@ -1594,21 +1508,18 @@ export default class OlRenderer {
         }
 
         this.map.removeLayer(this.get_layer("links"));
-
+        // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
         let arrows = this.create_arrows(links, lstyle);
         let links_shapes = arrows.map((a, i) => {
 
-            let polygon = new Polygon([a]);
+            let polygon = new Polygon([a.geometry]);
             let feature = new Feature(polygon);
             let link_index = arrows.indexOf(a);
             // Ajouter les informations supplémentaires aux entités géographiques
 
-            let link = links[link_index];
+            let link = arrows[link_index].attributes;
             feature.setStyle(this.linkStyle(link, lstyle));
-            // Ajouter les informations supplémentaires aux entités géographiques
-            feature.setProperties({
-                linkData: links[i] // Ajoutez ici toutes les informations supplémentaires nécessaires
-            });
+
             return feature;
         }, this);
 
