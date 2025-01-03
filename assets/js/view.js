@@ -286,7 +286,7 @@ export default class View {
             nodes_hash = { nodes_hash }
             links_hash = { links_hash }
             node_size_scale = { this.renderer._scale_node_size }
-            link_size_scale = { this.renderer._scale_link_size }
+            link_size_scale={this.renderer._scale_link_size}
             map = { this.renderer.map }
             toggle_legend = { toggle_legend }
             />,

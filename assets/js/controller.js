@@ -299,6 +299,11 @@ export default class Controller {
         let center = view.getCenter();
         let zoom = view.getZoom();
 
+        // Conserver la visibilité des layers
+        let layers_visibility = {};
+        this.view.renderer.map.getLayers().forEach(layer => {
+            layers_visibility[layer.get('name')] = layer.getVisible();
+        });
 
         this.view.renderer.render(
             this.model.get_nodes(),
@@ -306,6 +311,13 @@ export default class Controller {
             this.model.get_nodes_style(),
             this.model.get_links_style()
         );
+
+        // Restaurer la visibilité des layers
+        this.view.renderer.map.getLayers().forEach(layer => {
+            if (layers_visibility[layer.get('name')] !== undefined) {
+                layer.setVisible(layers_visibility[layer.get('name')]);
+            }
+        });
 
         view.setCenter(center);
         view.setZoom(zoom);
