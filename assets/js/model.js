@@ -285,7 +285,7 @@ export default class Model {
                 var import_resume = that.import();
                 callback(
                     import_resume,
-                    that.get_nodes(),
+                   // that.get_nodes(),
                     that.get_links(),
                     that.config
                 );
@@ -526,10 +526,11 @@ export default class Model {
             });
     }
 
-    get_nodes() {
+    get_nodes(num_nodes) {
+       
         // this.update_nodes_stats();
-        let percentageNodesData = (this.data.nodes.length / this.data.nodes.length) * 100
-        $("#percentageNodeData").html(percentageNodesData.toFixed(2) + " % " + "(" + this.data.nodes.length.toLocaleString('fr-FR') + " nodes)")
+        let percentageNodesData = (num_nodes / this.data.nodes.length) * 100
+        $("#percentageNodeData").html(percentageNodesData.toFixed(2) + " % " + "(" + num_nodes + " nodes)")
 
         return this.data.nodes;
     }
@@ -603,7 +604,18 @@ export default class Model {
         let percentageLinkData = (filteredFlows.length / this.data.links.length) * 100;
         let percentageVolumeData = (sum / globalSum) * 100;
 
-        $("#percentageVolumeData").html(percentageVolumeData.toFixed(2) + " %");
+        let linkKeys = filteredFlows.map(link => link.key);
+
+        // Extraire les IDs avant et après '->' et supprimer les doublons
+        let nodeIds = [];
+        linkKeys.forEach(key => {
+            let ids = key.split('->');
+            if (!nodeIds.includes(ids[0])) nodeIds.push(ids[0]);
+            if (!nodeIds.includes(ids[1])) nodeIds.push(ids[1]);
+        });
+        // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds
+        this.get_nodes(nodeIds.length);
+        $("#percentageVolumeData").html(percentageVolumeData.toFixed(2) + " % ( " + sum + " )");
         $("#percentageLinkData").html(percentageLinkData.toFixed(2) + " % " + "(" + filteredFlows.length.toLocaleString('fr-FR') + " links)");
 
         return filteredFlows;
