@@ -90,7 +90,17 @@ export default class Model {
         };
 
         // working data structure
-        this.data = { nodes: [], links: [], nodes_hash: {}, filters: {} };
+        this.data = {
+            nodes: [],
+            links: [],
+            nodes_hash: {},
+            filters: {},
+            crossfilters: null,
+            od_dim: null,
+            nodes_to_aggregated: null,
+            nodes_from_aggregated: null,
+            links_aggregated: null
+        };
     }
 
     set_nodes_varnames(id, lat, long) {
@@ -595,7 +605,7 @@ export default class Model {
                 };
             }
         });
-
+        console.log(filteredFlows)
         // Calculer les pourcentages de données de lien et de volume
         let link_data_range = [d3.min(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value)), d3.max(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value))];
         let sum = d3.sum(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value));
@@ -692,17 +702,25 @@ export default class Model {
     add_links_stats() {
         for (let i = 0; i < this.data.links.length; i++) {
             let from = this.data.links[i][this.config.varnames.linkID[0]];
-            //  console.log("FROM :" + from)
             let to = this.data.links[i][this.config.varnames.linkID[1]];
 
-            //   console.log("VOL :" + this.data.links[i][this.config.varnames.vol])
+            // Assurez-vous que les nœuds 'from' et 'to' existent et ont des coordonnées valides
+            let fromNode = this.data.nodes_hash[from];
+            let toNode = this.data.nodes_hash[to];
+            console.log(fromNode)
+            if (fromNode && toNode) {
+                // Créer des objets Point GeoJSON pour les nœuds
+                let fromPoint = turf.point([fromNode[this.config.varnames.long], fromNode[this.config.varnames.lat]]);
+                let toPoint = turf.point([toNode[this.config.varnames.long], toNode[this.config.varnames.lat]]);
 
-            //    console.log("TO :" + to)
-            this.data.links[i]["distance"] = turf.distance(
-                this.data.nodes_hash[from],
-                this.data.nodes_hash[to]
-            );
+                // Calculer la distance entre les deux points
+                this.data.links[i]["distance"] = turf.distance(fromPoint, toPoint);
+            } else {
+                console.error(`Invalid nodes for link: ${from} -> ${to}`);
+            }
         }
+               
+
     }
 
     // utils to convert csv to geojson
@@ -722,5 +740,116 @@ export default class Model {
             } catch {}
         }
         return points;
+    }
+
+    importExternalData(data) {
+        if (!data.nodes || !data.links) {
+            throw new Error("Invalid data format: nodes and links are required.");
+        }
+
+        this.data.nodes = data.nodes;
+        this.data.links = data.links;
+        this.config.varnames = data.config.varnames;
+
+        // Initialiser les structures de données comme dans la méthode import
+        this.initializeDataStructures();
+
+        // Initialiser les statistiques des nœuds
+        this.init_nodes_stats();
+
+        // Mettre à jour les statistiques des nœuds
+        this.update_nodes_stats();
+    }
+
+    initializeDataStructures() {
+        // list of nodes ids. Convert to string so there is no type confusions
+        let nodes_ids = this.data.nodes.map(
+            (n) => n[this.config.varnames.nodeID]
+        );
+
+        // convert to set to remove duplicates
+        let nodes_ids_distincts = new Set(nodes_ids);
+
+        // extract nodes ids from links
+        let nodes_ids_o = this.data.links.map(
+            (l) => l[this.config.varnames.linkID[0]]
+        );
+        let nodes_ids_d = this.data.links.map(
+            (l) => l[this.config.varnames.linkID[1]]
+        );
+
+        // convert to set to remove duplicates
+        let links_ids_distincts = new Set(nodes_ids_o.concat(nodes_ids_d));
+
+        // keep nodes that are present in links
+        let final_nodes = new Set(
+            [...nodes_ids_distincts].filter((n) => links_ids_distincts.has(n))
+        );
+
+        // remove links with unknown origin or destination
+        this.data.links = this.data.links.filter(
+            (l) =>
+            final_nodes.has(l[this.config.varnames.linkID[0]]) &
+            final_nodes.has(l[this.config.varnames.linkID[1]])
+        );
+
+        // build the final nodes kept the first in case of duplicates
+        // build the node hash for quick node access
+        let kept_nodes = [];
+        for (let p = 0; p < nodes_ids.length; p++) {
+            let node = this.data.nodes[p];
+            if (node && !(nodes_ids[p] in this.data.nodes_hash)) {
+                node.id = nodes_ids[p];
+                node.properties = node.properties || {}; // Assurez-vous que 'properties' est initialisé
+                this.data.nodes_hash[nodes_ids[p]] = node;
+                kept_nodes.push(node);
+            }
+        }
+        this.data.nodes = kept_nodes;
+
+        // add distance in links
+        this.add_links_stats();
+
+        // crossfilter creation
+        this.data.crossfilters = crossfilter(this.data.links);
+
+        // create dimension on o,d for links aggregation
+        this.data.od_dim = this.data.crossfilters.dimension(
+            (l) =>
+            l[this.config.varnames.linkID[0]] +
+            "->" +
+            l[this.config.varnames.linkID[1]]
+        );
+        this.data.links_aggregated = this.data.od_dim
+            .group()
+            .reduce(
+                this.reduceAddC(this),
+                this.reduceRemC(this),
+                this.reduceIniC(this)
+            );
+
+        // create dimension on links origins for nodes out stats
+        this.data.from_dim = this.data.crossfilters.dimension(
+            (l) => l[this.config.varnames.linkID[0]]
+        );
+        this.data.nodes_from_aggregated = this.data.from_dim
+            .group()
+            .reduce(
+                this.reduceAddNodeC(this),
+                this.reduceRemNodeC(this),
+                this.reduceIniNodeC(this)
+            );
+
+        // create dimension on links destinations for nodes in stats
+        this.data.to_dim = this.data.crossfilters.dimension(
+            (l) => l[this.config.varnames.linkID[1]]
+        );
+        this.data.nodes_to_aggregated = this.data.to_dim
+            .group()
+            .reduce(
+                this.reduceAddNodeC(this),
+                this.reduceRemNodeC(this),
+                this.reduceIniNodeC(this)
+            );
     }
 }

@@ -8,8 +8,10 @@ import { LegendComponent } from "../react/legend/legend";
 import { NewFilterModal } from "../react/filters/filters_modal";
 
 export default class View {
-    constructor(renderer) {
+    constructor(renderer, model) {
         this.renderer = renderer;
+        this.model = model;
+
         this.body = document.getElementsByTagName("body")[0];
         this.home = document.getElementById("home");
 
@@ -201,12 +203,12 @@ export default class View {
         this.renderer.fresh();
 
         //Already done in renderer.set_projection() !
-
+        console.log(links)
+        console.log(link_data_range)
         let nstyle = config.styles.nodes;
         let lstyle = config.styles.links;
         this.renderer.add_nodes(nodes, nstyle);
         this.renderer.add_links(links, lstyle, link_data_range);
-
     }
     set_projection(proj, nodes, links, config, link_data_range) {
         this.renderer.set_projection(proj, nodes, links, config, link_data_range);

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Arabesque Data Integration</title>
+</head>
+
+<body>
+    <h1>Test d'intégration de données Arabesque</h1>
+    <button id="sendDataButton">Envoyer des données à Arabesque</button>
+
+    <script>
+        document.getElementById('sendDataButton').addEventListener('click', function () {
+            // Ouvrir Arabesque dans une nouvelle fenêtre/onglet
+            const arabesqueWindow = window.open('http://localhost:8080/', '_blank'); // Remplacez par l'URL correcte de votre application
+
+            // Exemple de données à envoyer
+            const exampleData = {
+                nodes: [
+                    {
+                        "NOM": "UNITED-KINGDOM",
+                        "LATITUDE": 53.21,
+                        "LONGITUDE": -1.32,
+                        "ADRESSES": 23,
+                        "PAYS-FRAC": 19,
+                        "ADRESSES-FRAC": 19,
+                        "COMPTAGE-COMPLET": 19
+                    },
+                    {
+                        "NOM": "CANADA",
+                        "LATITUDE": 60.36196817,
+                        "LONGITUDE": -106.6983315,
+                        "ADRESSES": 13,
+                        "PAYS-FRAC": 11.5,
+                        "ADRESSES-FRAC": 11.5,
+                        "COMPTAGE-COMPLET": 12
+                    },
+                    {
+                        "NOM": "NORWAY",
+                        "LATITUDE": 65.04680297,
+                        "LONGITUDE": 13.50069228,
+                        "ADRESSES": 15,
+                        "PAYS-FRAC": 9,
+                        "ADRESSES-FRAC": 9,
+                        "COMPTAGE-COMPLET": 9
+                    },
+                    {
+                        "NOM": "UNITED-STATES",
+                        "LATITUDE": 39.833333,
+                        "LONGITUDE": -98.583333,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 1.5,
+                        "ADRESSES-FRAC": 1.5,
+                        "COMPTAGE-COMPLET": 2
+                    },
+                    {
+                        "NOM": "DENMARK",
+                        "LATITUDE": 54.71794021,
+                        "LONGITUDE": 9.41938953,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 1.33333333333333333333333333333333333333,
+                        "ADRESSES-FRAC": 1.25,
+                        "COMPTAGE-COMPLET": 2
+                    },
+                    {
+                        "NOM": "FRANCE",
+                        "LATITUDE": 46.48372145,
+                        "LONGITUDE": 2.60926281,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 1.33333333333333333333333333333333333333,
+                        "ADRESSES-FRAC": 1.25,
+                        "COMPTAGE-COMPLET": 2
+                    },
+                    {
+                        "NOM": "AUSTRIA",
+                        "LATITUDE": 47.63125476,
+                        "LONGITUDE": 13.18776731,
+                        "ADRESSES": 1,
+                        "PAYS-FRAC": 1,
+                        "ADRESSES-FRAC": 1,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "NOM": "SWEDEN",
+                        "LATITUDE": 61.42370427,
+                        "LONGITUDE": 16.73188991,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "ADRESSES-FRAC": 0.5,
+                        "COMPTAGE-COMPLET": 1
+                    }
+                ],
+                links: [
+                    {
+                        "PAYS1": "DENMARK",
+                        "LATITUDE1": 54.71794021,
+                        "LONGITUDE1": 9.41938953,
+                        "PAYS2": "FRANCE",
+                        "LATITUDE2": 46.48372145,
+                        "LONGITUDE2": 2.60926281,
+                        "ADRESSES": 1,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "PAYS1": "DENMARK",
+                        "LATITUDE1": 54.71794021,
+                        "LONGITUDE1": 9.41938953,
+                        "PAYS2": "SWEDEN",
+                        "LATITUDE2": 61.42370427,
+                        "LONGITUDE2": 16.73188991,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "PAYS1": "FRANCE",
+                        "LATITUDE1": 46.48372145,
+                        "LONGITUDE1": 2.60926281,
+                        "PAYS2": "SWEDEN",
+                        "LATITUDE2": 61.42370427,
+                        "LONGITUDE2": 16.73188991,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "PAYS1": "CANADA",
+                        "LATITUDE1": 60.36196817,
+                        "LONGITUDE1": -106.6983315,
+                        "PAYS2": "UNITED-STATES",
+                        "LATITUDE2": 39.833333,
+                        "LONGITUDE2": -98.583333,
+                        "ADRESSES": 1,
+                        "PAYS-FRAC": 1,
+                        "COMPTAGE-COMPLET": 1
+                    }
+                ],
+                config: {
+                    varnames: {
+                        nodeID: "NOM",
+                        lat: "LATITUDE",
+                        long: "LONGITUDE",
+                        linkID: ["PAYS1", "PAYS2"],
+                        vol: "COMPTAGE-COMPLET"
+                    }
+                }
+            };
+
+            // Attendre que la fenêtre soit chargée
+            setTimeout(() => {
+                arabesqueWindow.postMessage({
+                    type: 'arabesqueData',
+                    content: exampleData
+                }, 'http://localhost:8080'); // Assurez-vous que l'origine correspond à celle de votre application
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

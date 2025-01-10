@@ -1108,7 +1108,7 @@ export default class OlRenderer {
 
         //COLOR
         let stroke;
-        // console.log(link)
+        console.log(link)
 
         if (lstyle.stroke.size != '0') {
             if (link.key.split('->')[0] != link.key.split('->')[1]) {
@@ -1361,7 +1361,7 @@ export default class OlRenderer {
     }
 
     add_links(links, lstyle, link_data_range, z_index) {
-
+        console.log(links)
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
         if (link_data_range !== undefined) {

@@ -15,6 +15,26 @@ export default class Controller {
         this.model = model;
         this.view = view;
 
+       /*  // Vérifier et charger les données depuis IndexedDB au démarrage
+        this.loadDataFromIndexedDB((data) => {
+            if (data) {
+                console.log("Données chargées depuis IndexedDB:", data);
+                this.model.importExternalData(data);
+                this.render_all();
+            } else {
+                console.log("Aucune donnée trouvée dans IndexedDB.");
+            }
+        }); */
+
+        window.addEventListener('message', (event) => {
+          
+            
+            const data = event.data;
+            if (data.type === 'arabesqueData') {
+                this.handleExternalData(data.content);
+            }
+        });
+
         this.render_layers_cards();
 
         document
@@ -89,6 +109,35 @@ export default class Controller {
         this.view.renderer.map.on("moveend", this.render_legend.bind(this));
 
         this.charts = [];
+    }
+
+    loadDataFromIndexedDB(callback) {
+        let request = indexedDB.open("ArabesqueDB", 1);
+
+        request.onsuccess = function(event) {
+            let db = event.target.result;
+            let transaction = db.transaction(["dataStore"], "readonly");
+            let objectStore = transaction.objectStore("dataStore");
+            let getRequest = objectStore.get("arabesqueData");
+
+            getRequest.onsuccess = function(event) {
+                if (getRequest.result) {
+                    callback(getRequest.result.data);
+                } else {
+                    callback(null);
+                }
+            };
+
+            getRequest.onerror = function(event) {
+                console.error("Erreur lors de la récupération des données de l'indexDB:", event);
+                callback(null);
+            };
+        };
+
+        request.onerror = function(event) {
+            console.error("Erreur lors de l'accès à l'indexDB:", event);
+            callback(null);
+        };
     }
 
     import_go_back() {
@@ -213,6 +262,8 @@ export default class Controller {
             .import_links(linksfile, this.view.import_end.bind(this.view))
             .catch(this.view.error_links_file());
     }
+
+
     import_zip(e, zipfile = null) {
         //If we called this function without parameter (for the thumbail), we get the file
         //from the zip input
@@ -256,7 +307,7 @@ export default class Controller {
             .map((el) => parseFloat(el[this.model.config.varnames.vol]));
 
         let link_data_range = [d3.min(link_values), d3.max(link_values)];
-
+        console.log(res)
         this.view.import_end(
             res,
             this.model.get_nodes(),
@@ -1024,5 +1075,85 @@ export default class Controller {
     update_stats() {
         console.log(this.model.get_nodes(),
             this.model.get_links())
+    }
+
+ handleExternalData(data) {
+        // Vérifier que les données sont valides
+        if (!data.nodes || !data.links) {
+            console.error("Invalid data format: nodes and links are required.");
+            return;
+        }
+
+  
+
+    // Importer les données dans le modèle
+    this.model.importExternalData(data);
+
+    
+    this.model.data.nodes.forEach(node => {
+        if (node[this.model.config.varnames.lat] !== undefined && node[this.model.config.varnames.long] !== undefined) {
+            node.geometry = {
+                type: "Point",
+                coordinates: [node[this.model.config.varnames.lat], node[this.model.config.varnames.long]] // Assurez-vous que les coordonnées sont dans le bon ordre
+            };
+        } else {
+            console.error('Invalid node coordinates:', node);
+        }
+    });
+        console.log("Données importées:", this.model.data);
+
+        // Calculer le range des données de lien
+        const link_values = this.model.data.links.map(link => parseFloat(link[this.model.config.varnames.vol]));
+        const link_data_range = [d3.min(link_values), d3.max(link_values)];
+
+       let lstyle = this.model.config.styles.links;
+
+        if (!lstyle.stroke) {
+            lstyle.stroke = { color: "grey", size: '0' }
+        }
+        // Appeler la méthode import_end avec les données appropriées
+        this.view.import_end(
+            {nb_nodes: 100, nb_links: 26361, nb_removed_nodes: 0, nb_removed_links: 0, nb_aggregated_links: 5383},
+            this.model.get_nodes(),
+            this.model.get_links(),
+            this.model.config,
+            link_data_range
+        );
+     
+        document.getElementById(
+            "projection-" + this.model.get_projection()
+        ).selected = true;
+        this.view.set_projection(
+            this.model.get_projection(),
+            this.model.get_nodes(),
+            this.model.get_links(),
+             this.model.config,
+            link_data_range
+        );
+     
+     this.render_all()
+
+ }
+    
+    saveDataToIndexedDB(data) {
+        let request = indexedDB.open("ArabesqueDB", 1);
+
+        request.onupgradeneeded = function (event) {
+            let db = event.target.result;
+            if (!db.objectStoreNames.contains("dataStore")) {
+                db.createObjectStore("dataStore", { keyPath: "id" });
+            }
+        };
+
+        request.onsuccess = function (event) {
+            let db = event.target.result;
+            let transaction = db.transaction(["dataStore"], "readwrite");
+            let objectStore = transaction.objectStore("dataStore");
+            objectStore.put({ id: "arabesqueData", data: data });
+        };
+
+        request.onerror = function (event) {
+            console.error("Erreur lors de l'accès à l'indexDB:", event);
+        };
     }
 }
