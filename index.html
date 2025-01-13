@@ -6,12 +6,16 @@
         content="style-src 'self' 'unsafe-inline'; default-src 'self'; img-src 'self' data: http:; script-src 'self' 'unsafe-eval';">
     <meta charset="UTF-8">
     <title>Arabesque</title>
-    <!-- other meta tags and links -->
 </head>
 
 <body id="arabesque-top">
     <div id="content">
         <header>
+            <div id="spinnerDiv"
+                style="position: fixed; top: 0; left: 0; width: 100vw; height: 100%; display:flex; justify-content: center; align-items: center; background-color: rgba(254, 254, 254, 0.5); z-index: 9999; display: none;">
+                <div class="spinner"></div>
+            </div>
+
             <nav class="navbar navbar-expand-lg navbar-light" id="main-navbar">
                 <a class="navbar-brand" href="#arabesque-top" id="logo-arabesque">Arabesque</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu"

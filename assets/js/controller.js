@@ -27,11 +27,14 @@ export default class Controller {
         }); */
 
         window.addEventListener('message', (event) => {
-          
-            
             const data = event.data;
             if (data.type === 'arabesqueData') {
-                this.handleExternalData(data.content);
+                // Afficher le spinner d'attente
+                document.getElementById('spinnerDiv').style.display = 'flex';
+                // Ajouter un léger délai pour éviter que l'application ne se déclenche avant l'import des data
+                setTimeout(() => {
+                    this.handleExternalData(data.content);
+                }, 500);
             }
         });
 
@@ -1109,6 +1112,9 @@ export default class Controller {
         if (!lstyle.stroke) {
             lstyle.stroke = { color: "grey", size: '1' }
         }
+           // Cacher le loader après l'importation des données
+     document.getElementById('spinnerDiv').style.display = 'none';
+     
         // Appeler la méthode import_end avec les données appropriées
      this.view.import_end(
             this.model.data.res,

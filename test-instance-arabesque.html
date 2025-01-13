@@ -8,16 +8,42 @@
 </head>
 
 <body>
-    <h1>Test d'intégration de données Arabesque</h1>
-    <button id="sendDataButton">Envoyer des données à Arabesque</button>
+    <html lang="fr">
 
-    <script>
-        document.getElementById('sendDataButton').addEventListener('click', function () {
-            // Ouvrir Arabesque dans une nouvelle fenêtre/onglet
-            const arabesqueWindow = window.open('http://localhost:8080/', '_blank'); // Remplacez par l'URL correcte de votre application
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            // Exemple de données à envoyer
-            const exampleData = {
+    </head>
+
+    <body>
+        <h1>Page de test d'affichage de la donnée NetCity vers Arabesque</h1>
+        <button id="sendDataButton">Afficher les données ci-dessous dans Arabesque</button>
+        <div style=" height:70vh; display: flex; flex-direction: row; justify-content: space-between;">
+            <div style="width: 33%; margin: 10px;">
+                <label for="nodeData">Données des Nœuds (array d'objets):</label>
+                <textarea id="nodeData" style="height:100%; width: 100%;"></textarea>
+            </div>
+            <div style="width: 33%; margin: 10px;">
+                <label for="linkData">Données des Liens (array d'objets):</label>
+                <textarea id="linkData" style="height:100%; width: 100%;"></textarea>
+            </div>
+            <div style="width: 33%; margin: 10px;">
+                <label for="configData">Configuration:</label>
+                <p><b>nodeID :</b> Champ ID qui permettra de faire la jointure avec les Links <br>
+                    <b> lat, long:</b> les champs à utiliser pour positionner les points dans l'espace (WGS84).<br>
+                    <b> linkID:</b> les champs ID qui permettent de faire le lien avec les nodes<br>
+                    <b> vol:</b> le champ à utiliser pour calculer le volume
+
+                </p>
+                <textarea id="configData" style="height:70%; width: 100%;"></textarea>
+            </div>
+        </div>
+
+
+
+        <script>// Fonction pour initialiser les champs de texte
+            let exampleData = {
                 nodes: [
                     {
                         "NOM": "UNITED-KINGDOM",
@@ -148,16 +174,37 @@
                     }
                 }
             };
+            function initializeTextAreas() {
+                document.getElementById('nodeData').value = JSON.stringify(exampleData.nodes, null, 2);
+                document.getElementById('linkData').value = JSON.stringify(exampleData.links, null, 2);
+                document.getElementById('configData').value = JSON.stringify(exampleData.config, null, 2);
+            }
 
-            // Attendre que la fenêtre soit chargée
-            setTimeout(() => {
-                arabesqueWindow.postMessage({
-                    type: 'arabesqueData',
-                    content: exampleData
-                }, 'http://localhost:8080'); // Assurez-vous que l'origine correspond à celle de votre application
-            }, 1000);
-        });
-    </script>
-</body>
+            // Appeler la fonction d'initialisation
+            initializeTextAreas();
 
-</html>
+            document.getElementById('sendDataButton').addEventListener('click', function () {
+                // Ouvrir Arabesque dans une nouvelle fenêtre/onglet
+                const arabesqueWindow = window.open('https://tonhauck.github.io/dev-arabesque/', '_blank');
+
+                const nodes = JSON.parse(document.getElementById('nodeData').value);
+                const links = JSON.parse(document.getElementById('linkData').value);
+                const config = JSON.parse(document.getElementById('configData').value);
+
+                console.log("Nœuds sauvegardés:", nodes);
+                console.log("Liens sauvegardés:", links);
+                console.log("Configuration sauvegardée:", config);
+
+                let exampleData = { 'nodes': nodes, 'links': links, 'config': config }
+                // Attendre que la fenêtre soit chargée
+                setTimeout(() => {
+                    arabesqueWindow.postMessage({
+                        type: 'arabesqueData',
+                        content: exampleData
+                    }, 'https://tonhauck.github.io/dev-arabesque/');
+                }, 1000);
+            });
+        </script>
+    </body>
+
+    </html>

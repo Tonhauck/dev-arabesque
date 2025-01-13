@@ -752,9 +752,10 @@ export default class Model {
         this.data.nodes = data.nodes;
         this.data.links = data.links;
         this.config.varnames = data.config.varnames;
-
-         // Initialiser les structures de données comme dans la méthode import
-        this.initializeDataStructures();
+       
+            // Initialiser les structures de données comme dans la méthode import
+            this.initializeDataStructures();
+      
 
     }
 
