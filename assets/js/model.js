@@ -58,7 +58,7 @@ export default class Model {
                     type: "quantitative",
                 },
             },
-            stroke: { color: "grey", size: '0' },
+            stroke: { color: "grey", size: '1' },
             size: {
                 mode: "varied",
                 varied: { var: "count", scale: "Sqrt", maxval: 100 },
@@ -67,7 +67,7 @@ export default class Model {
             opacity: {
                 mode: "fixed",
                 fixed: 0.7,
-                varied: { var: "degree", scale: "Linear", min: 0, max: 1 },
+                varied: { var: "volume", scale: "Linear", min: 0, max: 1 },
             },
             shape: {
                 orientation: "oriented",
@@ -546,6 +546,7 @@ export default class Model {
     }
 
     get_links() {
+    
         // Obtenir tous les flux filtrés et les formater
         let filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
             return {
@@ -577,6 +578,7 @@ export default class Model {
             flowMap.get(reverseKey).reverseValue += value;
         });
 
+       
         // Ajouter les valeurs d'asymétrie à filteredFlows
         filteredFlows = filteredFlows.map(flow => {
             let [from, to] = flow.key.split("->");
@@ -605,7 +607,7 @@ export default class Model {
                 };
             }
         });
-        console.log(filteredFlows)
+         
         // Calculer les pourcentages de données de lien et de volume
         let link_data_range = [d3.min(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value)), d3.max(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value))];
         let sum = d3.sum(filteredFlows.map((l) => isNaN(l.value) ? 0 : l.value));
@@ -707,7 +709,7 @@ export default class Model {
             // Assurez-vous que les nœuds 'from' et 'to' existent et ont des coordonnées valides
             let fromNode = this.data.nodes_hash[from];
             let toNode = this.data.nodes_hash[to];
-            console.log(fromNode)
+          
             if (fromNode && toNode) {
                 // Créer des objets Point GeoJSON pour les nœuds
                 let fromPoint = turf.point([fromNode[this.config.varnames.long], fromNode[this.config.varnames.lat]]);
@@ -751,14 +753,9 @@ export default class Model {
         this.data.links = data.links;
         this.config.varnames = data.config.varnames;
 
-        // Initialiser les structures de données comme dans la méthode import
+         // Initialiser les structures de données comme dans la méthode import
         this.initializeDataStructures();
 
-        // Initialiser les statistiques des nœuds
-        this.init_nodes_stats();
-
-        // Mettre à jour les statistiques des nœuds
-        this.update_nodes_stats();
     }
 
     initializeDataStructures() {
@@ -793,6 +790,7 @@ export default class Model {
             final_nodes.has(l[this.config.varnames.linkID[1]])
         );
 
+        
         // build the final nodes kept the first in case of duplicates
         // build the node hash for quick node access
         let kept_nodes = [];
@@ -806,9 +804,6 @@ export default class Model {
             }
         }
         this.data.nodes = kept_nodes;
-
-        // add distance in links
-        this.add_links_stats();
 
         // crossfilter creation
         this.data.crossfilters = crossfilter(this.data.links);
@@ -850,6 +845,29 @@ export default class Model {
                 this.reduceAddNodeC(this),
                 this.reduceRemNodeC(this),
                 this.reduceIniNodeC(this)
-            );
+        );
+        
+          // update nodes stats degree, wheighted degree, balance,...
+        this.init_nodes_stats();
+        this.update_nodes_stats();
+
+        // add distance in links
+        this.add_links_stats();
+          // remove links with unkwown origine or destination
+        let nb_links_beforecleanning = this.data.links.length;
+        this.data.links = this.data.links.filter(
+            (l) =>
+            final_nodes.has(l[this.config.varnames.linkID[0]]) &
+            final_nodes.has(l[this.config.varnames.linkID[1]])
+        );
+        // import statistics
+        let res = {
+            nb_nodes: final_nodes.size,
+            nb_links: this.data.links.length,
+            nb_removed_nodes: nodes_ids.length - final_nodes.size,
+            nb_removed_links: nb_links_beforecleanning - this.data.links.length,
+            nb_aggregated_links: this.data.links_aggregated.all().length,
+        };
+         this.data.res = res
     }
 }

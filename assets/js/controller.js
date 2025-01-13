@@ -1100,8 +1100,6 @@ export default class Controller {
             console.error('Invalid node coordinates:', node);
         }
     });
-        console.log("Données importées:", this.model.data);
-
         // Calculer le range des données de lien
         const link_values = this.model.data.links.map(link => parseFloat(link[this.model.config.varnames.vol]));
         const link_data_range = [d3.min(link_values), d3.max(link_values)];
@@ -1109,29 +1107,21 @@ export default class Controller {
        let lstyle = this.model.config.styles.links;
 
         if (!lstyle.stroke) {
-            lstyle.stroke = { color: "grey", size: '0' }
+            lstyle.stroke = { color: "grey", size: '1' }
         }
         // Appeler la méthode import_end avec les données appropriées
-        this.view.import_end(
-            {nb_nodes: 100, nb_links: 26361, nb_removed_nodes: 0, nb_removed_links: 0, nb_aggregated_links: 5383},
-            this.model.get_nodes(),
+     this.view.import_end(
+            this.model.data.res,
+             this.model.get_nodes(),
             this.model.get_links(),
             this.model.config,
             link_data_range
         );
      
-        document.getElementById(
-            "projection-" + this.model.get_projection()
-        ).selected = true;
-        this.view.set_projection(
-            this.model.get_projection(),
-            this.model.get_nodes(),
-            this.model.get_links(),
-             this.model.config,
-            link_data_range
-        );
-     
-     this.render_all()
+       console.log("Données importées:", this.model.data);
+
+      
+ 
 
  }
     

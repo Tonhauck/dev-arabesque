@@ -1361,7 +1361,8 @@ export default class OlRenderer {
     }
 
     add_links(links, lstyle, link_data_range, z_index) {
-        console.log(links)
+        console.log("ajout de links")
+        console.log(lstyle)
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
         if (link_data_range !== undefined) {
@@ -1384,9 +1385,10 @@ export default class OlRenderer {
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
 
-        let filtered = links.filter(function (a) { return a.value <= max_90percent; });
+        let filtered = links.filter(function (a) { return a.value <= mean; });
         // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
         let arrows = this.create_arrows(filtered, lstyle);
+
         let links_shapes = arrows.map((a, i) => {
 
             let polygon = new Polygon([a.geometry]);
