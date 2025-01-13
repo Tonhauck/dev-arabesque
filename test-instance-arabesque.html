@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Arabesque Data Integration</title>
+</head>
+
+<body>
+    <html lang="fr">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    </head>
+
+    <body>
+        <h1>Page de test d'affichage de la donnée NetCity vers Arabesque</h1>
+        <button id="sendDataButton">Afficher les données ci-dessous dans Arabesque</button>
+        <div style=" height:70vh; display: flex; flex-direction: row; justify-content: space-between;">
+            <div style="width: 33%; margin: 10px;">
+                <label for="nodeData">Données des Nœuds (array d'objets):</label>
+                <textarea id="nodeData" style="height:100%; width: 100%;"></textarea>
+            </div>
+            <div style="width: 33%; margin: 10px;">
+                <label for="linkData">Données des Liens (array d'objets):</label>
+                <textarea id="linkData" style="height:100%; width: 100%;"></textarea>
+            </div>
+            <div style="width: 33%; margin: 10px;">
+                <label for="configData">Configuration:</label>
+                <p><b>nodeID :</b> Champ ID qui permettra de faire la jointure avec les Links <br>
+                    <b> lat, long:</b> les champs à utiliser pour positionner les points dans l'espace (WGS84).<br>
+                    <b> linkID:</b> les champs ID qui permettent de faire le lien avec les nodes<br>
+                    <b> vol:</b> le champ à utiliser pour calculer le volume
+
+                </p>
+                <textarea id="configData" style="height:70%; width: 100%;"></textarea>
+            </div>
+        </div>
+
+
+
+        <script>// Fonction pour initialiser les champs de texte
+            let exampleData = {
+                nodes: [
+                    {
+                        "NOM": "UNITED-KINGDOM",
+                        "LATITUDE": 53.21,
+                        "LONGITUDE": -1.32,
+                        "ADRESSES": 23,
+                        "PAYS-FRAC": 19,
+                        "ADRESSES-FRAC": 19,
+                        "COMPTAGE-COMPLET": 19
+                    },
+                    {
+                        "NOM": "CANADA",
+                        "LATITUDE": 60.36196817,
+                        "LONGITUDE": -106.6983315,
+                        "ADRESSES": 13,
+                        "PAYS-FRAC": 11.5,
+                        "ADRESSES-FRAC": 11.5,
+                        "COMPTAGE-COMPLET": 12
+                    },
+                    {
+                        "NOM": "NORWAY",
+                        "LATITUDE": 65.04680297,
+                        "LONGITUDE": 13.50069228,
+                        "ADRESSES": 15,
+                        "PAYS-FRAC": 9,
+                        "ADRESSES-FRAC": 9,
+                        "COMPTAGE-COMPLET": 9
+                    },
+                    {
+                        "NOM": "UNITED-STATES",
+                        "LATITUDE": 39.833333,
+                        "LONGITUDE": -98.583333,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 1.5,
+                        "ADRESSES-FRAC": 1.5,
+                        "COMPTAGE-COMPLET": 2
+                    },
+                    {
+                        "NOM": "DENMARK",
+                        "LATITUDE": 54.71794021,
+                        "LONGITUDE": 9.41938953,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 1.33333333333333333333333333333333333333,
+                        "ADRESSES-FRAC": 1.25,
+                        "COMPTAGE-COMPLET": 2
+                    },
+                    {
+                        "NOM": "FRANCE",
+                        "LATITUDE": 46.48372145,
+                        "LONGITUDE": 2.60926281,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 1.33333333333333333333333333333333333333,
+                        "ADRESSES-FRAC": 1.25,
+                        "COMPTAGE-COMPLET": 2
+                    },
+                    {
+                        "NOM": "AUSTRIA",
+                        "LATITUDE": 47.63125476,
+                        "LONGITUDE": 13.18776731,
+                        "ADRESSES": 1,
+                        "PAYS-FRAC": 1,
+                        "ADRESSES-FRAC": 1,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "NOM": "SWEDEN",
+                        "LATITUDE": 61.42370427,
+                        "LONGITUDE": 16.73188991,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "ADRESSES-FRAC": 0.5,
+                        "COMPTAGE-COMPLET": 1
+                    }
+                ],
+                links: [
+                    {
+                        "PAYS1": "DENMARK",
+                        "LATITUDE1": 54.71794021,
+                        "LONGITUDE1": 9.41938953,
+                        "PAYS2": "FRANCE",
+                        "LATITUDE2": 46.48372145,
+                        "LONGITUDE2": 2.60926281,
+                        "ADRESSES": 1,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "PAYS1": "DENMARK",
+                        "LATITUDE1": 54.71794021,
+                        "LONGITUDE1": 9.41938953,
+                        "PAYS2": "SWEDEN",
+                        "LATITUDE2": 61.42370427,
+                        "LONGITUDE2": 16.73188991,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "PAYS1": "FRANCE",
+                        "LATITUDE1": 46.48372145,
+                        "LONGITUDE1": 2.60926281,
+                        "PAYS2": "SWEDEN",
+                        "LATITUDE2": 61.42370427,
+                        "LONGITUDE2": 16.73188991,
+                        "ADRESSES": 2,
+                        "PAYS-FRAC": 0.3333333333333333333333333333333333333333,
+                        "COMPTAGE-COMPLET": 1
+                    },
+                    {
+                        "PAYS1": "CANADA",
+                        "LATITUDE1": 60.36196817,
+                        "LONGITUDE1": -106.6983315,
+                        "PAYS2": "UNITED-STATES",
+                        "LATITUDE2": 39.833333,
+                        "LONGITUDE2": -98.583333,
+                        "ADRESSES": 1,
+                        "PAYS-FRAC": 1,
+                        "COMPTAGE-COMPLET": 1
+                    }
+                ],
+                config: {
+                    varnames: {
+                        nodeID: "NOM",
+                        lat: "LATITUDE",
+                        long: "LONGITUDE",
+                        linkID: ["PAYS1", "PAYS2"],
+                        vol: "COMPTAGE-COMPLET"
+                    }
+                }
+            };
+            function initializeTextAreas() {
+                document.getElementById('nodeData').value = JSON.stringify(exampleData.nodes, null, 2);
+                document.getElementById('linkData').value = JSON.stringify(exampleData.links, null, 2);
+                document.getElementById('configData').value = JSON.stringify(exampleData.config, null, 2);
+            }
+
+            // Appeler la fonction d'initialisation
+            initializeTextAreas();
+
+            document.getElementById('sendDataButton').addEventListener('click', function () {
+                // Ouvrir Arabesque dans une nouvelle fenêtre/onglet
+                const arabesqueWindow = window.open('https://tonhauck.github.io/dev-arabesque/', '_blank');
+
+                const nodes = JSON.parse(document.getElementById('nodeData').value);
+                const links = JSON.parse(document.getElementById('linkData').value);
+                const config = JSON.parse(document.getElementById('configData').value);
+
+                console.log("Nœuds sauvegardés:", nodes);
+                console.log("Liens sauvegardés:", links);
+                console.log("Configuration sauvegardée:", config);
+
+                let exampleData = { 'nodes': nodes, 'links': links, 'config': config }
+                // Attendre que la fenêtre soit chargée
+                setTimeout(() => {
+                    arabesqueWindow.postMessage({
+                        type: 'arabesqueData',
+                        content: exampleData
+                    }, 'https://tonhauck.github.io/dev-arabesque/');
+                }, 1000);
+            });
+        </script>
+    </body>
+
+    </html>

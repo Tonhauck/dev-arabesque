@@ -15,6 +15,29 @@ export default class Controller {
         this.model = model;
         this.view = view;
 
+       /*  // Vérifier et charger les données depuis IndexedDB au démarrage
+        this.loadDataFromIndexedDB((data) => {
+            if (data) {
+                console.log("Données chargées depuis IndexedDB:", data);
+                this.model.importExternalData(data);
+                this.render_all();
+            } else {
+                console.log("Aucune donnée trouvée dans IndexedDB.");
+            }
+        }); */
+
+        window.addEventListener('message', (event) => {
+            const data = event.data;
+            if (data.type === 'arabesqueData') {
+                // Afficher le spinner d'attente
+                document.getElementById('spinnerDiv').style.display = 'flex';
+                // Ajouter un léger délai pour éviter que l'application ne se déclenche avant l'import des data
+                setTimeout(() => {
+                    this.handleExternalData(data.content);
+                }, 500);
+            }
+        });
+
         this.render_layers_cards();
 
         document
@@ -89,6 +112,35 @@ export default class Controller {
         this.view.renderer.map.on("moveend", this.render_legend.bind(this));
 
         this.charts = [];
+    }
+
+    loadDataFromIndexedDB(callback) {
+        let request = indexedDB.open("ArabesqueDB", 1);
+
+        request.onsuccess = function(event) {
+            let db = event.target.result;
+            let transaction = db.transaction(["dataStore"], "readonly");
+            let objectStore = transaction.objectStore("dataStore");
+            let getRequest = objectStore.get("arabesqueData");
+
+            getRequest.onsuccess = function(event) {
+                if (getRequest.result) {
+                    callback(getRequest.result.data);
+                } else {
+                    callback(null);
+                }
+            };
+
+            getRequest.onerror = function(event) {
+                console.error("Erreur lors de la récupération des données de l'indexDB:", event);
+                callback(null);
+            };
+        };
+
+        request.onerror = function(event) {
+            console.error("Erreur lors de l'accès à l'indexDB:", event);
+            callback(null);
+        };
     }
 
     import_go_back() {
@@ -213,6 +265,8 @@ export default class Controller {
             .import_links(linksfile, this.view.import_end.bind(this.view))
             .catch(this.view.error_links_file());
     }
+
+
     import_zip(e, zipfile = null) {
         //If we called this function without parameter (for the thumbail), we get the file
         //from the zip input
@@ -256,7 +310,7 @@ export default class Controller {
             .map((el) => parseFloat(el[this.model.config.varnames.vol]));
 
         let link_data_range = [d3.min(link_values), d3.max(link_values)];
-
+        console.log(res)
         this.view.import_end(
             res,
             this.model.get_nodes(),
@@ -299,6 +353,11 @@ export default class Controller {
         let center = view.getCenter();
         let zoom = view.getZoom();
 
+        // Conserver la visibilité des layers
+        let layers_visibility = {};
+        this.view.renderer.map.getLayers().forEach(layer => {
+            layers_visibility[layer.get('name')] = layer.getVisible();
+        });
 
         this.view.renderer.render(
             this.model.get_nodes(),
@@ -306,6 +365,13 @@ export default class Controller {
             this.model.get_nodes_style(),
             this.model.get_links_style()
         );
+
+        // Restaurer la visibilité des layers
+        this.view.renderer.map.getLayers().forEach(layer => {
+            if (layers_visibility[layer.get('name')] !== undefined) {
+                layer.setVisible(layers_visibility[layer.get('name')]);
+            }
+        });
 
         view.setCenter(center);
         view.setZoom(zoom);
@@ -1012,5 +1078,78 @@ export default class Controller {
     update_stats() {
         console.log(this.model.get_nodes(),
             this.model.get_links())
+    }
+
+ handleExternalData(data) {
+        // Vérifier que les données sont valides
+        if (!data.nodes || !data.links) {
+            console.error("Invalid data format: nodes and links are required.");
+            return;
+        }
+
+  
+
+    // Importer les données dans le modèle
+    this.model.importExternalData(data);
+
+    
+    this.model.data.nodes.forEach(node => {
+        if (node[this.model.config.varnames.lat] !== undefined && node[this.model.config.varnames.long] !== undefined) {
+            node.geometry = {
+                type: "Point",
+                coordinates: [node[this.model.config.varnames.lat], node[this.model.config.varnames.long]] // Assurez-vous que les coordonnées sont dans le bon ordre
+            };
+        } else {
+            console.error('Invalid node coordinates:', node);
+        }
+    });
+        // Calculer le range des données de lien
+        const link_values = this.model.data.links.map(link => parseFloat(link[this.model.config.varnames.vol]));
+        const link_data_range = [d3.min(link_values), d3.max(link_values)];
+
+       let lstyle = this.model.config.styles.links;
+
+        if (!lstyle.stroke) {
+            lstyle.stroke = { color: "grey", size: '1' }
+        }
+           // Cacher le loader après l'importation des données
+     document.getElementById('spinnerDiv').style.display = 'none';
+     
+        // Appeler la méthode import_end avec les données appropriées
+     this.view.import_end(
+            this.model.data.res,
+             this.model.get_nodes(),
+            this.model.get_links(),
+            this.model.config,
+            link_data_range
+        );
+     
+       console.log("Données importées:", this.model.data);
+
+      
+ 
+
+ }
+    
+    saveDataToIndexedDB(data) {
+        let request = indexedDB.open("ArabesqueDB", 1);
+
+        request.onupgradeneeded = function (event) {
+            let db = event.target.result;
+            if (!db.objectStoreNames.contains("dataStore")) {
+                db.createObjectStore("dataStore", { keyPath: "id" });
+            }
+        };
+
+        request.onsuccess = function (event) {
+            let db = event.target.result;
+            let transaction = db.transaction(["dataStore"], "readwrite");
+            let objectStore = transaction.objectStore("dataStore");
+            objectStore.put({ id: "arabesqueData", data: data });
+        };
+
+        request.onerror = function (event) {
+            console.error("Erreur lors de l'accès à l'indexDB:", event);
+        };
     }
 }

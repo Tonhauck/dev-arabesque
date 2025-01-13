@@ -18,7 +18,7 @@ import * as d3 from "d3";
 import { boundingExtent } from "ol/extent";
 import proj4 from "proj4";
 import { register } from "ol/proj/proj4";
-import {get as getProjection } from "ol/proj";
+import { get as getProjection } from "ol/proj";
 import smooth from "chaikin-smooth";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -135,7 +135,7 @@ export default class OlRenderer {
                     }),
                 })
             });
-        document.getElementById('titleMap').addEventListener("input", function() {
+        document.getElementById('titleMap').addEventListener("input", function () {
             // 
             global.title = this.value
             titleControl.setTitle(this.value);
@@ -150,7 +150,7 @@ export default class OlRenderer {
 
         let authorTextSpan;
         // Écouteur d'événements pour l'élément avec l'ID 'authorMap'
-        document.getElementById('authorMap').addEventListener("input", function() {
+        document.getElementById('authorMap').addEventListener("input", function () {
             var author = this.value;
 
             // Sélectionner le 'span' dans 'sourceDiv'
@@ -170,7 +170,7 @@ export default class OlRenderer {
 
         let sourceTextSpan;
         // Écouteur d'événements pour l'élément avec l'ID 'sourceMap'
-        document.getElementById('sourceMap').addEventListener("input", function() {
+        document.getElementById('sourceMap').addEventListener("input", function () {
             var source = this.value;
 
             // Sélectionner le 'span' dans 'sourceDiv'
@@ -237,12 +237,12 @@ export default class OlRenderer {
 
         var svgElements = document.body.querySelectorAll("#legendShapes");
         var svgElements2 = document.body.querySelectorAll("#sourceDiv");
-        svgElements.forEach(function(item) {
+        svgElements.forEach(function (item) {
             item.setAttribute("width", item.getBoundingClientRect().width);
             item.setAttribute("height", item.getBoundingClientRect().height);
         });
 
-        svgElements2.forEach(function(item) {
+        svgElements2.forEach(function (item) {
             item.setAttribute("width", item.getBoundingClientRect().width);
             item.setAttribute("height", item.getBoundingClientRect().height);
         });
@@ -288,9 +288,9 @@ export default class OlRenderer {
         }).then((attrib_canvas) => {
             let attrib_div = attrib_canvas.toDataURL("image/png");
             let width_attrib = doc_width + margin_right - 10 - attrib.clientWidth
-  
+
             doc.addImage(attrib_div, "JPEG", width_attrib, map_final_height + 20);
-            svgElements2.forEach(function(item) {
+            svgElements2.forEach(function (item) {
                 item.removeAttribute("width");
                 item.removeAttribute("height");
             });
@@ -316,7 +316,7 @@ export default class OlRenderer {
 
                 doc.addImage(legend_img, "JPEG", 10, map_final_height + 20);
                 doc.save("map.pdf");
-                svgElements.forEach(function(item) {
+                svgElements.forEach(function (item) {
                     item.removeAttribute("width");
                     item.removeAttribute("height");
                 });
@@ -338,9 +338,9 @@ export default class OlRenderer {
     }
 
     update_links_height(links, lstyle) {
-        
+
         let resolution_m = this.map.getView().getResolution();
-      
+
 
         for (let link of links) {
             let height_m = this.linkSize(link, lstyle);
@@ -454,7 +454,7 @@ export default class OlRenderer {
                 opacity = 0;
             }
         }
-   
+
 
         //COLOR
         let label = node.id;
@@ -464,8 +464,8 @@ export default class OlRenderer {
                 label = node.properties[selectedLabel]
             }
         }
-    
-      
+
+
         if (nstyle.color.mode === "fixed") {
             let style = new Style({
                 stroke: new Stroke({
@@ -655,7 +655,7 @@ export default class OlRenderer {
     }
 
     add_nodes(nodes, nstyle) {
-       // console.log(nodes)
+        // console.log(nodes)
 
         //On enregistre le max et min pour la définition de l'échelle
         this.nodes_max_value = d3.max(
@@ -672,7 +672,7 @@ export default class OlRenderer {
         // nettoyage
         this.map.removeLayer(this.get_layer("nodes"));
         // projection
-        let proj_nodes = nodes.map(function(n) {
+        let proj_nodes = nodes.map(function (n) {
             return {
                 center: transform(
                     [n.geometry.coordinates[1], n.geometry.coordinates[0]],
@@ -698,7 +698,7 @@ export default class OlRenderer {
         var ns = this.nodeSizeScale.bind(this);
 
         // calcul des rayon et stockage des noeuds dans une hash
-        proj_nodes = proj_nodes.map(function(n) {
+        proj_nodes = proj_nodes.map(function (n) {
             return {
                 center: n.center,
                 radius: this.nodeSize(n, nstyle),
@@ -755,7 +755,7 @@ export default class OlRenderer {
         });
         const style = [countryStyle, labelStyle];
 
-     
+
 
         // Création de la couche
         let nodesLayer = new VectorLayer({
@@ -794,35 +794,35 @@ export default class OlRenderer {
 
 
         // Ajouter un écouteur d'événement pour le survol
-        this.map.on('pointermove', function(event) {
+        this.map.on('pointermove', function (event) {
             this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
         });
 
         // Sauvegarder une référence à this avant la fonction de rappel
         const self = this;
         // Ajouter un gestionnaire d'événements de clic aux polygones
-        this.map.on('click', function(evt) {
+        this.map.on('click', function (evt) {
             self.add_popup_nodes(evt)
         })
     }
     add_popup_nodes(evt) {
         let popup = this._popup
-            /**
-             * Elements that make up the popup.
-             */
+        /**
+         * Elements that make up the popup.
+         */
         const container2 = document.getElementById('popup');
         const content = document.getElementById('popup-content');
         const closer = document.getElementById('popup-closer');
 
 
         // Ajouter un événement de clic pour fermer le popup
-        closer.addEventListener('click', function(event) {
+        closer.addEventListener('click', function (event) {
             event.preventDefault(); // Empêcher le comportement par défaut du lien
             container2.style.display = 'none'; // Cacher le popup
         });
 
         // Déterminer le layer sur lequel le clic s'est produit
-        this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        this.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
 
             if (layer.get('name') === 'nodes') {
 
@@ -838,7 +838,7 @@ export default class OlRenderer {
                         var selectedValue = selectElement.value;
                     }
 
-          
+
                     // Construire le contenu du popup avec les informations de l'entité
                     let popupContent = '<h4 class="popup-title" > ID : ' + feature.get('nodeData').id + '</h4>';
                     popupContent += '<hr>';
@@ -856,7 +856,7 @@ export default class OlRenderer {
                     content.innerHTML = popupContent;
 
                     // Définir la position du popup sur le clic de la souris
-            
+
                     popup.setPosition(evt.coordinate);
 
                     // Afficher le popup
@@ -878,7 +878,7 @@ export default class OlRenderer {
 
         var map = this.map;
         map.removeLayer(this.get_layer("nodes"));
-        let proj_nodes = nodes.map(function(n) {
+        let proj_nodes = nodes.map(function (n) {
             return {
                 center: transform(
                     [n.geometry.coordinates[1], n.geometry.coordinates[0]],
@@ -891,7 +891,7 @@ export default class OlRenderer {
         });
         //Dealing with the size of the nodes
 
-        proj_nodes = proj_nodes.map(function(n) {
+        proj_nodes = proj_nodes.map(function (n) {
             return {
                 center: n.center,
                 radius: this.nodeSize(n, nstyle),
@@ -932,33 +932,33 @@ export default class OlRenderer {
         // Sauvegarder une référence à this avant la fonction de rappel
         const self = this;
         // Ajouter un gestionnaire d'événements de clic aux polygones
-        this.map.on('click', function(evt) {
+        this.map.on('click', function (evt) {
             self.add_popup_nodes(evt)
         })
     }
 
     //Update the variables according to which the color, size, text and opacity will vary
     update_nodes_var(nstyle) {
-            if (nstyle.color.mode === "varied") {
-                this._node_var.color = nstyle.color.varied.var;
-            }
-            if (nstyle.size.mode === "varied") {
-                this._node_var.size = nstyle.size.varied.var;
-                this._node_size_ratio = nstyle.size.varied.maxval;
-            }
-
-            this._node_var.text = nstyle.text.fixed;
-
-            if (nstyle.opacity.mode === "varied") {
-                this._node_var.opacity = nstyle.opacity.varied.var;
-            }
+        if (nstyle.color.mode === "varied") {
+            this._node_var.color = nstyle.color.varied.var;
         }
-        //Update size and opacity scale types (Linear,Pow etc)
+        if (nstyle.size.mode === "varied") {
+            this._node_var.size = nstyle.size.varied.var;
+            this._node_size_ratio = nstyle.size.varied.maxval;
+        }
+
+        this._node_var.text = nstyle.text.fixed;
+
+        if (nstyle.opacity.mode === "varied") {
+            this._node_var.opacity = nstyle.opacity.varied.var;
+        }
+    }
+    //Update size and opacity scale types (Linear,Pow etc)
     update_node_scales_types(nstyle) {
-            this._node_scale_types.size = nstyle.size.varied.scale;
-            this._node_scale_types.opacity = nstyle.opacity.varied.scale;
-        }
-        //Updates scales for sizing elements according to node_var
+        this._node_scale_types.size = nstyle.size.varied.scale;
+        this._node_scale_types.opacity = nstyle.opacity.varied.scale;
+    }
+    //Updates scales for sizing elements according to node_var
     update_nodes_scales(nodes, nstyle) {
         //COLORS
 
@@ -1094,7 +1094,7 @@ export default class OlRenderer {
     }
 
     linkStyle(link, lstyle) {
-    
+
         //OPACITY (we need to have rounded numbers)
         let opacity;
         if (lstyle.opacity.mode === "fixed") {
@@ -1108,7 +1108,7 @@ export default class OlRenderer {
 
         //COLOR
         let stroke;
-       // console.log(link)
+        console.log(link)
 
         if (lstyle.stroke.size != '0') {
             if (link.key.split('->')[0] != link.key.split('->')[1]) {
@@ -1119,7 +1119,7 @@ export default class OlRenderer {
             }
         }
         if (lstyle.color.mode === "fixed") {
-           // console.log(lstyle)
+            // console.log(lstyle)
             return new Style({
                 stroke: stroke,
                 fill: new Fill({
@@ -1135,7 +1135,7 @@ export default class OlRenderer {
                 let color_array = lstyle.color.varied.colors;
 
                 return new Style({
-                     stroke: stroke,
+                    stroke: stroke,
                     fill: new Fill({
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
                     }),
@@ -1147,7 +1147,7 @@ export default class OlRenderer {
                 let link_group = link.value;
                 color_array[this._link_color_groups[link_group]];
                 return new Style({
-                     stroke: stroke,
+                    stroke: stroke,
                     fill: new Fill({
                         color: this.add_opacity_to_color(
                             color_array[this._link_color_groups[link_group]],
@@ -1169,7 +1169,7 @@ export default class OlRenderer {
                 return 0;
             }
             if (this._link_scale_types.size === "Log")
-              
+
                 return this._scale_link_size(link.value + 1);
             else
                 return this._scale_link_size(link.value);
@@ -1177,11 +1177,11 @@ export default class OlRenderer {
     }
 
     linkOpacityScale(link) {
-            if (this._link_scale_types.opacity === "Log")
-                return this._scale_link_opacity(+link.value + 1);
-            else return this._scale_link_opacity(+link.value);
-        }
-        //Update the variables according to which the color, size, text and opacity will vary
+        if (this._link_scale_types.opacity === "Log")
+            return this._scale_link_opacity(+link.value + 1);
+        else return this._scale_link_opacity(+link.value);
+    }
+    //Update the variables according to which the color, size, text and opacity will vary
     update_links_var(lstyle) {
         if (lstyle.color.mode === "varied") {
             this._link_var.color = lstyle.color.varied.var;
@@ -1196,17 +1196,17 @@ export default class OlRenderer {
         }
     }
     update_link_scales_types(lstyle) {
-            this._link_scale_types.size = lstyle.size.varied.scale;
-            this._link_scale_types.opacity = lstyle.opacity.varied.scale;
+        this._link_scale_types.size = lstyle.size.varied.scale;
+        this._link_scale_types.opacity = lstyle.opacity.varied.scale;
     }
-    
+
     update_links_min_max(links) {
-            this.links_min_value = d3.min(links.map((l) => l.value));
-            this.links_max_value = d3.max(links.map((l) => l.value));
-        
+        this.links_min_value = d3.min(links.map((l) => l.value));
+        this.links_max_value = d3.max(links.map((l) => l.value));
+
     }
-        //Updates scales for sizing elements according to link_var
-        
+    //Updates scales for sizing elements according to link_var
+
     update_links_scales(links, lstyle) {
         //COLORS
 
@@ -1274,14 +1274,14 @@ export default class OlRenderer {
             domain_size = [1, this.links_max_value];
         else domain_size = [this.links_min_value, this.links_max_value];
 
-       
+
         // definition de l'échelle pour la taille
         this._scale_link_size = this._scales[this._link_scale_types.size]
             .copy()
             .range([0, (this._extent_size / 100) * (this._link_size_ratio / 100)])
             .domain(domain_size);
 
-      
+
         //Opacité
 
         // definition de l'échelle pour la taille
@@ -1302,7 +1302,7 @@ export default class OlRenderer {
         let orientation = lstyle.shape.orientation;
         let shape_type = lstyle.shape.type;
 
-      
+
         //Attach link width (in px) for the scalability in the legend
         this.update_links_height(links, lstyle);
 
@@ -1361,17 +1361,18 @@ export default class OlRenderer {
     }
 
     add_links(links, lstyle, link_data_range, z_index) {
-
+        console.log("ajout de links")
+        console.log(lstyle)
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
-      
+
         if (link_data_range !== undefined) {
             this.links_min_value = link_data_range[0];
-            this.links_max_value = link_data_range[1];    
+            this.links_max_value = link_data_range[1];
         } else {
             this.links_min_value = d3.min(links.map((l) => l.value));
             this.links_max_value = d3.max(links.map((l) => l.value));
         }
-     
+
         this.update_links_var(lstyle);
         this.update_link_scales_types(lstyle);
         this.update_links_scales(links, lstyle);
@@ -1384,11 +1385,12 @@ export default class OlRenderer {
         let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100)
         let mean = d3.mean(links.map((l) => l.value))
 
-        let filtered = links.filter(function (a) { return a.value <= max_90percent; });
+        let filtered = links.filter(function (a) { return a.value <= mean; });
         // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
         let arrows = this.create_arrows(filtered, lstyle);
+
         let links_shapes = arrows.map((a, i) => {
-          
+
             let polygon = new Polygon([a.geometry]);
             let feature = new Feature(polygon);
             feature.setProperties({
@@ -1398,7 +1400,7 @@ export default class OlRenderer {
             //recupération des styles
             let link = arrows[link_index].attributes;
             feature.setStyle(this.linkStyle(link, lstyle));
-           
+
             return feature;
         }, this);
 
@@ -1422,13 +1424,13 @@ export default class OlRenderer {
 
 
         // Ajouter un écouteur d'événement pour le survol
-        this.map.on('pointermove', function(event) {
+        this.map.on('pointermove', function (event) {
             this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
         });
 
         const self = this
-            // Ajouter un gestionnaire d'événements de clic aux polygones
-        this.map.on('click', function(evt) {
+        // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function (evt) {
             self.add_popup_links(evt)
         });
     }
@@ -1436,26 +1438,26 @@ export default class OlRenderer {
     add_popup_links(evt) {
 
         let popup = this._popup
-            /**
-             * Elements that make up the popup.
-             */
+        /**
+         * Elements that make up the popup.
+         */
         const container = document.getElementById('popup');
         const content = document.getElementById('popup-content');
         const closer = document.getElementById('popup-closer');
 
         // Ajouter un événement de clic pour fermer le popup
-        closer.addEventListener('click', function(event) {
+        closer.addEventListener('click', function (event) {
             event.preventDefault(); // Empêcher le comportement par défaut du lien
             container.style.display = 'none'; // Cacher le popup
         });
 
         // Déterminer le layer sur lequel le clic s'est produit
-        this.map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+        this.map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
             if (layer && layer.get('name') === 'links') {
-                
+
                 if (feature) {
-                  
-               
+
+
                     // Sélection de l'élément select
                     var selectElement = document.getElementById("semioSelectorSizeChangeLink");
                     // Construire le contenu du popup avec les informations de l'entité
@@ -1463,7 +1465,7 @@ export default class OlRenderer {
                     popupContent += '<hr>';
                     popupContent += '<table class="popup-table table table-striped">';
                     let i = 0;
-          
+
                     for (var key in feature.get('linkData')) {
                         if (key !== 'key') {
                             let value = feature.get('linkData')[key];
@@ -1479,7 +1481,7 @@ export default class OlRenderer {
 
                     // Définir la position du popup sur le clic de la souris
                     popup.setPosition(evt.coordinate);
-              
+
                     // Afficher le popup
                     container.style.display = 'block';
                 } else {
@@ -1538,15 +1540,15 @@ export default class OlRenderer {
 
 
         const self = this
-            // Ajouter un gestionnaire d'événements de clic aux polygones
-        this.map.on('click', function(evt) {
+        // Ajouter un gestionnaire d'événements de clic aux polygones
+        this.map.on('click', function (evt) {
             self.add_popup_links(evt)
         });
     }
 
     set_projection(proj, nodes, links, config, link_data_range) {
         let olproj = getProjection(proj);
-  
+
         const item = global.projections[proj].extent;
         olproj.setExtent(item);
 
@@ -1566,12 +1568,12 @@ export default class OlRenderer {
         //Reprojecting geojson and baselayers
         //Selecting every vectorlayers other than nodes and links (so geojson or baselayers)
         for (let vectorLayer of this.map.getLayers().array_.filter((l) => {
-                return (
-                    l instanceof VectorLayer ||
-                    l.values_.name !== "nodes" ||
-                    l.values_.name !== "links"
-                );
-            })) {
+            return (
+                l instanceof VectorLayer ||
+                l.values_.name !== "nodes" ||
+                l.values_.name !== "links"
+            );
+        })) {
             const layer_name = vectorLayer.values_.name;
             const model_layer = config.layers.filter((l) => l.name === layer_name)[0];
 
@@ -1594,7 +1596,7 @@ export default class OlRenderer {
     }
 
     render(nodes, links, nstyle, lstyle, link_data_range) {
-       let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
+        let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
         //Envoyer les z-index aux nodes et aux links
         this.add_nodes(nodes, nstyle, layer_z_indexes.nodes);
         this.add_links(links, lstyle, link_data_range, layer_z_indexes.links);
@@ -1602,17 +1604,17 @@ export default class OlRenderer {
 
 
     get_layer_z_indexes(map_layers) {
-    let layer_z_indexes = {};
-    for (let layer of map_layers) {
-        if (layer instanceof VectorLayer) {
-            let layer_name = layer.values_.name;
-            if (layer_name === "nodes" || layer_name === "links") {
-                layer_z_indexes[layer_name] = layer.getZIndex();
+        let layer_z_indexes = {};
+        for (let layer of map_layers) {
+            if (layer instanceof VectorLayer) {
+                let layer_name = layer.values_.name;
+                if (layer_name === "nodes" || layer_name === "links") {
+                    layer_z_indexes[layer_name] = layer.getZIndex();
+                }
             }
         }
+        return layer_z_indexes;
     }
-    return layer_z_indexes;
-}
 
     //LAYERS //
 
@@ -1636,7 +1638,7 @@ export default class OlRenderer {
         } else if (layer.name === "Wikimedia") {
             url = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        }  else if (layer.name === "Stamen_without_labels") {
+        } else if (layer.name === "Stamen_without_labels") {
             url = "http://stamen-tiles-{a-d}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Stamen_Light") {
@@ -1651,10 +1653,10 @@ export default class OlRenderer {
         } else if (layer.name === "CartoDB_Voyager_labeled") {
             url = "http://{1-4}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}.png";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        }  else if (layer.name === "Stamen_terrain") {
+        } else if (layer.name === "Stamen_terrain") {
             url = "http://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}.png?api_key=8bc2069e-6d06-44c0-b43e-4b7de4bbcc3a";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
-        }  else if (layer.name === "Stamen_watercolor") {
+        } else if (layer.name === "Stamen_watercolor") {
             url = "http://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg?api_key=8bc2069e-6d06-44c0-b43e-4b7de4bbcc3a";
             source = new XYZ({ url: url, crossOrigin: "Anonymous" });
         } else if (layer.name === "Stadia_Stamen_Dark") {
@@ -1824,9 +1826,9 @@ export default class OlRenderer {
         for (let l of layers) {
             z_indexes[l.name] = l.z_index;
         }
-   
+
         for (let layer of this.map.getLayers().array_) {
-            
+
             layer.setZIndex(z_indexes[layer.values_.name]);
         }
     }
@@ -2059,7 +2061,7 @@ function orientedCurveArrow(style, ori, dest, rad_ori, rad_dest, width) {
             (reducePointdest[1] - reducePointOri[1]) *
             (reducePointdest[1] - reducePointOri[1])
         );
-    var base_curve_point = [-Math.cos(angle) * dist + reducePointdest[0], -Math.sin(angle) * dist + reducePointdest[1], ];
+    var base_curve_point = [-Math.cos(angle) * dist + reducePointdest[0], -Math.sin(angle) * dist + reducePointdest[1],];
 
     // get Origin from the radius of the current nodes
     var center_curve_point = transposePointVerticalyFromLine(
@@ -2160,7 +2162,7 @@ function orientedCurveOneArrow(style, ori, dest, rad_ori, rad_dest, width) {
             (reducePointdest[1] - reducePointOri[1]) *
             (reducePointdest[1] - reducePointOri[1])
         );
-    var base_curve_point = [-Math.cos(angle) * dist + reducePointdest[0], -Math.sin(angle) * dist + reducePointdest[1], ];
+    var base_curve_point = [-Math.cos(angle) * dist + reducePointdest[0], -Math.sin(angle) * dist + reducePointdest[1],];
     // get Origin from the radius of the current nodes
     var center_curve_point = transposePointVerticalyFromLine(
         base_curve_point, [ori, dest],
@@ -2234,7 +2236,7 @@ function noOrientedCurveArrow(style, ori, dest, rad_ori, rad_dest, width) {
             (reducePointdest[1] - reducePointOri[1]) *
             (reducePointdest[1] - reducePointOri[1])
         );
-    var base_curve_point = [-Math.cos(angle) * dist + reducePointdest[0], -Math.sin(angle) * dist + reducePointdest[1], ];
+    var base_curve_point = [-Math.cos(angle) * dist + reducePointdest[0], -Math.sin(angle) * dist + reducePointdest[1],];
 
     // get Origin from the radius of the current nodes
     var center_curve_point = transposePointVerticalyFromLine(

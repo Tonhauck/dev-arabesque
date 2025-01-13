@@ -2,18 +2,24 @@
 <html lang="en">
 
 <head>
-    <meta http-equiv="Content-Security-Policy" content="style-src 'self' 'unsafe-inline'; default-src 'self'; img-src 'self' data: http:; script-src 'self' 'unsafe-eval';">
+    <meta http-equiv="Content-Security-Policy"
+        content="style-src 'self' 'unsafe-inline'; default-src 'self'; img-src 'self' data: http:; script-src 'self' 'unsafe-eval';">
     <meta charset="UTF-8">
     <title>Arabesque</title>
-    <!-- other meta tags and links -->
 </head>
 
 <body id="arabesque-top">
     <div id="content">
         <header>
+            <div id="spinnerDiv"
+                style="position: fixed; top: 0; left: 0; width: 100vw; height: 100%; display:flex; justify-content: center; align-items: center; background-color: rgba(254, 254, 254, 0.5); z-index: 9999; display: none;">
+                <div class="spinner"></div>
+            </div>
+
             <nav class="navbar navbar-expand-lg navbar-light" id="main-navbar">
                 <a class="navbar-brand" href="#arabesque-top" id="logo-arabesque">Arabesque</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu"
+                    aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbar-menu">
@@ -25,9 +31,13 @@
                             <a class="nav-link" href="#contact">About</a>
                         </li>
                     </ul>
-                    <a href="https://www.univ-gustave-eiffel.fr/"> <img src="./public/Logo_Université_Gustave_Eiffel_2020.svg" id="logo-gustave-eiffel" class="d-inline-block align-top nav-image logo" alt=""></a>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <img src="./public/small_logo_gflowiz.jpg" id="logo-gustave-eiffel" class="d-inline-block align-top nav-image logo" alt="">&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="https://github.com/gflowiz/arabesque-dev"> <img src="./public/github-mark.svg" id="github" class="d-inline-block align-top nav-image logo" alt=""></a>
+                    <a href="https://www.univ-gustave-eiffel.fr/"> <img
+                            src="./public/Logo_Université_Gustave_Eiffel_2020.svg" id="logo-gustave-eiffel"
+                            class="d-inline-block align-top nav-image logo" alt=""></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img src="./public/small_logo_gflowiz.jpg" id="logo-gustave-eiffel"
+                        class="d-inline-block align-top nav-image logo" alt="">&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="https://github.com/gflowiz/arabesque-dev"> <img src="./public/github-mark.svg" id="github"
+                            class="d-inline-block align-top nav-image logo" alt=""></a>
                 </div>
             </nav>
         </header>
@@ -57,7 +67,8 @@
                                 <h5 class="card-title">Saved map</h5>
                                 <div class="custom-file">
                                     <input type="file" id="ImportZip" class="custom-file-input" />
-                                    <label class="custom-file-label" id="label_ImportZip" for="ImportZip">map.zip</label>
+                                    <label class="custom-file-label" id="label_ImportZip"
+                                        for="ImportZip">map.zip</label>
                                 </div>
                             </div>
                         </div>
@@ -66,9 +77,12 @@
 
                     <div class="col-md-3">
                         <div class="card mb-3 box-shadow" id="thumbnail-card">
-                            <img class="card-img-top" data-src="" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="./assets/svg/mobscol_gen.png" data-holder-rendered="true">
+                            <img class="card-img-top" data-src="" alt="Thumbnail [100%x225]"
+                                style="height: 225px; width: 100%; display: block;" src="./assets/svg/mobscol_gen.png"
+                                data-holder-rendered="true">
                             <div class="card-body">
-                                <p class="card-text">Sample flowdata: school mobility in France (<a href="https://www.insee.fr/fr/information/2383297">INSEE, 2021</a>).</p>
+                                <p class="card-text">Sample flowdata: school mobility in France (<a
+                                        href="https://www.insee.fr/fr/information/2383297">INSEE, 2021</a>).</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <!-- <div class="btn-group">
                       <button type="button" class="btn btn-sm btn-outline-secondary">Source</button>
@@ -98,49 +112,64 @@
                             </div>
                         </div>
                         <div class="card layers-card mt-2 mb-2">
-                            <div align="center" ; class="card-header close collapsed addLayerButton" id="addTitle" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" aria-label="Close">
+                            <div align="center" ; class="card-header close collapsed addLayerButton" id="addTitle"
+                                type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
+                                aria-controls="collapseThree" aria-label="Close">
                                 Customize
                                 <button type="button" class="close" aria-label="Close">
-                                        </button>
+                                </button>
                             </div>
                             <div id="collapseThree" class="collapse" aria-labelledby="headingTwo">
                                 <div class="card-body">
                                     <div class="input-group mb-3 mt-3" style="width: 100%">
-                                        <input class="btn btn-light input-customize" type="text" id="titleMap" name="Title" placeholder="Title" style="width: 100%;">
+                                        <input class="btn btn-light input-customize" type="text" id="titleMap"
+                                            name="Title" placeholder="Title" style="width: 100%;">
                                     </div>
                                     <div class="input-group mb-3" style="width: 100%">
-                                        <input class="btn btn-light input-customize" type="text" id="authorMap" name="Author" placeholder="Author" style="width: 100%;">
+                                        <input class="btn btn-light input-customize" type="text" id="authorMap"
+                                            name="Author" placeholder="Author" style="width: 100%;">
                                     </div>
                                     <div class="input-group mb-3" style="width: 100%">
-                                        <input class="btn btn-light input-customize" type="text" id="sourceMap" name="Source" placeholder="Source" style="width: 100%;">
+                                        <input class="btn btn-light input-customize" type="text" id="sourceMap"
+                                            name="Source" placeholder="Source" style="width: 100%;">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card layers-card mt-2 mb-2">
-                            <div align="center" ; class="card-header close collapsed" id="addLayersButton" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" aria-label="Close">
+                            <div align="center" ; class="card-header close collapsed" id="addLayersButton" type="button"
+                                data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                aria-controls="collapseTwo" aria-label="Close">
                                 Layers
                                 <button type="button" class="close" aria-label="Close">
                                 </button>
                             </div>
                             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
                                 <div class="card-body">
-                                    <input type="button" value="Add Reference Layer" id="baseLayerButton" data-toggle="modal" data-target="#referenceModal" class="btn btn-dark btn-block addLayerButton">
+                                    <input type="button" value="Add Reference Layer" id="baseLayerButton"
+                                        data-toggle="modal" data-target="#referenceModal"
+                                        class="btn btn-dark btn-block addLayerButton">
 
                                     </input>
-                                    <input type="button" id="tileLayerButton" class="btn btn-dark btn-block addLayerButton" data-toggle="modal" data-target="#tileLayerModal" value="Add Tile Layer">
+                                    <input type="button" id="tileLayerButton"
+                                        class="btn btn-dark btn-block addLayerButton" data-toggle="modal"
+                                        data-target="#tileLayerModal" value="Add Tile Layer">
 
                                     </input>
-                                    <input type="button" value="Import GeoJson Layers" id="importLayerbutton" class="btn btn-dark btn-block addLayerButton" data-toggle="modal" data-target="#geojsonModal">
+                                    <input type="button" value="Import GeoJson Layers" id="importLayerbutton"
+                                        class="btn btn-dark btn-block addLayerButton" data-toggle="modal"
+                                        data-target="#geojsonModal">
 
                                     </input>
                                 </div>
                             </div>
                         </div>
                         <div class="layerBottomLine"></div>
-                        <div class="row p-0 mt-3" id="layerControlList" data-toggle="tooltip" data-placement="right" data-delay="0" title="Drag and Drop layers to change z-index" data-animation="false">
+                        <div class="row p-0 mt-3" id="layerControlList" data-toggle="tooltip" data-placement="right"
+                            data-delay="0" title="Drag and Drop layers to change z-index" data-animation="false">
 
-                            <ul id="accordionLayerControl" class="list-unstyled col-md-12 align-items-center ui-sortable">
+                            <ul id="accordionLayerControl"
+                                class="list-unstyled col-md-12 align-items-center ui-sortable">
 
                             </ul>
                         </div>
@@ -155,23 +184,26 @@
                             <div id="scaleLine"></div>
                             <div id="sourceDiv" class="legendAttrib">
                                 <span id="sourceText"></span>
-                                <span id="authorText"></span> </div>
+                                <span id="authorText"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-3 filterColumn" id="filterDiv">
                         <!-- <div class="row justify-content-md-center mt-3 "> -->
                         <!-- <div class="col-md-8"> -->
-                        <input id="selectFilterButton" class="btn btn-dark btn-block" type="button" value="Add Filter" data-toggle="modal" data-target="#FilterModal">
+                        <input id="selectFilterButton" class="btn btn-dark btn-block" type="button" value="Add Filter"
+                            data-toggle="modal" data-target="#FilterModal">
                         <!-- </div> -->
                         <!-- </div> -->
 
                         <div class="">
-                            <label>Links (percentage share of links/arrows features): <span
+                            <label><b>Links</b> (percentage share of links/arrows features): <span
                                     id="percentageLinkData"></span></label>
                             <label>Percentage of volume represented: <span id="percentageVolumeData"></span>
                             </label>
                             <br>
-                            <label>Nodes (percentage share of nodes): <span id="percentageNodeData"></span></label>
+                            <label><b>Nodes</b> (percentage share of nodes): <span
+                                    id="percentageNodeData"></span></label>
                             <div class="filterBottomLine"></div>
                         </div>
 
