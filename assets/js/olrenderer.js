@@ -1108,7 +1108,6 @@ export default class OlRenderer {
 
         //COLOR
         let stroke;
-        console.log(link)
 
         if (lstyle.stroke.size != '0') {
             if (link.key.split('->')[0] != link.key.split('->')[1]) {

@@ -73,8 +73,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="col-md-9">
                         <div class="row">
                             <div class="col-md-4">
@@ -131,138 +129,139 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-    </div>
-    </section>
-    <section id="map" style='display:none'>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-2">
-                    <div class="card">
-                        <div class="card-body projection-card">
-                            <div class="form-group projection-form-group">
-                                <label id="projection-label" for="projection">Projection</label>
-                                <select class="form-control selectpicker" id="projection">
+        </section>
+        <section id="map" style='display:none'>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div class="card">
+                            <div class="card-body projection-card">
+                                <div class="form-group projection-form-group">
+                                    <label id="projection-label" for="projection">Projection</label>
+                                    <select class="form-control selectpicker" id="projection">
 
 
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card layers-card mt-2 mb-2">
-                        <div align="center" ; class="card-header close collapsed addLayerButton" id="addTitle"
-                            type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
-                            aria-controls="collapseThree" aria-label="Close">
-                            Customize
-                            <button type="button" class="close" aria-label="Close">
-                            </button>
-                        </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingTwo">
-                            <div class="card-body">
-                                <div class="input-group mb-3 mt-3" style="width: 100%">
-                                    <input class="btn btn-light input-customize" type="text" id="titleMap" name="Title"
-                                        placeholder="Title" style="width: 100%;">
-                                </div>
-                                <div class="input-group mb-3" style="width: 100%">
-                                    <input class="btn btn-light input-customize" type="text" id="authorMap"
-                                        name="Author" placeholder="Author" style="width: 100%;">
-                                </div>
-                                <div class="input-group mb-3" style="width: 100%">
-                                    <input class="btn btn-light input-customize" type="text" id="sourceMap"
-                                        name="Source" placeholder="Source" style="width: 100%;">
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card layers-card mt-2 mb-2">
-                        <div align="center" ; class="card-header close collapsed" id="addLayersButton" type="button"
-                            data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
-                            aria-controls="collapseTwo" aria-label="Close">
-                            Layers
-                            <button type="button" class="close" aria-label="Close">
-                            </button>
+                        <div class="card layers-card mt-2 mb-2">
+                            <div align="center" ; class="card-header close collapsed addLayerButton" id="addTitle"
+                                type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
+                                aria-controls="collapseThree" aria-label="Close">
+                                Customize
+                                <button type="button" class="close" aria-label="Close">
+                                </button>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingTwo">
+                                <div class="card-body">
+                                    <div class="input-group mb-3 mt-3" style="width: 100%">
+                                        <input class="btn btn-light input-customize" type="text" id="titleMap"
+                                            name="Title" placeholder="Title" style="width: 100%;">
+                                    </div>
+                                    <div class="input-group mb-3" style="width: 100%">
+                                        <input class="btn btn-light input-customize" type="text" id="authorMap"
+                                            name="Author" placeholder="Author" style="width: 100%;">
+                                    </div>
+                                    <div class="input-group mb-3" style="width: 100%">
+                                        <input class="btn btn-light input-customize" type="text" id="sourceMap"
+                                            name="Source" placeholder="Source" style="width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
-                            <div class="card-body">
-                                <input type="button" value="Add Reference Layer" id="baseLayerButton"
-                                    data-toggle="modal" data-target="#referenceModal"
-                                    class="btn btn-dark btn-block addLayerButton">
+                        <div class="card layers-card mt-2 mb-2">
+                            <div align="center" ; class="card-header close collapsed" id="addLayersButton" type="button"
+                                data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                aria-controls="collapseTwo" aria-label="Close">
+                                Layers
+                                <button type="button" class="close" aria-label="Close">
+                                </button>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                                <div class="card-body">
+                                    <input type="button" value="Add Reference Layer" id="baseLayerButton"
+                                        data-toggle="modal" data-target="#referenceModal"
+                                        class="btn btn-dark btn-block addLayerButton">
 
-                                </input>
-                                <input type="button" id="tileLayerButton" class="btn btn-dark btn-block addLayerButton"
-                                    data-toggle="modal" data-target="#tileLayerModal" value="Add Tile Layer">
+                                    </input>
+                                    <input type="button" id="tileLayerButton"
+                                        class="btn btn-dark btn-block addLayerButton" data-toggle="modal"
+                                        data-target="#tileLayerModal" value="Add Tile Layer">
 
-                                </input>
-                                <input type="button" value="Import GeoJson Layers" id="importLayerbutton"
-                                    class="btn btn-dark btn-block addLayerButton" data-toggle="modal"
-                                    data-target="#geojsonModal">
+                                    </input>
+                                    <input type="button" value="Import GeoJson Layers" id="importLayerbutton"
+                                        class="btn btn-dark btn-block addLayerButton" data-toggle="modal"
+                                        data-target="#geojsonModal">
 
-                                </input>
+                                    </input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layerBottomLine"></div>
+                        <div class="row p-0 mt-3" id="layerControlList" data-toggle="tooltip" data-placement="right"
+                            data-delay="0" title="Drag and Drop layers to change z-index" data-animation="false">
+
+                            <ul id="accordionLayerControl"
+                                class="list-unstyled col-md-12 align-items-center ui-sortable">
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-7 map-column">
+                        <div id="Mapcontainer">
+                            <div id="popup" class="ol-popup">
+                                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+                                <div id="popup-content"></div>
+                            </div>
+                            <div id="legendDiv"> </div>
+                            <div id="scaleLine"></div>
+                            <div id="sourceDiv" class="legendAttrib">
+                                <span id="sourceText"></span>
+                                <span id="authorText"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="layerBottomLine"></div>
-                    <div class="row p-0 mt-3" id="layerControlList" data-toggle="tooltip" data-placement="right"
-                        data-delay="0" title="Drag and Drop layers to change z-index" data-animation="false">
+                    <div class="col-sm-3 filterColumn" id="filterDiv">
+                        <!-- <div class="row justify-content-md-center mt-3 "> -->
+                        <!-- <div class="col-md-8"> -->
+                        <input id="selectFilterButton" class="btn btn-dark btn-block" type="button" value="Add Filter"
+                            data-toggle="modal" data-target="#FilterModal">
+                        <!-- </div> -->
+                        <!-- </div> -->
 
-                        <ul id="accordionLayerControl" class="list-unstyled col-md-12 align-items-center ui-sortable">
-
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-sm-7 map-column">
-                    <div id="Mapcontainer">
-                        <div id="popup" class="ol-popup">
-                            <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                            <div id="popup-content"></div>
+                        <div class="">
+                            <label><b>Links</b> (percentage share of links/arrows features): <span
+                                    id="percentageLinkData"></span></label>
+                            <label>Percentage of volume represented: <span id="percentageVolumeData"></span>
+                            </label>
+                            <br>
+                            <label><b>Nodes</b> (percentage share of nodes): <span
+                                    id="percentageNodeData"></span></label>
+                            <div class="filterBottomLine"></div>
                         </div>
-                        <div id="legendDiv"> </div>
-                        <div id="scaleLine"></div>
-                        <div id="sourceDiv" class="legendAttrib">
-                            <span id="sourceText"></span>
-                            <span id="authorText"></span>
+
+                        <div id="Filters" class="filters">
                         </div>
-                    </div>
-                </div>
-                <div class="col-sm-3 filterColumn" id="filterDiv">
-                    <!-- <div class="row justify-content-md-center mt-3 "> -->
-                    <!-- <div class="col-md-8"> -->
-                    <input id="selectFilterButton" class="btn btn-dark btn-block" type="button" value="Add Filter"
-                        data-toggle="modal" data-target="#FilterModal">
-                    <!-- </div> -->
-                    <!-- </div> -->
 
-                    <div class="">
-                        <label><b>Links</b> (percentage share of links/arrows features): <span
-                                id="percentageLinkData"></span></label>
-                        <label>Percentage of volume represented: <span id="percentageVolumeData"></span>
-                        </label>
-                        <br>
-                        <label><b>Nodes</b> (percentage share of nodes): <span id="percentageNodeData"></span></label>
-                        <div class="filterBottomLine"></div>
                     </div>
-
-                    <div id="Filters" class="filters">
-                    </div>
-
                 </div>
             </div>
-        </div>
 
-    </section>
-    <div id="ModalImportNodes"> </div>
-    <div id="ModalImportPresets"> </div>
-    <div id="ModalImportLinks"> </div>
-    <div id="ModalImportStats"> </div>
-    <div id="ModalSemioNodes"> </div>
-    <div id="ModalSemioLinks"> </div>
-    <div id="ModalShapeLinks"></div>
-    <div id="ModalNewFilter"></div>
-    <div id="ModalNewLayer"></div>
-    <div id="ModalNewReference"></div>
-    <div id="ModalNewGeojson"></div>
-    <div id="ModalSemioLayer"></div>
+        </section>
+        <div id="ModalImportNodes"> </div>
+        <div id="ModalImportPresets"> </div>
+        <div id="ModalImportLinks"> </div>
+        <div id="ModalImportStats"> </div>
+        <div id="ModalSemioNodes"> </div>
+        <div id="ModalSemioLinks"> </div>
+        <div id="ModalShapeLinks"></div>
+        <div id="ModalNewFilter"></div>
+        <div id="ModalNewLayer"></div>
+        <div id="ModalNewReference"></div>
+        <div id="ModalNewGeojson"></div>
+        <div id="ModalSemioLayer"></div>
     </div>
     <link href="main.css" rel="stylesheet">
     <script src="bundle.js"></script>
