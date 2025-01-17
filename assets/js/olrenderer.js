@@ -1296,13 +1296,19 @@ export default class OlRenderer {
     }
 
     create_arrows(links, lstyle) {
+        console.log("Lstyle utilisé pour créer les flèches:", lstyle);
         var nodes_hash = this.proj_nodes_hash;
 
         let orientation = lstyle.shape.orientation;
         let shape_type = lstyle.shape.type;
 
+        // Vérifiez que lstyle contient les propriétés attendues
+        if (!lstyle.shape.arrow_head || !lstyle.shape.arrow_curve) {
+            console.error("Lstyle ne contient pas les propriétés nécessaires:", lstyle);
+            return [];
+        }
 
-        //Attach link width (in px) for the scalability in the legend
+        // Attach link width (in px) for the scalability in the legend
         this.update_links_height(links, lstyle);
 
         let style = {
@@ -1324,6 +1330,11 @@ export default class OlRenderer {
             let to = link.key.split("->")[1];
             let width = this.linkSize(link, lstyle);
 
+            if (!nodes_hash[from] || !nodes_hash[to]) {
+                console.error(`Nœuds manquants pour le lien: ${link.key}`);
+                return null;
+            }
+
             let arrow = arrowFunction(
                 style,
                 nodes_hash[from].center,
@@ -1339,29 +1350,31 @@ export default class OlRenderer {
             };
         };
 
-        let arrows;
-        if (orientation === "oriented" || shape_type === "StraightArrow") {
-            arrows = links.map(link => createArrow(link, orientedStraightArrow));
-        } else if (orientation === "noOriented" || shape_type === "StraightArrow") {
-            arrows = links.map(link => createArrow(link, noOrientedStraightArrow));
-        } else if (orientation === "oriented" || shape_type === "StraightNoHookArrow") {
-            arrows = links.map(link => createArrow(link, orientedStraightNoHookArrow));
-        } else if (orientation === "oriented" || shape_type === "TriangleArrow") {
-            arrows = links.map(link => createArrow(link, orientedTriangleArrow));
-        } else if (orientation === "oriented" || shape_type === "CurveArrow") {
-            arrows = links.map(link => createArrow(link, orientedCurveArrow));
-        } else if (orientation === "oriented" || shape_type === "CurveOneArrow") {
-            arrows = links.map(link => createArrow(link, orientedCurveOneArrow));
-        } else if (orientation === "noOriented" || shape_type === "CurveArrow") {
-            arrows = links.map(link => createArrow(link, noOrientedCurveArrow));
-        }
+        let arrows = links.map(link => {
+            if (orientation === "oriented" && shape_type === "StraightArrow") {
+                return createArrow(link, orientedStraightArrow);
+            } else if (orientation === "noOriented" && shape_type === "StraightArrow") {
+                return createArrow(link, noOrientedStraightArrow);
+            } else if (orientation === "oriented" && shape_type === "StraightNoHookArrow") {
+                return createArrow(link, orientedStraightNoHookArrow);
+            } else if (orientation === "oriented" && shape_type === "TriangleArrow") {
+                return createArrow(link, orientedTriangleArrow);
+            } else if (orientation === "oriented" && shape_type === "CurveArrow") {
+                return createArrow(link, orientedCurveArrow);
+            } else if (orientation === "oriented" && shape_type === "CurveOneArrow") {
+                return createArrow(link, orientedCurveOneArrow);
+            } else if (orientation === "noOriented" && shape_type === "CurveArrow") {
+                return createArrow(link, noOrientedCurveArrow);
+            }
+            return null;
+        }).filter(arrow => arrow !== null);
 
         return arrows;
     }
 
     add_links(links, lstyle, link_data_range, z_index) {
         console.log("ajout de links")
-        console.log(lstyle)
+ 
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
         if (link_data_range !== undefined) {
@@ -1386,23 +1399,30 @@ export default class OlRenderer {
 
         let filtered = links.filter(function (a) { return a.value <= mean; });
         // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
+
         let arrows = this.create_arrows(filtered, lstyle);
+        
+        let links_shapes = [];
 
-        let links_shapes = arrows.map((a, i) => {
-
+        // Afficher le spinner avant le chargement
+        document.getElementById('spinnerDiv').style.display = 'flex';
+        // Remplacer forEach par for...of
+        for (const [i, a] of arrows.entries()) {
             let polygon = new Polygon([a.geometry]);
             let feature = new Feature(polygon);
             feature.setProperties({
-                linkData: a.attributes // Ajoutez ici toutes les informations supplémentaires nécessaires
+                linkData: a.attributes
             });
             let link_index = arrows.indexOf(a);
-            //recupération des styles
             let link = arrows[link_index].attributes;
             feature.setStyle(this.linkStyle(link, lstyle));
 
-            return feature;
-        }, this);
+            links_shapes.push(feature);
+        }
+        // Cacher le spinner après le chargement
+        document.getElementById('spinnerDiv').style.display = 'none';
 
+        // Ce code s'exécutera après que la boucle soit terminée
         let links_vector = new VectorSource({
             features: links_shapes,
         });
@@ -1927,9 +1947,8 @@ function orientedStraightArrow(style, ori, dest, rad_ori, rad_dest, width) {
         baseArrow[0],
     ];
 }
-
-// create a simple arrow with en triangle head at a given ratio of the distance
-function noOrientedStraightArrow(ori, dest, rad_ori, rad_dest, width) {
+// créer une flèche simple avec une tête triangulaire à un ratio donné de la distance
+function noOrientedStraightArrow(style, ori, dest, rad_ori, rad_dest, width) {
     var startX = ori[0];
     var startY = ori[1];
     var endX = dest[0];
