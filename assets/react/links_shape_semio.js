@@ -172,7 +172,8 @@ export const LinksShapeModalComponent = (props) => {
       semio.shape.type = shape_type;
     }
     props.update_shape(semio);
-    console.log(semio);
+   // props.semio = semio;
+    
   }
   function shape_type_choices() {
     if (orientation === "oriented") {
