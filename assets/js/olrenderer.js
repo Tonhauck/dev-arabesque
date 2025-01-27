@@ -145,9 +145,6 @@ export default class OlRenderer {
     }
 
     customizeMapAuthor() {
-
-
-
         let authorTextSpan;
         // Écouteur d'événements pour l'élément avec l'ID 'authorMap'
         document.getElementById('authorMap').addEventListener("input", function () {
@@ -164,6 +161,8 @@ export default class OlRenderer {
         });
         return authorTextSpan;
     }
+
+
 
 
     customizeMapSource() {
@@ -845,7 +844,6 @@ export default class OlRenderer {
                     popupContent += '<table class="popup-table table table-striped">';
                     let i = 0;
                     for (var key in feature.get('nodeData').properties) {
-                        console.log(key, feature.get('nodeData').properties[key])
                         popupContent += '<tr class="' + (i % 2 == 0 ? '' : 'table-secondary') + '"><td class="popup-key" style="padding: 0.35em;">' + key + '</td><td class="popup-value" style="padding: 0.35em;">' + feature.get('nodeData').properties[key] + '</td></tr>';
                         i++;
                     }
@@ -929,8 +927,9 @@ export default class OlRenderer {
         this.map.addLayer(nodesLayer);
         nodesLayer.setZIndex(z_index);
 
-        // Sauvegarder une référence à this avant la fonction de rappel
-        const self = this;
+
+
+        const self = this
         // Ajouter un gestionnaire d'événements de clic aux polygones
         this.map.on('click', function (evt) {
             self.add_popup_nodes(evt)
@@ -1296,7 +1295,7 @@ export default class OlRenderer {
     }
 
     create_arrows(links, lstyle) {
-        console.log("Lstyle utilisé pour créer les flèches:", lstyle);
+      
         var nodes_hash = this.proj_nodes_hash;
 
         let orientation = lstyle.shape.orientation;
@@ -1372,8 +1371,7 @@ export default class OlRenderer {
         return arrows;
     }
 
-    add_links(links, lstyle, link_data_range, z_index) {
-        console.log("ajout de links")
+    add_links(links, lstyle, link_data_range, z_index,zoomSaved,center) {
  
         //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
@@ -1446,6 +1444,31 @@ export default class OlRenderer {
         this.map.on('pointermove', function (event) {
             this.getTargetElement().style.cursor = this.hasFeatureAtPixel(event.pixel) ? 'pointer' : '';
         });
+     
+        if (center && zoomSaved) {
+            console.log('ca existe')
+            this.map.getView().setCenter(center);
+            this.map.getView().setZoom(zoomSaved);
+        } else {
+            const vectorSource = linksLayer.getSource();
+    
+            // Vérifiez si la source a des entités
+            if (vectorSource.getFeatures().length > 0) {
+                const extent = vectorSource.getExtent();
+             
+                 // Vérifiez si extent est valide
+                if (extent && extent.length === 4 && 
+                    isFinite(extent[0]) && isFinite(extent[1]) && 
+                    isFinite(extent[2]) && isFinite(extent[3])) {
+                   
+                    this.map.getView().fit(extent); 
+                }  else {
+                    console.error("L'extent n'est pas valide:", extent);
+                }
+            } else {
+                console.error("Aucune entité dans le vector layer");
+            } 
+        }
 
         const self = this
         // Ajouter un gestionnaire d'événements de clic aux polygones
@@ -1571,13 +1594,12 @@ export default class OlRenderer {
         const item = global.projections[proj].extent;
         olproj.setExtent(item);
 
-
         let newProjExtent = olproj.getExtent();
 
         this.map.setView(
             new View({
-                center: [0, 0],
-                zoom: 10,
+                center: config.center,
+                zoom: config.zoom,
                 projection: olproj,
                 minZoom: -3,
                 multiWorld: false,
@@ -1611,14 +1633,16 @@ export default class OlRenderer {
         let lstyle = config.styles.links;
         let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
         this.add_nodes(nodes, nstyle, layer_z_indexes.nodes);
-        this.add_links(links, lstyle, link_data_range, layer_z_indexes.links);
+        this.add_links(links, lstyle, link_data_range, layer_z_indexes.links, config.zoom,config.center);
     }
 
     render(nodes, links, nstyle, lstyle, link_data_range) {
         let layer_z_indexes = this.get_layer_z_indexes(this.map.getLayers().getArray());
+        let zoom = this.map.getView().getZoom()
+        let center = this.map.getView().getCenter()
         //Envoyer les z-index aux nodes et aux links
         this.add_nodes(nodes, nstyle, layer_z_indexes.nodes);
-        this.add_links(links, lstyle, link_data_range, layer_z_indexes.links);
+        this.add_links(links, lstyle, link_data_range, layer_z_indexes.links,zoom,center);
     }
 
 
@@ -1818,7 +1842,8 @@ export default class OlRenderer {
         this.map.addLayer(vectorLayer);
     }
 
-    render_layers(layers, styles) {
+    render_layers(layers, styles,center, zoom) {
+ 
 
         for (let layer of layers) {
             //Skip the iteration if it's nodes or links (they are added in add_nodes and add_links functions)

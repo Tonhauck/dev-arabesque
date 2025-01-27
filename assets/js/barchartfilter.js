@@ -126,7 +126,9 @@ export default class BarChartFilter {
 
 
         const data_groups = this.group_for_barchart();
-
+    // Insérer un délai de 2 secondes avant de continuer
+        setTimeout(() => {
+        
         if (scale == "linear") {
             // Linear Scale
             this.x = d3
@@ -280,7 +282,7 @@ export default class BarChartFilter {
                 this.brush.move(gBrush, range);
             }
         }
-
+    
         g.selectAll(".bar").attr("d", this.barPathF(this, data_groups));
 
         function resizePath(d) {
@@ -292,7 +294,11 @@ export default class BarChartFilter {
                 }A6,6 0 0 ${e} ${0.5 * x},${2 * y}ZM${2.5 * x},${y + 8}V${2 * y - 8}M${4.5 * x
                 },${y + 8}V${2 * y - 8}`;
         }
+
+           }, 300); // Délai de 2 secondes
     }
+
+
     barPathF(that, groups) {
         let path = [];
         let height = that.y.range()[0];
@@ -322,7 +328,7 @@ export default class BarChartFilter {
     group_for_barchart() {
         const min = this.domain[0];
         const max = this.domain[1];
-
+       
 
         const nb_groups = 50;
         let sorted_data = this.complete_data
@@ -331,34 +337,33 @@ export default class BarChartFilter {
 
         let breaks = [];
         let groups = [];
-        let sorted_data_copy = sorted_data;
+        let sorted_data_copy = sorted_data.slice(); // Use slice to copy the array
 
-        //Compute the breaks of the data (with equal amplitudes method)
+        // Compute the breaks of the data (with equal amplitudes method)
         for (let i = 0; i <= nb_groups; i++) {
-            let break_i = ((max - min) / nb_groups) * i;
-            //  console.log(break_i)
+            let break_i = min + ((max - min) / nb_groups) * i;
+       
             breaks.push(break_i);
         }
 
-
+       
 
         for (let i = 0; i < nb_groups; i++) {
             let group = [];
-            //While the data is between the first two breaks, we add it to group
+            // While the data is between the first two breaks, we add it to group
             for (let d of sorted_data_copy) {
                 if (d >= breaks[i] && d < breaks[i + 1]) {
-
                     group.push(d);
-                    continue;
                 } else {
-                    //If it's not (as data are sorted), the group is full
-                    groups.push({ key: breaks[i] + 1, value: group.length });
-                    sorted_data_copy = sorted_data_copy.slice(group.length);
+                    // If it's not (as data are sorted), the group is full
                     break;
                 }
             }
+            groups.push({ key: breaks[i] + 1, value: group.length });
+            sorted_data_copy = sorted_data_copy.slice(group.length);
         }
 
+      
         return groups;
     }
 

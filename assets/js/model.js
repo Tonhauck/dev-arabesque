@@ -58,6 +58,7 @@ export default class Model {
                     type: "quantitative",
                 },
             },
+            
             stroke: { color: "grey", size: '1' },
             size: {
                 mode: "varied",
@@ -81,6 +82,9 @@ export default class Model {
             varnames: {},
             aggrop: "sum",
             filters: [],
+            center: [],
+            zoom: 0,
+            lock: false,
             proj: "Mercator / EPSG:3857",
             styles: { nodes: nstyle, links: lstyle, geojson: {}, baselayer: {} },
             layers: [
@@ -142,7 +146,9 @@ export default class Model {
     }
 
     // export app state
-    export () {
+    export() {
+
+
         //Saving the filtered range for every filter
         for (let filter of this.config.filters) {
             let dimension = this.data.filters[
@@ -162,13 +168,15 @@ export default class Model {
         }
         var zip = new JSZip();
         // delete this.config.legend
-
+        console.log(this.config)
         zip.file(
             "arabesque.json",
             JSON.stringify({
                 nodes: this.data.nodes,
                 links: this.data.links,
-                config: this.config,
+                config:this.config,
+   
+        
             })
         );
         zip
@@ -295,7 +303,7 @@ export default class Model {
                 var import_resume = that.import();
                 callback(
                     import_resume,
-                   // that.get_nodes(),
+                    that.get_nodes(),
                     that.get_links(),
                     that.config
                 );
@@ -462,7 +470,6 @@ export default class Model {
 
 
                 that.config = saved_data.config;
-
                 that.data.nodes = saved_data.nodes;
                 that.data.links = saved_data.links;
 
@@ -703,26 +710,33 @@ export default class Model {
 
     add_links_stats() {
         for (let i = 0; i < this.data.links.length; i++) {
-            let from = this.data.links[i][this.config.varnames.linkID[0]];
-            let to = this.data.links[i][this.config.varnames.linkID[1]];
+            let link = this.data.links[i];
+            let from = link[this.config.varnames.linkID[0]];
+            let to = link[this.config.varnames.linkID[1]];
 
-            // Assurez-vous que les nœuds 'from' et 'to' existent et ont des coordonnées valides
             let fromNode = this.data.nodes_hash[from];
             let toNode = this.data.nodes_hash[to];
-          
             if (fromNode && toNode) {
-                // Créer des objets Point GeoJSON pour les nœuds
-                let fromPoint = turf.point([fromNode[this.config.varnames.long], fromNode[this.config.varnames.lat]]);
-                let toPoint = turf.point([toNode[this.config.varnames.long], toNode[this.config.varnames.lat]]);
+      
+          
+                let fromLat = Number(fromNode.properties[this.config.varnames.lat]);
+                let fromLong = Number(fromNode.properties[this.config.varnames.long]);
+                let toLat = Number(toNode.properties[this.config.varnames.lat]);
+                let toLong = Number(toNode.properties[this.config.varnames.long]);
 
-                // Calculer la distance entre les deux points
-                this.data.links[i]["distance"] = turf.distance(fromPoint, toPoint);
+                if (isNaN(fromLat) || isNaN(fromLong) || isNaN(toLat) || isNaN(toLong)) {
+                    console.error(`Coordonnées invalides pour le lien: ${from} -> ${to}`);
+                } else {
+                    // Créer des objets Point GeoJSON pour les nœuds
+                    let fromPoint = turf.point([fromLong, fromLat]);
+                    let toPoint = turf.point([toLong, toLat]);
+                    // Calculer la distance entre les deux points
+                    link["distance"] = turf.distance(fromPoint, toPoint);
+                }
             } else {
-                console.error(`Invalid nodes for link: ${from} -> ${to}`);
+                console.error(`Nœuds manquants pour le lien: ${from} -> ${to}`);
             }
         }
-               
-
     }
 
     // utils to convert csv to geojson
