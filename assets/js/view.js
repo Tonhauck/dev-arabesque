@@ -203,12 +203,11 @@ export default class View {
         this.renderer.fresh();
 
         //Already done in renderer.set_projection() !
-        console.log(links)
-        console.log(link_data_range)
         let nstyle = config.styles.nodes;
         let lstyle = config.styles.links;
         this.renderer.add_nodes(nodes, nstyle);
-        this.renderer.add_links(links, lstyle, link_data_range);
+      
+        this.renderer.add_links(links, lstyle, link_data_range,config.layers, config.zoom,config.center);
     }
     set_projection(proj, nodes, links, config, link_data_range) {
         this.renderer.set_projection(proj, nodes, links, config, link_data_range);

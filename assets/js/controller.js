@@ -107,12 +107,21 @@ export default class Controller {
 
         for (let button of document.getElementsByClassName("addLayerButton"))
             button.addEventListener("click", this.addLayer.bind(this));
-
-        //Everytime the zoom level changes, we update the legend
-        this.view.renderer.map.on("moveend", this.render_legend.bind(this));
+        let that = this
+        //Chaque fois que le niveau de zoom change, nous mettons à jour la légende + center et zoom
+        this.view.renderer.map.on("moveend", () => {
+            this.render_legend();
+            let view = this.view.renderer.map.getView();
+             that.model.config.center = view.getCenter();
+            that.model.config.zoom = view.getZoom();
+        
+            
+           
+        });
 
         this.charts = [];
     }
+
 
     loadDataFromIndexedDB(callback) {
         let request = indexedDB.open("ArabesqueDB", 1);
@@ -268,11 +277,11 @@ export default class Controller {
 
 
     import_zip(e, zipfile = null) {
+
         //If we called this function without parameter (for the thumbail), we get the file
         //from the zip input
         if (zipfile === null)
             zipfile = document.getElementById("ImportZip").files[0];
-
         this.model
             .import_zip(zipfile, this.post_import_zip.bind(this))
             .catch(this.view.error_zip_file());
@@ -289,6 +298,9 @@ export default class Controller {
         if (!nstyle.stroke) {
             nstyle.stroke = { color: "grey", size: '0' }
         }
+        config.lock = "true";
+
+
         this.model.update_nodes_style(nstyle);
         this.model.update_links_style(lstyle);
         //Add filters
@@ -297,11 +309,12 @@ export default class Controller {
         //Render layer cards
         this.render_layers_cards();
 
-        //Render layers in the map
-
+        //Render layers in the map with center and zoom config
         this.view.renderer.render_layers(
             this.model.config.layers,
-            this.model.config.styles
+            this.model.config.styles,
+            this.model.config.center,
+            this.model.config.zoom
         );
 
         //Computing the link data range before initializing the filters
@@ -310,7 +323,7 @@ export default class Controller {
             .map((el) => parseFloat(el[this.model.config.varnames.vol]));
 
         let link_data_range = [d3.min(link_values), d3.max(link_values)];
-        console.log(res)
+        
         this.view.import_end(
             res,
             this.model.get_nodes(),
@@ -350,9 +363,9 @@ export default class Controller {
         let proj = proj_sel.options[proj_sel.selectedIndex].value;
         //Garder la map à la même position
         let view = this.view.renderer.map.getView();
-        let center = view.getCenter();
-        let zoom = view.getZoom();
-
+        let center = view.getCenter(this.model.config.center);
+        let zoom = view.getZoom(this.model.config.zoom);
+  
         // Conserver la visibilité des layers
         let layers_visibility = {};
         this.view.renderer.map.getLayers().forEach(layer => {
@@ -372,9 +385,10 @@ export default class Controller {
                 layer.setVisible(layers_visibility[layer.get('name')]);
             }
         });
-
+/* 
         view.setCenter(center);
         view.setZoom(zoom);
+         */
         //view.setProjection(projection);
     }
 
@@ -577,7 +591,7 @@ export default class Controller {
 
         // this.model.config.filters = [{ id: "origin" }];
         let filters = this.model.config.filters;
-
+        console.log(filters)
         //Create filters
         for (let i = 0; i < filters.length; i++) {
             let variable = filters[i].id;
