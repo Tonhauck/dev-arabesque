@@ -175,8 +175,6 @@ export default class Model {
                 nodes: this.data.nodes,
                 links: this.data.links,
                 config:this.config,
-   
-        
             })
         );
         zip
@@ -472,8 +470,6 @@ export default class Model {
                 that.config = saved_data.config;
                 that.data.nodes = saved_data.nodes;
                 that.data.links = saved_data.links;
-
-
                 for (let p = 0; p < that.data.nodes.length; p++) {
                     that.data.nodes_hash[that.data.nodes[p].id] = that.data.nodes[p];
                 }

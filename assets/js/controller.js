@@ -308,7 +308,6 @@ export default class Controller {
 
         //Render layer cards
         this.render_layers_cards();
-
         //Render layers in the map with center and zoom config
         this.view.renderer.render_layers(
             this.model.config.layers,
@@ -323,6 +322,7 @@ export default class Controller {
             .map((el) => parseFloat(el[this.model.config.varnames.vol]));
 
         let link_data_range = [d3.min(link_values), d3.max(link_values)];
+        console.log(link_data_range)
         
         this.view.import_end(
             res,
@@ -585,66 +585,91 @@ export default class Controller {
         );
     }
 
-    render_filters(render_all) {
-
-        document.getElementById("Filters").innerHTML = "";
-
-        // this.model.config.filters = [{ id: "origin" }];
-        let filters = this.model.config.filters;
-        console.log(filters)
-        //Create filters
-        for (let i = 0; i < filters.length; i++) {
-            let variable = filters[i].id;
-            let type = filters[i].type;
-            let target = filters[i].target;
-
-            let filter_div, filter_instance;
-            if (type === "numeral") {
-                [filter_div, filter_instance] = this.barchart_filter(
-                    target,
-                    variable,
-                    type,
-                    render_all
-                );
-            }
-            if (type === "numeral") {
-                [filter_div, filter_instance] = this.barchart_filter(
-                    target,
-                    variable,
-                    type,
-                    render_all
-                );
-            } else if (type === "categorial") {
-                filter_div = document.createElement("div");
-                const filter_id = "filter-" + target + "-" + variable + "-" + type;
-                filter_div.id = filter_id;
-                filter_div.className = "categorialFilter";
-                document.getElementById("Filters").append(filter_div);
-                //Fill the div with filter
-                this.categorial_filter(target, variable, filter_id, "add");
-            } else if (type === "remove") {
-                filter_div = document.createElement("div");
-                const filter_id = "filter-" + target + "-" + variable + "-" + type;
-                filter_div.id = filter_id;
-                filter_div.className = "categorialFilter";
-                document.getElementById("Filters").append(filter_div);
-                //Fill the div with filter
-                this.categorial_filter(target, variable, filter_id, "remove");
-            } else {
-                [filter_div, filter_instance] = this.barchart_filter(
-                    target,
-                    variable,
-                    type,
-                    render_all
-                )
-            };
-            // console.log(filter_div = "< div > Lol < /div>";
-
+render_filters(render_all) {
+    document.getElementById("Filters").innerHTML = "";
+    
+    let filters = this.model.config.filters;
+    let barchartFilters = []; // Pour stocker les références aux filtres barchart
+    
+    // Créer d'abord tous les filtres
+    for (let i = 0; i < filters.length; i++) {
+        let variable = filters[i].id;
+        let type = filters[i].type;
+        let target = filters[i].target;
+        
+        let filter_div, filter_instance;
+        
+        // Traiter différemment selon le type de filtre
+        if (type === "numeral" || type === "continuous") {
+            // Filtres numériques avec barchart
+            [filter_div, filter_instance] = this.barchart_filter(
+                target,
+                variable,
+                type,
+                render_all
+            );
             document.getElementById("Filters").append(filter_div);
-            if (type === "numeral")
-                filter_instance.update_brush_extent(filter_instance.filtered_range);
+            
+            // Stocker la référence au filtre pour initialisation ultérieure
+            if (filter_instance && filters[i].range) {
+                barchartFilters.push({
+                    instance: filter_instance,
+                    range: filters[i].range
+                });
+            }
+        } 
+        else if (type === "categorial" || type === "remove" || type === "discrete" || type === "temporal") {
+            // Filtres catégoriels avec sélection multiple
+            filter_div = document.createElement("div");
+            const filter_id = "filter-" + target + "-" + variable + "-" + type;
+            filter_div.id = filter_id;
+            filter_div.className = type === "categorial" ? "categorialFilter" : 
+                                  (type === "discrete" ? "discreteFilter" : 
+                                  (type === "temporal" ? "temporalFilter" : "categorialFilter"));
+            
+            document.getElementById("Filters").append(filter_div);
+            
+            // Mode d'opération pour le filtre catégoriel
+            const mode = type === "remove" ? "remove" : "add";
+            
+            // Initialiser le filtre catégoriel
+            this.categorial_filter(target, variable, filter_id, mode);
+        } 
+        else {
+            // Autres types de filtres (traités comme des barcharts)
+            [filter_div, filter_instance] = this.barchart_filter(
+                target,
+                variable,
+                type,
+                render_all
+            );
+            document.getElementById("Filters").append(filter_div);
+            
+            // Stocker la référence au filtre pour initialisation ultérieure
+            if (filter_instance && filters[i].range) {
+                barchartFilters.push({
+                    instance: filter_instance,
+                    range: filters[i].range
+                });
+            }
         }
     }
+    
+    // Initialiser les brushes séquentiellement avec des délais croissants
+    // Uniquement pour les filtres de type barchart
+    barchartFilters.forEach((filter, index) => {
+        setTimeout(() => {
+            try {
+                if (filter.instance && filter.range) {
+                    console.log(`Initializing brush for ${filter.instance.filter_id} with range:`, filter.range);
+                    filter.instance.update_brush_extent(filter.range);
+                }
+            } catch (error) {
+                console.error(`Error initializing brush for filter ${index}:`, error);
+            }
+        }, 1500 + (index * 500)); // Délai croissant pour chaque filtre
+    });
+}
     add_filter(target, variable, type) {
         this.model.config.filters.target = document.getElementById("filteredLayer").value
         const filter_id = "filter-" + this.model.config.filters.target + "-" + variable + "-" + type;
@@ -821,50 +846,58 @@ export default class Controller {
     }
 
     barchart_filter(target, id, type, render_all) {
-        const filter_id = `filter-${target}-${id}-${type}`;
-
-        let dimension = this.create_dimension(id, filter_id);
-        let filtered_range = null;
-
-        //If the filter exists(that it has been imported from zip), we compute the filtered range
-        if (this.model.config.filters.map((f) => f.filter_id).includes(filter_id)) {
-            filtered_range = this.model.config.filters
-                .filter((f) => f.filter_id === filter_id)[0]
-                .range.map((el) => el.toString());
-
-            //And the filter the newly created dimension
-            dimension.filterAll();
-            dimension.filterRange(filtered_range);
-        }
-
-        let group = dimension.group();
-
-        let complete_data;
-        if (target === "nodes") complete_data = this.model.data.nodes;
-        else if (target === "links") complete_data = this.model.data.links;
-
-        let f = new BarChartFilter(
-            id,
-            filter_id,
-            dimension,
-            group,
-            render_all,
-            this.delete_filter.bind(this),
-            this.render_legend.bind(this),
-            this.model.config.styles.links,
-            this.model.config.styles.nodes,
-            this.update_bars.bind(this),
-            filtered_range,
-            complete_data,
-            type,
-            target
-        );
-        let filter_div = f.render();
-
-        this.charts.push(f);
-
-        return [filter_div, f];
+    const filter_id = `filter-${target}-${id}-${type}`;
+    let dimension = this.create_dimension(id, filter_id);
+    let filtered_range = null;
+    
+    // Vérifier si le filtre existe dans la configuration importée
+    const existingFilter = this.model.config.filters.find(f => f.filter_id === filter_id);
+    
+    if (existingFilter && existingFilter.range) {
+        // Utiliser la plage de valeurs du filtre importé
+        filtered_range = existingFilter.range;
+        
+        // Appliquer le filtre à la dimension
+        dimension.filterAll();
+        dimension.filterRange(filtered_range);
+        
+        console.log(`Initializing filter ${filter_id} with range:`, filtered_range);
     }
+
+    let group = dimension.group();
+    
+    // Créer l'instance du filtre
+    let f = new BarChartFilter(
+        id,
+        filter_id,
+        dimension,
+        group,
+        render_all,
+        this.delete_filter.bind(this),
+        this.render_legend.bind(this),
+        this.model.config.styles.links,
+        this.model.config.styles.nodes,
+        this.update_bars.bind(this),
+        filtered_range,
+        target === "nodes" ? this.model.data.nodes : this.model.data.links,
+        type,
+        target
+    );
+    
+    let filter_div = f.render();
+    
+    // Si nous avons une plage de valeurs, mettre à jour l'étendue du brush
+    if (filtered_range) {
+        // Attendre que le DOM soit prêt
+        setTimeout(() => {
+            f.update_brush_extent(filtered_range);
+        }, 0);
+    }
+    
+    this.charts.push(f);
+    
+    return [filter_div, f];
+}
 
     update_bars() {
         //For every barchart remaining, we update their bars to display only filtered values

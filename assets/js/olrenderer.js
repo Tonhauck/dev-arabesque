@@ -31,9 +31,6 @@ export default class OlRenderer {
         projs.forEach((p) => proj4.defs(p, global.projections[p].proj4));
         register(proj4);
 
-
-
-
         this.customizeMapSource();
         this.customizeMapAuthor();
 
@@ -457,10 +454,11 @@ export default class OlRenderer {
 
         //COLOR
         let label = node.id;
+        let labelText = '';
         if (document.getElementById("semioSelectorTextChangenode")) {
             if (document.getElementById("semioSelectorTextChangenode").value != null) {
                 let selectedLabel = document.getElementById("semioSelectorTextChangenode").value;
-                label = node.properties[selectedLabel]
+                labelText = node.properties[selectedLabel]
             }
         }
 
@@ -475,7 +473,7 @@ export default class OlRenderer {
                     color: this.add_opacity_to_color(nstyle.color.fixed, opacity),
                 }),
                 text: new Text({
-                    text: label,
+                    text: labelText,
                     font: 'bold 13px Calibri,sans-serif',
                     fill: new Fill({ color: "#000" }),
                     stroke: new Stroke({
@@ -504,7 +502,7 @@ export default class OlRenderer {
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
                     }),
                     text: new Text({
-                        text: label,
+                        text: labelText,
 
                         font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
@@ -531,7 +529,7 @@ export default class OlRenderer {
                         ),
                     }),
                     text: new Text({
-                        text: label,
+                        text: labelText,
 
                         font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
@@ -1430,12 +1428,23 @@ export default class OlRenderer {
             // style: this.linkStyle(lstyle),
             renderMode: "image",
         });
+        console.log(z_index)
 
-        if (z_index != undefined) {
-            linksLayer.setZIndex(z_index);
-        }
-        else {
-            linksLayer.setZIndex(-1);
+        // Ensure z_index is treated as an array and retrieve the correct z_index
+        if (Array.isArray(z_index) && z_index.length > 0) {
+            // Chercher l'élément avec name == 'links'
+            const linksZIndex = z_index.find(item => item.name === 'links');
+            
+            if (linksZIndex) {
+                linksLayer.setZIndex(linksZIndex.z_index); // Supposant que la valeur est dans .z_index
+                console.log("Setting z-index to:", linksZIndex.z_index);
+            } else {
+                console.warn("No z_index found for 'links'");
+                linksLayer.setZIndex(-1); // Valeur par défaut si 'links' n'est pas trouvé
+            }
+        } else {
+            console.log("z_index is not a valid array:", z_index);
+            linksLayer.setZIndex(-1); // Valeur par défaut si z_index n'est pas un array valide
         }
         this.map.addLayer(linksLayer);
 
@@ -1838,13 +1847,11 @@ export default class OlRenderer {
             name: layer.name,
         });
         vectorLayer.setZIndex(layer.z_index);
-
+        console.log(layer)
         this.map.addLayer(vectorLayer);
     }
 
-    render_layers(layers, styles,center, zoom) {
- 
-
+    render_layers(layers, styles, center, zoom) {
         for (let layer of layers) {
             //Skip the iteration if it's nodes or links (they are added in add_nodes and add_links functions)
             if (layer.name !== "nodes" || layer.name !== "links") {
