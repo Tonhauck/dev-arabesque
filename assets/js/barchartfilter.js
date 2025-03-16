@@ -131,25 +131,39 @@ export default class BarChartFilter {
         
         if (scale == "linear") {
             // Linear Scale
-            this.x = d3
+/*             this.x = d3
                 .scaleLinear()
                 .range([0, 250])
                 .domain([this.domain[0], this.domain[1]]);
             this.y = d3.scaleLog().range([100, 0]);
+            this.y.domain([1, d3.max(data_groups.map((g) => g.value))]); */
 
-            this.y.domain([1, d3.max(data_groups.map((g) => g.value))]);
+                        // Pour l'échelle linéaire
+            this.x = d3.scaleLinear()
+                .range([0, 250])  
+                .domain([1, this.domain[1]]);
+
+            this.y = d3.scaleLog()
+                .range([100, 0])
+                .domain([1, d3.max(data_groups.map((g) => g.value))]);  
 
 
         } else {
-            //Log scale
-            this.x = d3
-                .scaleLog()
+            // Pour l'échelle logarithmique
+            this.x = d3.scaleLog()
                 .range([0, 250])
-                // .domain([this.domain[0], this.domain[1]]);
-            this.y = d3.scaleLinear().range([100, 0]);
-            this.y.domain(d3.extent(data_groups, d => d.value));
-            this.x.domain([1, d3.max(data_groups, d => d.key)]);
+                .domain([1, this.domain[1]])  
+                .nice();
+
+            this.y = d3.scaleLog()
+                .range([100, 0])
+                .domain([1, d3.max(data_groups.map((g) => g.value))]);
+        
+            console.log(d3.max(data_groups, d => d.value))
+            console.log(data_groups)
+                
         }
+            
 
 
 

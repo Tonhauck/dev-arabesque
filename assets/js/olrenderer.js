@@ -31,9 +31,6 @@ export default class OlRenderer {
         projs.forEach((p) => proj4.defs(p, global.projections[p].proj4));
         register(proj4);
 
-
-
-
         this.customizeMapSource();
         this.customizeMapAuthor();
 
@@ -457,10 +454,11 @@ export default class OlRenderer {
 
         //COLOR
         let label = node.id;
+        let labelText = '';
         if (document.getElementById("semioSelectorTextChangenode")) {
             if (document.getElementById("semioSelectorTextChangenode").value != null) {
                 let selectedLabel = document.getElementById("semioSelectorTextChangenode").value;
-                label = node.properties[selectedLabel]
+                labelText = node.properties[selectedLabel]
             }
         }
 
@@ -475,7 +473,7 @@ export default class OlRenderer {
                     color: this.add_opacity_to_color(nstyle.color.fixed, opacity),
                 }),
                 text: new Text({
-                    text: label,
+                    text: labelText,
                     font: 'bold 13px Calibri,sans-serif',
                     fill: new Fill({ color: "#000" }),
                     stroke: new Stroke({
@@ -504,7 +502,7 @@ export default class OlRenderer {
                         color: this.add_opacity_to_color(color_array[color_index], opacity),
                     }),
                     text: new Text({
-                        text: label,
+                        text: labelText,
 
                         font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
@@ -531,7 +529,7 @@ export default class OlRenderer {
                         ),
                     }),
                     text: new Text({
-                        text: label,
+                        text: labelText,
 
                         font: 'bold 13px Calibri,sans-serif',
                         fill: new Fill({ color: "#000" }),
