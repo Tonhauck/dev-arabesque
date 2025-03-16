@@ -122,9 +122,6 @@ export default class BarChartFilter {
     //Creates chart
     chart(div, scale) {
 
-
-
-
         const data_groups = this.group_for_barchart();
     // Insérer un délai de 2 secondes avant de continuer
         setTimeout(() => {
@@ -152,7 +149,7 @@ export default class BarChartFilter {
             // Pour l'échelle logarithmique
             this.x = d3.scaleLog()
                 .range([0, 250])
-                .domain([1, this.domain[1]])  
+                .domain([1, this.domain[1]])   
                 .nice();
 
             this.y = d3.scaleLog()
@@ -309,7 +306,7 @@ export default class BarChartFilter {
                 },${y + 8}V${2 * y - 8}`;
         }
 
-           }, 300); // Délai de 2 secondes
+           }, 600); // Délai de 2 secondes
     }
 
 
@@ -625,10 +622,59 @@ export default class BarChartFilter {
         return this.filter_div;
     }
 
-    update_brush_extent(data_range) {
-        //Convert data_range received to brush range in pixels
-        let brush_range = data_range.map(this.x);
-        let brush = document.getElementsByClassName("brush")[0];
-        d3.select(brush).call(this.brush.move, [brush_range[0], brush_range[1]]);
+update_brush_extent(data_range) {
+    if (!data_range) {
+        console.warn(`No data range provided for ${this.filter_id}`);
+        return;
     }
+    
+    // Stocker la plage pour une application ultérieure
+    this.pending_brush_range = data_range;
+    
+    // Si this.x n'est pas encore défini ou si le DOM n'est pas prêt, programmer une nouvelle tentative
+    if (typeof this.x !== 'function' || !document.getElementById(this.filter_id)) {
+        console.log(`Brush update deferred for ${this.filter_id} - x scale not ready yet or DOM not ready`);
+        
+        // Programmer une nouvelle tentative après un délai
+        setTimeout(() => {
+            console.log(`Retrying brush update for ${this.filter_id}`);
+            this.update_brush_extent(data_range);
+        }, 500);
+        
+        return;
+    }
+    
+    // Convertir les valeurs en nombres si nécessaire
+    const min = typeof data_range[0] === 'string' ? parseFloat(data_range[0]) : data_range[0];
+    const max = typeof data_range[1] === 'string' ? parseFloat(data_range[1]) : data_range[1];
+    
+    // Mettre à jour les valeurs d'entrée min/max si elles existent
+    const minInput = document.getElementById(`filterMinInput-${this.filter_id}`);
+    const maxInput = document.getElementById(`filterMaxInput-${this.filter_id}`);
+    
+    if (minInput) minInput.value = min;
+    if (maxInput) maxInput.value = max;
+    
+    try {
+        // Convertir data_range en pixels pour le brush
+        const brush_range = [this.x(min), this.x(max)];
+        
+        // Sélectionner le bon brush en utilisant l'ID du filtre
+        const brushElement = d3.select(`#${this.filter_id}`).select(".brush");
+        
+        if (!brushElement.empty()) {
+            // Appliquer la sélection au brush
+            brushElement.call(this.brush.move, brush_range);
+            
+            // Mettre à jour la plage filtrée
+            this.filtered_range = [min, max];
+            
+            console.log(`Brush updated for ${this.filter_id} with range:`, [min, max]);
+        } else {
+            console.warn(`Brush element not found for ${this.filter_id}`);
+        }
+    } catch (error) {
+        console.error(`Error updating brush extent for ${this.filter_id}:`, error, "for range", [min, max]);
+    }
+}
 }
