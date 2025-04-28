@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export const SizeContainerComponent = (props) => {
   let nodes_properties = props.nodes_properties;
+  console.log(props);
   let [size_mode, set_size_mode] = useState(props.semio.size.mode);
+  let [selectedValue, setSelectedValue] = useState(props.semio.size.varied.var);
 
   //Parses a string and returns NaN if it's not convertible into a float (stricter than parseFloat())
   function filter_float(value) {
@@ -12,19 +14,19 @@ export const SizeContainerComponent = (props) => {
   }
 
   function enablePopup() {
-    if (document.getElementById("sizeRatioIcon") !== null) {
-      $("#sizeRatioIcon").popover();
+    if (document.getElementById('sizeRatioIcon') !== null) {
+      $('#sizeRatioIcon').popover();
     }
 
-    if (document.getElementById("sizeWidthIcon") !== null) {
-      $("#sizeWidthIcon").popover();
+    if (document.getElementById('sizeWidthIcon') !== null) {
+      $('#sizeWidthIcon').popover();
     }
   }
 
   //The size container changes according to the size mode (fixed or varied)
   let size_container;
-  if (size_mode === "fixed") {
-    props.notify_state_change("fixed");
+  if (size_mode === 'fixed') {
+    props.notify_state_change('fixed');
     size_container = (
       <div class="row" id="semioSizeChangenode">
         <div class="col-md-2">
@@ -43,7 +45,7 @@ export const SizeContainerComponent = (props) => {
         </div>
         <div id="semioSizeRatioChangenode" class="col-md-4">
           <label class="text-muted h5">
-            Radius{" "}
+            Radius{' '}
             <img
               id="sizeWidthIcon"
               class="small-icon"
@@ -54,7 +56,7 @@ export const SizeContainerComponent = (props) => {
               data-placement="right"
               data-content="This radius is then multiplied by 1000 times the length of the smallest side of the data bounding box"
               onLoad={enablePopup}
-            ></img>{" "}
+            ></img>{' '}
           </label>
           <input
             class="form-control"
@@ -66,8 +68,8 @@ export const SizeContainerComponent = (props) => {
         </div>
       </div>
     );
-  } else if (size_mode === "varied") {
-    props.notify_state_change("varied");
+  } else if (size_mode === 'varied') {
+    props.notify_state_change('varied');
     size_container = (
       <div class="row" id="semioSizeChangenode">
         <div class="col-md-2">
@@ -89,7 +91,8 @@ export const SizeContainerComponent = (props) => {
           <select
             class="custom-select"
             id="semioSelectorSizeChangenode"
-            defaultValue={props.semio.size.varied.var}
+            value={selectedValue}
+            onChange={(e) => setSelectedValue(e.target.value)}
           >
             {/* We can iterate on the nodes properties to fill the select div  */}
             {Object.keys(nodes_properties)
@@ -120,7 +123,7 @@ export const SizeContainerComponent = (props) => {
         </div>
         <div id="semioSizeRatioChangenode" class="col-md-4">
           <label class="text-muted h5">
-            Ratio{" "}
+            Ratio{' '}
             <img
               id="sizeRatioIcon"
               class="small-icon"
