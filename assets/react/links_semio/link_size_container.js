@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export const SizeContainerComponent = (props) => {
   let links_properties = props.links_properties;
+  console.log(props);
   let [size_mode, set_size_mode] = useState(props.semio.size.mode);
+  let [selectedValue, setSelectedValue] = useState(props.semio.size.varied.var);
+
+  // Quand la valeur change, mettre à jour l'état local et notifier le parent
+  const handleValueChange = (value) => {
+    setSelectedValue(value);
+    props.onSizeVarChange(value);
+  };
 
   //Parses a string and returns NaN if it's not convertible into a float (stricter than parseFloat())
   function filter_float(value) {
@@ -12,18 +20,18 @@ export const SizeContainerComponent = (props) => {
   }
 
   function enablePopup() {
-    if (document.getElementById("linkSizeRatioIcon") !== null) {
-      $("#linkSizeRatioIcon").popover();
+    if (document.getElementById('linkSizeRatioIcon') !== null) {
+      $('#linkSizeRatioIcon').popover();
     }
-    if (document.getElementById("linkSizeWidthIcon") !== null) {
-      $("#linkSizeWidthIcon").popover();
+    if (document.getElementById('linkSizeWidthIcon') !== null) {
+      $('#linkSizeWidthIcon').popover();
     }
   }
 
   //The size container changes according to the size mode (fixed or varied)
   let size_container;
-  if (size_mode === "fixed") {
-    props.notify_state_change("fixed");
+  if (size_mode === 'fixed') {
+    props.notify_state_change('fixed');
     size_container = (
       <div class="row" id="semioSizeChangeLink">
         <div class="col-md-2">
@@ -42,7 +50,7 @@ export const SizeContainerComponent = (props) => {
         </div>
         <div id="semioSizeRatioChangeLink" class="col-md-4">
           <label class="text-muted h5">
-            Width{" "}
+            Width{' '}
             <img
               id="linkSizeWidthIcon"
               class="small-icon"
@@ -53,7 +61,7 @@ export const SizeContainerComponent = (props) => {
               data-placement="right"
               data-content="This width is then multiplied by 1000 times the length of the smallest side of the data bounding box"
               onLoad={enablePopup}
-            ></img>{" "}
+            ></img>{' '}
           </label>
           <input
             class="form-control"
@@ -65,8 +73,8 @@ export const SizeContainerComponent = (props) => {
         </div>
       </div>
     );
-  } else if (size_mode === "varied") {
-    props.notify_state_change("varied");
+  } else if (size_mode === 'varied') {
+    props.notify_state_change('varied');
     size_container = (
       <div class="row" id="semioSizeChangeLink">
         <div class="col-md-2">
@@ -86,11 +94,19 @@ export const SizeContainerComponent = (props) => {
         <div class="col-md-2">
           <label class="text-muted h5">Variable</label>
           <select
-            class="custom-select"
+            className="custom-select"
             id="semioSelectorSizeChangeLink"
-            // defaultValue={props.semio.size.varied.var}
+            value={selectedValue}
+            onChange={(e) => handleValueChange(e.target.value)}
           >
-            <option value="count">volume</option>
+            {/* We can iterate on the nodes properties to fill the select div  */}
+            {Object.keys(links_properties)
+              .filter((p) => !isNaN(filter_float(links_properties[p])))
+              .map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
           </select>
         </div>
         <div id="semioSizeRatioCatChangeLink" class="col-md-4">
@@ -110,7 +126,7 @@ export const SizeContainerComponent = (props) => {
         </div>
         <div id="semioSizeRatioChangeLink" class="col-md-4">
           <label class="text-muted h5">
-            Ratio{" "}
+            Ratio{' '}
             <img
               class="small-icon"
               src="./assets/svg/si-glyph-circle-info.svg"
@@ -136,6 +152,5 @@ export const SizeContainerComponent = (props) => {
       </div>
     );
   }
-
   return size_container;
 };
