@@ -181,15 +181,15 @@ export default class Model {
       })
       .then(function (content) {
         // Nom par défaut pour le fichier zip
-        let name = 'gflowviz.zip';
+        let name = 'arabesque_map.zip';
 
         // Sélectionner la div avec la classe 'ol-title ol-unselectable'
         var titleDiv = document.querySelector('.ol-title.ol-unselectable');
 
         // Vérifier si la div existe et si elle contient du texte
         if (titleDiv && titleDiv.textContent.trim() !== '') {
-          // Utiliser le texte de la div comme nom
-          name = titleDiv.textContent.trim() + '.zip';
+          // Utiliser le texte de la div comme nom en remplaçant les espaces par des underscores
+          name = titleDiv.textContent.trim().replace(/\s+/g, '_') + '.zip';
         }
 
         // Utiliser le nom pour sauvegarder le contenu
@@ -290,7 +290,12 @@ export default class Model {
           header: true,
           skipEmptyLines: true,
         });
-        that.data.links = links.data;
+        that.data.links = links.data.filter(
+          (link) =>
+            link[that.config.varnames.linkID[0]] !==
+            link[that.config.varnames.linkID[1]]
+        );
+        console.log(that.data.links);
         var import_resume = that.import();
         callback(
           import_resume,

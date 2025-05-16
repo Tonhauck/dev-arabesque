@@ -1388,13 +1388,14 @@ export default class OlRenderer {
     if (lstyle.color.varied.type === 'qualitative') {
       this.create_link_color_groups(links);
     }
+
     this.map.removeLayer(this.get_layer('links'));
-    let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100);
+    let max_75percent = d3.max(links.map((l) => l.value)) * 0.75;
     let mean = d3.mean(links.map((l) => l.value));
 
-    let filtered = links.filter(function (a) {
-      return a.value <= mean;
-    });
+    let filtered = links; /* links.filter(function (a) {
+      return a.value >= max_75percent;
+    }); */
     // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
 
     let arrows = this.create_arrows(filtered, lstyle);
