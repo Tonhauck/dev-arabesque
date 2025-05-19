@@ -1,21 +1,20 @@
-import React, { useState } from "react";
-import { ColorContainerComponent } from "./node_color_container";
-import { SizeContainerComponent } from "./node_size_container";
-import { OpacityContainerComponent } from "./node_opacity_container";
-import { StrokeComponent } from "./node_stroke_container";
+import React, { useState } from 'react';
+import { ColorContainerComponent } from './node_color_container';
+import { SizeContainerComponent } from './node_size_container';
+import { OpacityContainerComponent } from './node_opacity_container';
+import { StrokeComponent } from './node_stroke_container';
 export const NodesSemioModalComponent = (props) => {
   //Props is what you receive from parent component
   let nodes_properties = props.nodes_properties;
   let semio = props.semio;
 
-
   //Keep track of the different modes in the modal (fixed/varied)
   let modes = {
-    color: "fixed",
+    color: 'fixed',
     color_type: null,
-    size: "fixed",
-    opacity: "fixed",
-    stroke: { color: "grey" },
+    size: 'fixed',
+    opacity: 'fixed',
+    stroke: { color: 'grey' },
   };
 
   function filter_float(value) {
@@ -26,30 +25,32 @@ export const NodesSemioModalComponent = (props) => {
 
   function extract_colors(semio) {
     //Extract colors
-    let color_picker_stroke = document.getElementById("nodeSingleColorStrokePicker");
+    let color_picker_stroke = document.getElementById(
+      'nodeSingleColorStrokePicker'
+    );
     semio.stroke.color = color_picker_stroke.value;
-    if (modes.color === "fixed") {
-      semio.color.mode = "fixed";
-      let color_picker = document.getElementById("singleColorPicker");
+    if (modes.color === 'fixed') {
+      semio.color.mode = 'fixed';
+      let color_picker = document.getElementById('singleColorPicker');
       semio.color.fixed = color_picker.value;
-    } else if (modes.color === "varied") {
-      semio.color.mode = "varied";
-      let color_ramp = document.getElementsByClassName("selectedRamp")[0];
+    } else if (modes.color === 'varied') {
+      semio.color.mode = 'varied';
+      let color_ramp = document.getElementsByClassName('selectedRamp')[0];
       if (color_ramp === undefined) {
-        document.getElementById("colorAlertMessage").innerHTML = "Pick a color";
+        document.getElementById('colorAlertMessage').innerHTML = 'Pick a color';
         return false;
       }
       //Empty the alert messages
-      document.getElementById("colorAlertMessage").innerHTML = "";
+      document.getElementById('colorAlertMessage').innerHTML = '';
 
       let colors = [];
       color_ramp.childNodes[0].childNodes.forEach((el) =>
-        colors.push(el.getAttribute("fill"))
+        colors.push(el.getAttribute('fill'))
       );
       semio.color.varied = { colors: colors };
 
       //Check if inverted input is checked
-      let inverseCheckBox = document.getElementById("inversedColorPalette");
+      let inverseCheckBox = document.getElementById('inversedColorPalette');
       if (inverseCheckBox.checked === true) {
         semio.color.varied.inverted = true;
         semio.color.varied.colors = semio.color.varied.colors.reverse();
@@ -57,40 +58,40 @@ export const NodesSemioModalComponent = (props) => {
         semio.color.varied.inverted = false;
       }
       //Extract discretization variable
-      let variable = document.getElementById("colorVariable").value;
+      let variable = document.getElementById('colorVariable').value;
       semio.color.varied.var = variable;
       //Extract color discretization type
-      let color_type = document.getElementById("colorType").value;
+      let color_type = document.getElementById('colorType').value;
       semio.color.varied.type = color_type;
     }
   }
   function extract_size(semio) {
-    let size_picker_stroke = document.getElementById("sizeStrokeNode");
+    let size_picker_stroke = document.getElementById('sizeStrokeNode');
     semio.stroke.size = size_picker_stroke.value;
-    if (modes.size === "fixed") {
-      semio.size.mode = "fixed";
-      let width = document.getElementById("ratioMinMaxSizeChangenode").value;
+    if (modes.size === 'fixed') {
+      semio.size.mode = 'fixed';
+      let width = document.getElementById('ratioMinMaxSizeChangenode').value;
 
-      if (width === "") {
-        let ratioDiv = document.getElementById("ratioMinMaxSizeChangenode");
-        ratioDiv.classList.add("is-invalid");
-        ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+      if (width === '') {
+        let ratioDiv = document.getElementById('ratioMinMaxSizeChangenode');
+        ratioDiv.classList.add('is-invalid');
+        ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         return false;
       }
 
       semio.size.fixed = parseFloat(width);
-    } else if (modes.size === "varied") {
-      semio.size.mode = "varied";
-      let variable = document.getElementById("semioSelectorSizeChangenode")
+    } else if (modes.size === 'varied') {
+      semio.size.mode = 'varied';
+      let variable = document.getElementById('semioSelectorSizeChangenode')
         .value;
-      let scale = document.getElementById("typeSizeChangenode").value;
+      let scale = document.getElementById('typeSizeChangenode').value;
 
-      let ratio = document.getElementById("ratioMinMaxSizeChangenode").value;
+      let ratio = document.getElementById('ratioMinMaxSizeChangenode').value;
 
-      if (ratio === "") {
-        let ratioDiv = document.getElementById("ratioMinMaxSizeChangenode");
-        ratioDiv.classList.add("is-invalid");
-        ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+      if (ratio === '') {
+        let ratioDiv = document.getElementById('ratioMinMaxSizeChangenode');
+        ratioDiv.classList.add('is-invalid');
+        ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
 
         return false;
       }
@@ -102,55 +103,55 @@ export const NodesSemioModalComponent = (props) => {
     }
   }
   function extract_opacity(semio) {
-    if (modes.opacity === "fixed") {
-      semio.opacity.mode = "fixed";
-      let opacity = document.getElementById("ratioMaxOpaChangenode").value;
-      if (opacity === "") {
-        let ratioDiv = document.getElementById("ratioMaxOpaChangenode");
-        ratioDiv.classList.add("is-invalid");
-        ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+    if (modes.opacity === 'fixed') {
+      semio.opacity.mode = 'fixed';
+      let opacity = document.getElementById('ratioMaxOpaChangenode').value;
+      if (opacity === '') {
+        let ratioDiv = document.getElementById('ratioMaxOpaChangenode');
+        ratioDiv.classList.add('is-invalid');
+        ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         return false;
       }
       if (opacity < 0 || opacity > 1) {
-        let ratioDiv = document.getElementById("ratioMaxOpaChangenode");
-        ratioDiv.classList.add("is-invalid");
-        ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+        let ratioDiv = document.getElementById('ratioMaxOpaChangenode');
+        ratioDiv.classList.add('is-invalid');
+        ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         return false;
       }
       semio.opacity.fixed = parseFloat(opacity);
-    } else if (modes.opacity === "varied") {
-      semio.opacity.mode = "varied";
-      let variable = document.getElementById("semioSelectorOpaChangenode")
+    } else if (modes.opacity === 'varied') {
+      semio.opacity.mode = 'varied';
+      let variable = document.getElementById('semioSelectorOpaChangenode')
         .value;
-      let scale = document.getElementById("typeOpaChangenode").value;
-      let min = document.getElementById("ratioMinOpaChangenode").value;
+      let scale = document.getElementById('typeOpaChangenode').value;
+      let min = document.getElementById('ratioMinOpaChangenode').value;
 
-      let max = document.getElementById("ratioMaxOpaChangenode").value;
+      let max = document.getElementById('ratioMaxOpaChangenode').value;
 
-      if (min === "" || max === "") {
-        if (min === "") {
-          let ratioDiv = document.getElementById("ratioMinOpaChangenode");
-          ratioDiv.classList.add("is-invalid");
-          ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+      if (min === '' || max === '') {
+        if (min === '') {
+          let ratioDiv = document.getElementById('ratioMinOpaChangenode');
+          ratioDiv.classList.add('is-invalid');
+          ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         }
-        if (max === "") {
-          let ratioDiv = document.getElementById("ratioMaxOpaChangenode");
-          ratioDiv.classList.add("is-invalid");
-          ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+        if (max === '') {
+          let ratioDiv = document.getElementById('ratioMaxOpaChangenode');
+          ratioDiv.classList.add('is-invalid');
+          ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         }
         return false;
       }
 
       if (min < 0 || min > 1 || max < 0 || max > 1) {
         if (min < 0 || min > 1) {
-          let ratioDiv = document.getElementById("ratioMinOpaChangenode");
-          ratioDiv.classList.add("is-invalid");
-          ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+          let ratioDiv = document.getElementById('ratioMinOpaChangenode');
+          ratioDiv.classList.add('is-invalid');
+          ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         }
         if (max < 0 || max > 1) {
-          let ratioDiv = document.getElementById("ratioMaxOpaChangenode");
-          ratioDiv.classList.add("is-invalid");
-          ratioDiv.onchange = (e) => ratioDiv.classList.remove("is-invalid");
+          let ratioDiv = document.getElementById('ratioMaxOpaChangenode');
+          ratioDiv.classList.add('is-invalid');
+          ratioDiv.onchange = (e) => ratioDiv.classList.remove('is-invalid');
         }
         return false;
       }
@@ -164,7 +165,7 @@ export const NodesSemioModalComponent = (props) => {
   }
 
   function extract_text(semio) {
-    let variable = document.getElementById("semioSelectorTextChangenode").value;
+    let variable = document.getElementById('semioSelectorTextChangenode').value;
     semio.text.var = variable;
   }
   //When the OK button is clicked, extract color, size, text and opacity from the modal
@@ -218,7 +219,10 @@ export const NodesSemioModalComponent = (props) => {
 
             <hr></hr>
 
-            <label for="select" class="h4 strong"> Stroke </label>
+            <label for="select" class="h4 strong">
+              {' '}
+              Stroke{' '}
+            </label>
             <StrokeComponent
               //Allow to notify is mode is fixed or varied
               nodes_properties={nodes_properties}
@@ -235,9 +239,9 @@ export const NodesSemioModalComponent = (props) => {
               nodes_properties={nodes_properties}
               semio={semio}
             />
+            <hr></hr>
             <div class="row">
               <div class="col-md-2">
-                <hr></hr>
                 <label for="select" class="h4 strong">
                   Text
                 </label>
@@ -253,21 +257,21 @@ export const NodesSemioModalComponent = (props) => {
                       {/* We can iterate on the nodes properties to fill the select div  */}
                       {Object.keys(nodes_properties).map((p) => {
                         //Checking if the property is a number
-                        const is_number = isNaN(filter_float(nodes_properties[p]));
+                        const is_number = isNaN(
+                          filter_float(nodes_properties[p])
+                        );
                         if (is_number === false) {
-                          return (
-                            <option value={p}>{p}</option>
-                          );
+                          return <option value={p}>{p}</option>;
                         }
                       })}
-            
                     </select>
                   </div>
                 </div>
               </div>
+            </div>
+            <hr></hr>
+            <div class="row ">
               <div class="col-md-10">
-                <hr></hr>
-
                 <label for="select" class="h4 strong">
                   Opacity
                 </label>
