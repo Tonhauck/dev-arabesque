@@ -374,11 +374,11 @@ export default class Controller {
       layers_visibility[layer.get('name')] = layer.getVisible();
     });
 
-    this.view.renderer.render(
+    // Ne mettre à jour que les nœuds, pas les liens
+    this.view.renderer.update_nodes(
       this.model.get_nodes(),
-      this.model.get_links(),
       this.model.get_nodes_style(),
-      this.model.get_links_style()
+      this.model.config.layers.find((l) => l.name === 'nodes').z_index
     );
 
     // Restaurer la visibilité des layers
@@ -387,11 +387,6 @@ export default class Controller {
         layer.setVisible(layers_visibility[layer.get('name')]);
       }
     });
-    /* 
-        view.setCenter(center);
-        view.setZoom(zoom);
-         */
-    //view.setProjection(projection);
   }
 
   // PROJECTION //

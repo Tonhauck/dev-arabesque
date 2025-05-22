@@ -295,7 +295,7 @@ export default class Model {
             link[that.config.varnames.linkID[0]] !==
             link[that.config.varnames.linkID[1]]
         );
-        console.log(that.data.links);
+
         var import_resume = that.import();
         callback(
           import_resume,
@@ -545,9 +545,9 @@ export default class Model {
 
   get_links() {
     // Obtenir tous les flux filtrés et les formater
-    const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
+    const volumeVar = this.config.varnames.vol;
     console.log('getLink :' + volumeVar);
-
+    console.log(this.data);
     let filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
       return {
         key:
@@ -555,6 +555,7 @@ export default class Model {
           '->' +
           link[this.config.varnames.linkID[1]],
         value: parseFloat(link[volumeVar]),
+        ...link,
       };
     });
 
@@ -593,8 +594,10 @@ export default class Model {
       let balance = values.value - reverseValues.value;
       let grossFlow = values.value + reverseValues.value;
 
+      console.log(flow);
       // Vérifier si le lien est asymétrique
-      if (balance !== 0) {
+      if (balance !== 0 && window.selectedLinkSizeVar) {
+        console.log(window.selectedLinkSizeVar + ' prout');
         return {
           ...flow,
           balance: balance,
