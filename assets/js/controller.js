@@ -361,8 +361,6 @@ export default class Controller {
   }
 
   render_all() {
-    let proj_sel = document.getElementById('projection');
-    let proj = proj_sel.options[proj_sel.selectedIndex].value;
     //Garder la map à la même position
     let view = this.view.renderer.map.getView();
     let center = view.getCenter(this.model.config.center);
@@ -374,11 +372,11 @@ export default class Controller {
       layers_visibility[layer.get('name')] = layer.getVisible();
     });
 
-    this.view.renderer.render(
+    // Mettre à jour uniquement les nœuds, les liens sont déjà en cache
+    this.view.renderer.update_nodes(
       this.model.get_nodes(),
-      this.model.get_links(),
       this.model.get_nodes_style(),
-      this.model.get_links_style()
+      this.model.config.layers.find((l) => l.name === 'nodes').z_index
     );
 
     // Restaurer la visibilité des layers
@@ -387,11 +385,6 @@ export default class Controller {
         layer.setVisible(layers_visibility[layer.get('name')]);
       }
     });
-    /* 
-        view.setCenter(center);
-        view.setZoom(zoom);
-         */
-    //view.setProjection(projection);
   }
 
   // PROJECTION //
@@ -401,6 +394,7 @@ export default class Controller {
     let proj = proj_sel.options[proj_sel.selectedIndex].value;
 
     this.model.set_projection(proj);
+    this.model.reset_links_cache(); // Réinitialiser le cache car la projection a changé
     let config = this.model.config;
     this.view.set_projection(
       proj,
@@ -491,6 +485,7 @@ export default class Controller {
 
     //Update the model config
     this.model.update_links_style(new_semio);
+    this.model.reset_links_cache(); // Réinitialiser le cache car le style a changé
 
     this.view.renderer.update_links(
       this.model.get_links(),
@@ -505,8 +500,8 @@ export default class Controller {
   }
   save_links_shape(new_semio) {
     this.model.update_links_style(new_semio);
+    this.model.reset_links_cache(); // Réinitialiser le cache car la forme a changé
     let links = this.model.get_links();
-    // this.view.renderer.update_links(links, new_semio);
     this.render_all();
     $('#changeGeometryModal').modal('hide');
   }
@@ -1148,6 +1143,8 @@ export default class Controller {
   }
 
   update_stats() {
+    // Ne pas réinitialiser le cache des liens ici car les statistiques ne changent pas les liens
+    // this.model.reset_links_cache();
     console.log(this.model.get_nodes(), this.model.get_links());
   }
 

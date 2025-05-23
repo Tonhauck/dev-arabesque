@@ -79,14 +79,25 @@ export default class Model {
     };
 
     this.config = {
-      varnames: {},
+      varnames: {
+        nodeID: null,
+        lat: null,
+        long: null,
+        linkID: [null, null],
+        vol: null,
+      },
       aggrop: 'sum',
       filters: [],
-      center: [],
-      zoom: 0,
+      center: null,
+      zoom: null,
       lock: false,
       proj: 'Mercator / EPSG:3857',
-      styles: { nodes: nstyle, links: lstyle, geojson: {}, baselayer: {} },
+      styles: {
+        nodes: null,
+        links: null,
+        geojson: {},
+        baselayer: {},
+      },
       layers: [
         { name: 'nodes', type: 'vector', z_index: 0 },
         { name: 'links', type: 'vector', z_index: -1 },
@@ -105,6 +116,7 @@ export default class Model {
       nodes_from_aggregated: null,
       links_aggregated: null,
     };
+    this._links_cache = null; // Ajout du cache pour les liens
   }
 
   set_nodes_varnames(id, lat, long) {
@@ -543,8 +555,18 @@ export default class Model {
     return this.data.nodes;
   }
 
+  // Méthode pour réinitialiser le cache des liens
+  reset_links_cache() {
+    this._links_cache = null;
+  }
+
   get_links() {
-    // Obtenir tous les flux filtrés et les formater
+    // Si le cache existe, retourner les liens en cache
+    if (this._links_cache) {
+      return this._links_cache;
+    }
+
+    // Sinon, calculer les liens et les mettre en cache
     const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
     console.log('getLink :' + volumeVar);
 
@@ -581,9 +603,6 @@ export default class Model {
 
     // Ajouter les valeurs d'asymétrie à filteredFlows
     filteredFlows = filteredFlows.map((flow) => {
-      if (filteredFlows.indexOf(flow) < 10) {
-        console.log(flow);
-      }
       let [from, to] = flow.key.split('->');
       let reverseKey = `${to}->${from}`;
 
@@ -648,6 +667,8 @@ export default class Model {
         ' links)'
     );
 
+    // Mettre en cache les liens calculés
+    this._links_cache = filteredFlows;
     return filteredFlows;
   }
 
