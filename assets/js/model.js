@@ -36,7 +36,12 @@ export default class Model {
       opacity: {
         mode: 'fixed',
         fixed: 0.91,
-        varied: { var: 'degree', scale: 'Linear', min: 0, max: 1 },
+        varied: {
+          var: 'degree',
+          scale: 'Linear',
+          min: 0,
+          max: 1,
+        },
       },
     };
     let lstyle = {
@@ -68,7 +73,12 @@ export default class Model {
       opacity: {
         mode: 'fixed',
         fixed: 0.7,
-        varied: { var: 'volume', scale: 'Linear', min: 0, max: 1 },
+        varied: {
+          var: 'volume',
+          scale: 'Linear',
+          min: 0,
+          max: 1,
+        },
       },
       shape: {
         orientation: 'oriented',
@@ -86,7 +96,12 @@ export default class Model {
       zoom: 0,
       lock: false,
       proj: 'Mercator / EPSG:3857',
-      styles: { nodes: nstyle, links: lstyle, geojson: {}, baselayer: {} },
+      styles: {
+        nodes: nstyle,
+        links: lstyle,
+        geojson: {},
+        baselayer: {},
+      },
       layers: [
         { name: 'nodes', type: 'vector', z_index: 0 },
         { name: 'links', type: 'vector', z_index: -1 },
@@ -236,8 +251,10 @@ export default class Model {
         const reader = new FileReader();
         reader.onload = function (event) {
           that.data.nodes = that.create_geojson(
-            papaparse(reader.result, { header: true, skipEmptyLines: true })
-              .data
+            papaparse(reader.result, {
+              header: true,
+              skipEmptyLines: true,
+            }).data
           );
           callback();
         };
@@ -290,12 +307,17 @@ export default class Model {
           header: true,
           skipEmptyLines: true,
         });
-        that.data.links = links.data;
+        that.data.links = links.data.filter(
+          (link) =>
+            link[that.config.varnames.linkID[0]] !==
+            link[that.config.varnames.linkID[1]]
+        );
+
         var import_resume = that.import();
         callback(
           import_resume,
           that.get_nodes(),
-          that.get_links(true, true),
+          that.get_links(),
           that.config
         );
       };
@@ -586,10 +608,18 @@ export default class Model {
           let reverseKey = `${to}->${from}`;
 
           if (!flowMap.has(flow.key)) {
-            flowMap.set(flow.key, { value: 0, reverseValue: 0, volume: 0 });
+            flowMap.set(flow.key, {
+              value: 0,
+              reverseValue: 0,
+              volume: 0,
+            });
           }
           if (!flowMap.has(reverseKey)) {
-            flowMap.set(reverseKey, { value: 0, reverseValue: 0, volume: 0 });
+            flowMap.set(reverseKey, {
+              value: 0,
+              reverseValue: 0,
+              volume: 0,
+            });
           }
 
           let value = isNaN(flow.value) ? 0 : flow.value;
