@@ -181,7 +181,7 @@ export default class Model {
       })
       .then(function (content) {
         // Nom par défaut pour le fichier zip
-        let name = 'gflowviz.zip';
+        let name = 'arabesque_map.zip';
 
         // Sélectionner la div avec la classe 'ol-title ol-unselectable'
         var titleDiv = document.querySelector('.ol-title.ol-unselectable');
