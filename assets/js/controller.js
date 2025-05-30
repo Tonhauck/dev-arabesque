@@ -329,7 +329,7 @@ export default class Controller {
     this.view.import_end(
       res,
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, true),
       config,
       link_data_range
     );
@@ -339,7 +339,7 @@ export default class Controller {
     this.view.set_projection(
       this.model.get_projection(),
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, true),
       config,
       link_data_range
     );
@@ -376,7 +376,7 @@ export default class Controller {
 
     this.view.renderer.render(
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, false),
       this.model.get_nodes_style(),
       this.model.get_links_style()
     );
@@ -405,7 +405,7 @@ export default class Controller {
     this.view.set_projection(
       proj,
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true),
       config
     );
   }
@@ -462,7 +462,7 @@ export default class Controller {
 
     //Re-render the links because the depend on nodes size
     this.view.renderer.update_links(
-      this.model.get_links(),
+      this.model.get_links(true),
       lstyle,
       links_z_index
     );
@@ -493,7 +493,7 @@ export default class Controller {
     this.model.update_links_style(new_semio);
 
     this.view.renderer.update_links(
-      this.model.get_links(),
+      this.model.get_links(true),
       this.model.get_links_style(),
       links_z_index
     );
@@ -505,7 +505,7 @@ export default class Controller {
   }
   save_links_shape(new_semio) {
     this.model.update_links_style(new_semio);
-    let links = this.model.get_links();
+    let links = this.model.get_links(true);
     // this.view.renderer.update_links(links, new_semio);
     this.render_all();
     $('#changeGeometryModal').modal('hide');
@@ -538,7 +538,7 @@ export default class Controller {
     let lstyle = this.model.get_links_style();
 
     let nodes = this.model.get_nodes();
-    let links = this.model.get_links();
+    let links = this.model.data.filtered_links;
 
     //Update nodes radius in pixel (according to zoom level)
     this.view.renderer.update_circles_radius();
@@ -847,6 +847,7 @@ export default class Controller {
     this.model.config.filters = new_filters;
 
     //Removing dimension from the crossfilter
+    console.log(this.model.data.filters);
     this.model.data.filters[filter_id].dispose();
 
     //Removing the dimension from model.data
@@ -1148,7 +1149,7 @@ export default class Controller {
   }
 
   update_stats() {
-    console.log(this.model.get_nodes(), this.model.get_links());
+    console.log(this.model.get_nodes(), this.model.get_links(true));
   }
 
   handleExternalData(data) {
@@ -1195,7 +1196,7 @@ export default class Controller {
     this.view.import_end(
       this.model.data.res,
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, true),
       this.model.config,
       link_data_range
     );
