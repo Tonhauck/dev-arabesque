@@ -657,6 +657,7 @@ export default class Model {
         d3.min(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
         d3.max(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
       ];
+      console.log('filteredFlows', filteredFlows);
       let sum = d3.sum(
         filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))
       );

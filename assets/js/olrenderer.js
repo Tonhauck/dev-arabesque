@@ -102,7 +102,6 @@ export default class OlRenderer {
     this._link_color_groups = {};
     //Initializing a hash link object to store radius in px
     this.proj_links_hash = {};
-    this.linksAdded = false; // Ajouter un drapeau pour suivre si les liens ont été ajoutés
   }
 
   //CONTROLS //
@@ -1370,14 +1369,18 @@ export default class OlRenderer {
     return arrows;
   }
 
-  add_links(links, lstyle, link_data_range, z_index, zoomSaved, center) {
-    // Supprimer systématiquement la couche de liens existante si elle existe
-    let existingLayer = this.get_layer('links');
-    if (existingLayer) {
-      this.map.removeLayer(existingLayer);
-    }
+  add_links(
+    links,
+    lstyle,
+    link_data_range,
+    z_index,
+    zoomSaved,
+    center,
+    newLayer = false
+  ) {
+    //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
-    if (link_data_range) {
+    if (link_data_range !== undefined) {
       this.links_min_value = link_data_range[0];
       this.links_max_value = link_data_range[1];
     } else {
@@ -1394,10 +1397,23 @@ export default class OlRenderer {
       this.create_link_color_groups(links);
     }
 
-    let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100);
-    let mean = d3.mean(links.map((l) => l.value));
+    this.map.removeLayer(this.get_layer('links'));
 
-    let filtered = links;
+    // Calculer le seuil pour les 75% des liens les plus importants uniquement lors de l'import initial
+    let threshold = newLayer
+      ? d3.quantile(
+          links.map((l) => l.value),
+          0.25
+        )
+      : 0;
+
+    // Filtrer pour ne garder que les liens dont la valeur est supérieure au seuil
+    let filtered = newLayer
+      ? links.filter(function (a) {
+          return a.value >= threshold;
+        })
+      : links;
+
     // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
     let arrows = this.create_arrows(filtered, lstyle);
 
@@ -1405,7 +1421,6 @@ export default class OlRenderer {
 
     // Afficher le spinner avant le chargement
     document.getElementById('spinnerDiv').style.display = 'flex';
-
     // Remplacer forEach par for...of
     for (const [i, a] of arrows.entries()) {
       let polygon = new Polygon([a.geometry]);
@@ -1419,10 +1434,6 @@ export default class OlRenderer {
 
       links_shapes.push(feature);
     }
-
-    // Marquer les liens comme ajoutés
-    this.linksAdded = true;
-
     // Cacher le spinner après le chargement
     document.getElementById('spinnerDiv').style.display = 'none';
 
@@ -1678,7 +1689,8 @@ export default class OlRenderer {
       link_data_range,
       layer_z_indexes.links,
       config.zoom,
-      config.center
+      config.center,
+      false
     );
   }
 
@@ -1696,7 +1708,8 @@ export default class OlRenderer {
       link_data_range,
       layer_z_indexes.links,
       zoom,
-      center
+      center,
+      false // newLayer = false pour les mises à jour
     );
   }
 
