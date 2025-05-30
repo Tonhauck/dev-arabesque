@@ -36,7 +36,12 @@ export default class Model {
       opacity: {
         mode: 'fixed',
         fixed: 0.91,
-        varied: { var: 'degree', scale: 'Linear', min: 0, max: 1 },
+        varied: {
+          var: 'degree',
+          scale: 'Linear',
+          min: 0,
+          max: 1,
+        },
       },
     };
     let lstyle = {
@@ -68,7 +73,12 @@ export default class Model {
       opacity: {
         mode: 'fixed',
         fixed: 0.7,
-        varied: { var: 'volume', scale: 'Linear', min: 0, max: 1 },
+        varied: {
+          var: 'volume',
+          scale: 'Linear',
+          min: 0,
+          max: 1,
+        },
       },
       shape: {
         orientation: 'oriented',
@@ -86,7 +96,12 @@ export default class Model {
       zoom: 0,
       lock: false,
       proj: 'Mercator / EPSG:3857',
-      styles: { nodes: nstyle, links: lstyle, geojson: {}, baselayer: {} },
+      styles: {
+        nodes: nstyle,
+        links: lstyle,
+        geojson: {},
+        baselayer: {},
+      },
       layers: [
         { name: 'nodes', type: 'vector', z_index: 0 },
         { name: 'links', type: 'vector', z_index: -1 },
@@ -236,8 +251,10 @@ export default class Model {
         const reader = new FileReader();
         reader.onload = function (event) {
           that.data.nodes = that.create_geojson(
-            papaparse(reader.result, { header: true, skipEmptyLines: true })
-              .data
+            papaparse(reader.result, {
+              header: true,
+              skipEmptyLines: true,
+            }).data
           );
           callback();
         };
@@ -295,7 +312,67 @@ export default class Model {
             link[that.config.varnames.linkID[0]] !==
             link[that.config.varnames.linkID[1]]
         );
-        console.log(that.data.links);
+
+        // Calculer les indicateurs des liens
+        let flowMap = new Map();
+        that.data.links.forEach((link) => {
+          const key =
+            link[that.config.varnames.linkID[0]] +
+            '->' +
+            link[that.config.varnames.linkID[1]];
+          const reverseKey =
+            link[that.config.varnames.linkID[1]] +
+            '->' +
+            link[that.config.varnames.linkID[0]];
+
+          if (!flowMap.has(key)) {
+            flowMap.set(key, {
+              value: 0,
+              reverseValue: 0,
+              volume: 0,
+            });
+          }
+          if (!flowMap.has(reverseKey)) {
+            flowMap.set(reverseKey, {
+              value: 0,
+              reverseValue: 0,
+              volume: 0,
+            });
+          }
+
+          let value = isNaN(link[that.config.varnames.vol])
+            ? 0
+            : parseFloat(link[that.config.varnames.vol]);
+          flowMap.get(key).value += value;
+          flowMap.get(key).volume += value;
+          flowMap.get(reverseKey).reverseValue += value;
+        });
+
+        // Ajouter les indicateurs aux liens
+        that.data.links = that.data.links.map((link) => {
+          const key =
+            link[that.config.varnames.linkID[0]] +
+            '->' +
+            link[that.config.varnames.linkID[1]];
+          const reverseKey =
+            link[that.config.varnames.linkID[1]] +
+            '->' +
+            link[that.config.varnames.linkID[0]];
+
+          let values = flowMap.get(key);
+          let reverseValues = flowMap.get(reverseKey);
+
+          let balance = values.value - reverseValues.value;
+          let grossFlow = values.value + reverseValues.value;
+
+          return {
+            ...link,
+            balance: balance,
+            grossFlow: grossFlow,
+            volume: values.volume,
+          };
+        });
+
         var import_resume = that.import();
         callback(
           import_resume,
@@ -543,33 +620,115 @@ export default class Model {
     return this.data.nodes;
   }
 
-  get_links() {
-    // Obtenir tous les flux filtrés et les formater
-    const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
-    console.log('getLink :' + volumeVar);
+  get_links(once = true, onlyOnImport = false) {
+    let filteredFlows;
+    if (once === true) {
+      // Obtenir tous les flux filtrés et les formater
+      const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
 
-    let filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
-      return {
-        key:
+      filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
+        // Récupérer les valeurs calculées précédemment si elles existent
+        const key =
           link[this.config.varnames.linkID[0]] +
           '->' +
-          link[this.config.varnames.linkID[1]],
-        value: parseFloat(link[volumeVar]),
-      };
-    });
+          link[this.config.varnames.linkID[1]];
+        const previousFlow =
+          (this.data.filtered_links &&
+            this.data.filtered_links.find((f) => f.key === key)) ||
+          {};
+        return {
+          key: key,
+          value: parseFloat(link[volumeVar]),
+          // Conserver les valeurs calculées précédemment
+          balance: previousFlow.balance || 0,
+          grossFlow: previousFlow.grossFlow || parseFloat(link[volumeVar]),
+          volume: previousFlow.volume || parseFloat(link[volumeVar]),
+          ...previousFlow.flow,
+          ...previousFlow.originalLink, // Ajouter toutes les propriétés du lien original
+        };
+      });
 
+      if (onlyOnImport === true) {
+        filteredFlows = this.calculate_link_indicators(filteredFlows);
+      }
+
+      // Calculer les pourcentages de données de lien et de volume
+      let link_data_range = [
+        d3.min(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
+        d3.max(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
+      ];
+      console.log('filteredFlows', filteredFlows);
+      let sum = d3.sum(
+        filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))
+      );
+      let globalSum = d3.sum(
+        this.data.links.map((l) =>
+          isNaN(l[this.config.varnames.vol]) ? 0 : l[this.config.varnames.vol]
+        )
+      );
+      let percentageLinkData =
+        (filteredFlows.length / this.data.links.length) * 100;
+      let percentageVolumeData = (sum / globalSum) * 100;
+
+      let linkKeys = filteredFlows.map((link) => link.key);
+
+      // Extraire les IDs avant et après '->' et supprimer les doublons
+      let nodeIds = [];
+      linkKeys.forEach((key) => {
+        let ids = key.split('->');
+        if (!nodeIds.includes(ids[0])) nodeIds.push(ids[0]);
+        if (!nodeIds.includes(ids[1])) nodeIds.push(ids[1]);
+      });
+      // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds
+      this.get_nodes(nodeIds.length);
+      $('#percentageVolumeData').html(
+        percentageVolumeData.toFixed(2) + ' % ( ' + sum + ' )'
+      );
+      $('#percentageLinkData').html(
+        percentageLinkData.toFixed(2) +
+          ' % ' +
+          '(' +
+          filteredFlows.length.toLocaleString('fr-FR') +
+          ' links)'
+      );
+      this.data.filtered_links = filteredFlows;
+    } else {
+      let filteredFlows = this.data.filtered_links;
+    }
+    return filteredFlows;
+  }
+
+  calculate_link_indicators(filteredFlows) {
     // Calculer balance, gross flows et garder le volume pour les liens asymétriques
     let flowMap = new Map();
+
+    // Créer un Map pour la jointure avec this.data.links
+    let linksMap = new Map();
+    this.data.links.forEach((link) => {
+      const key =
+        link[this.config.varnames.linkID[0]] +
+        '->' +
+        link[this.config.varnames.linkID[1]];
+      linksMap.set(key, link);
+    });
 
     filteredFlows.forEach((flow) => {
       let [from, to] = flow.key.split('->');
       let reverseKey = `${to}->${from}`;
 
       if (!flowMap.has(flow.key)) {
-        flowMap.set(flow.key, { value: 0, reverseValue: 0, volume: 0 });
+        flowMap.set(flow.key, {
+          value: 0,
+          reverseValue: 0,
+          volume: 0,
+        });
       }
       if (!flowMap.has(reverseKey)) {
-        flowMap.set(reverseKey, { value: 0, reverseValue: 0, volume: 0 });
+        flowMap.set(reverseKey, {
+          value: 0,
+          reverseValue: 0,
+          volume: 0,
+        });
       }
 
       let value = isNaN(flow.value) ? 0 : flow.value;
@@ -579,10 +738,9 @@ export default class Model {
       flowMap.get(reverseKey).reverseValue += value;
     });
 
-    // Ajouter les valeurs d'asymétrie à filteredFlows
+    // Ajouter les valeurs d'asymétrie à filteredFlows et faire la jointure avec this.data.links
     filteredFlows = filteredFlows.map((flow) => {
       if (filteredFlows.indexOf(flow) < 10) {
-        console.log(flow);
       }
       let [from, to] = flow.key.split('->');
       let reverseKey = `${to}->${from}`;
@@ -593,10 +751,15 @@ export default class Model {
       let balance = values.value - reverseValues.value;
       let grossFlow = values.value + reverseValues.value;
 
+      // Récupérer les données originales du lien
+      const originalLink = linksMap.get(flow.key) || {};
+
       // Vérifier si le lien est asymétrique
-      if (balance !== 0) {
+      if (balance !== 0 && window.selectedLinkSizeVar) {
+        console.log(window.selectedLinkSizeVar + ' prout');
         return {
           ...flow,
+          ...originalLink, // Ajouter toutes les propriétés du lien original
           balance: balance,
           grossFlow: grossFlow,
           volume: values.volume,
@@ -604,50 +767,13 @@ export default class Model {
       } else {
         return {
           ...flow,
+          ...originalLink, // Ajouter toutes les propriétés du lien original
           balance: 0,
           grossFlow: values.value,
           volume: values.volume,
         };
       }
     });
-
-    // Calculer les pourcentages de données de lien et de volume
-    let link_data_range = [
-      d3.min(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
-      d3.max(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
-    ];
-    let sum = d3.sum(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value)));
-    let globalSum = d3.sum(
-      this.data.links.map((l) =>
-        isNaN(l[this.config.varnames.vol]) ? 0 : l[this.config.varnames.vol]
-      )
-    );
-    let percentageLinkData =
-      (filteredFlows.length / this.data.links.length) * 100;
-    let percentageVolumeData = (sum / globalSum) * 100;
-
-    let linkKeys = filteredFlows.map((link) => link.key);
-
-    // Extraire les IDs avant et après '->' et supprimer les doublons
-    let nodeIds = [];
-    linkKeys.forEach((key) => {
-      let ids = key.split('->');
-      if (!nodeIds.includes(ids[0])) nodeIds.push(ids[0]);
-      if (!nodeIds.includes(ids[1])) nodeIds.push(ids[1]);
-    });
-    // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds
-    this.get_nodes(nodeIds.length);
-    $('#percentageVolumeData').html(
-      percentageVolumeData.toFixed(2) + ' % ( ' + sum + ' )'
-    );
-    $('#percentageLinkData').html(
-      percentageLinkData.toFixed(2) +
-        ' % ' +
-        '(' +
-        filteredFlows.length.toLocaleString('fr-FR') +
-        ' links)'
-    );
-
     return filteredFlows;
   }
 

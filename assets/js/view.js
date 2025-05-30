@@ -210,7 +210,8 @@ export default class View {
       link_data_range,
       config.layers,
       config.zoom,
-      config.center
+      config.center,
+      true
     );
   }
   set_projection(proj, nodes, links, config, link_data_range) {
@@ -234,8 +235,7 @@ export default class View {
       <LinksSemioModalComponent
         semio={semio}
         links_properties={links_properties}
-            update_semio={(new_semio) => callback(new_semio)}
-            
+        update_semio={(new_semio) => callback(new_semio)}
       />,
       document.getElementById('ModalSemioLinks')
     );

@@ -107,6 +107,10 @@ export const SizeContainerComponent = (props) => {
                   {p}
                 </option>
               ))}
+            <option value="value">value</option>
+            <option value="balance">balance</option>
+            <option value="grossflow">grossflow</option>
+            <option value="volume">volume</option>
           </select>
         </div>
         <div id="semioSizeRatioCatChangeLink" class="col-md-4">

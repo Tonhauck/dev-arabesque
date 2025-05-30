@@ -269,8 +269,7 @@ export const NodesSemioModalComponent = (props) => {
                 </div>
               </div>
             </div>
-            <hr></hr>
-            <div class="row ">
+            <div class="row">
               <div class="col-md-10">
                 <label for="select" class="h4 strong">
                   Opacity

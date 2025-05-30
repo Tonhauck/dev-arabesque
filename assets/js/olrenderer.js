@@ -1369,7 +1369,15 @@ export default class OlRenderer {
     return arrows;
   }
 
-  add_links(links, lstyle, link_data_range, z_index, zoomSaved, center) {
+  add_links(
+    links,
+    lstyle,
+    link_data_range,
+    z_index,
+    zoomSaved,
+    center,
+    newLayer = false
+  ) {
     //On fixe le minimum et maximum des valeurs pour la définition des échelles
 
     if (link_data_range !== undefined) {
@@ -1390,14 +1398,23 @@ export default class OlRenderer {
     }
 
     this.map.removeLayer(this.get_layer('links'));
-    let max_75percent = d3.max(links.map((l) => l.value)) * 0.75;
-    let mean = d3.mean(links.map((l) => l.value));
 
-    let filtered = links; /* links.filter(function (a) {
-      return a.value >= max_75percent;
-    }); */
+    // Calculer le seuil pour les 75% des liens les plus importants uniquement lors de l'import initial
+    let threshold = newLayer
+      ? d3.quantile(
+          links.map((l) => l.value),
+          0.25
+        )
+      : 0;
+
+    // Filtrer pour ne garder que les liens dont la valeur est supérieure au seuil
+    let filtered = newLayer
+      ? links.filter(function (a) {
+          return a.value >= threshold;
+        })
+      : links;
+
     // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
-
     let arrows = this.create_arrows(filtered, lstyle);
 
     let links_shapes = [];
@@ -1672,7 +1689,8 @@ export default class OlRenderer {
       link_data_range,
       layer_z_indexes.links,
       config.zoom,
-      config.center
+      config.center,
+      false
     );
   }
 
@@ -1690,7 +1708,8 @@ export default class OlRenderer {
       link_data_range,
       layer_z_indexes.links,
       zoom,
-      center
+      center,
+      false // newLayer = false pour les mises à jour
     );
   }
 
