@@ -329,7 +329,7 @@ export default class Controller {
     this.view.import_end(
       res,
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, true),
       config,
       link_data_range
     );
@@ -339,7 +339,7 @@ export default class Controller {
     this.view.set_projection(
       this.model.get_projection(),
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, true),
       config,
       link_data_range
     );
@@ -349,11 +349,11 @@ export default class Controller {
     const that = this;
     var blob;
     var request = new XMLHttpRequest();
-    request.open('GET', './public/data/mobscol.zip');
+    request.open('GET', './public/data/mobiliscol-30-mai.zip');
     request.responseType = 'blob';
     request.onload = function () {
       blob = request.response;
-      var file = new File([blob], 'mobscol.zip');
+      var file = new File([blob], 'mobiliscol-30-mai.zip');
 
       that.import_zip(null, file);
     };
@@ -374,9 +374,14 @@ export default class Controller {
       layers_visibility[layer.get('name')] = layer.getVisible();
     });
 
-    // Ne mettre à jour que les nœuds, pas les liens
-    this.view.renderer.update_nodes(
-      this.model.get_nodes(),
+    // Obtenir les données filtrées une seule fois
+    let filtered_links = this.model.get_links(true, false);
+    let nodes = this.model.get_nodes();
+
+    // Rendu unique avec les données filtrées
+    this.view.renderer.render(
+      nodes,
+      filtered_links,
       this.model.get_nodes_style(),
       this.model.config.layers.find((l) => l.name === 'nodes').z_index
     );
@@ -400,7 +405,7 @@ export default class Controller {
     this.view.set_projection(
       proj,
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true),
       config
     );
   }
@@ -457,7 +462,7 @@ export default class Controller {
 
     //Re-render the links because the depend on nodes size
     this.view.renderer.update_links(
-      this.model.get_links(),
+      this.model.get_links(true),
       lstyle,
       links_z_index
     );
@@ -488,7 +493,7 @@ export default class Controller {
     this.model.update_links_style(new_semio);
 
     this.view.renderer.update_links(
-      this.model.get_links(),
+      this.model.get_links(true),
       this.model.get_links_style(),
       links_z_index
     );
@@ -500,7 +505,7 @@ export default class Controller {
   }
   save_links_shape(new_semio) {
     this.model.update_links_style(new_semio);
-    let links = this.model.get_links();
+    let links = this.model.get_links(true);
     // this.view.renderer.update_links(links, new_semio);
     this.render_all();
     $('#changeGeometryModal').modal('hide');
@@ -533,7 +538,7 @@ export default class Controller {
     let lstyle = this.model.get_links_style();
 
     let nodes = this.model.get_nodes();
-    let links = this.model.get_links();
+    let links = this.model.data.filtered_links;
 
     //Update nodes radius in pixel (according to zoom level)
     this.view.renderer.update_circles_radius();
@@ -842,6 +847,7 @@ export default class Controller {
     this.model.config.filters = new_filters;
 
     //Removing dimension from the crossfilter
+    console.log(this.model.data.filters);
     this.model.data.filters[filter_id].dispose();
 
     //Removing the dimension from model.data
@@ -1143,7 +1149,7 @@ export default class Controller {
   }
 
   update_stats() {
-    console.log(this.model.get_nodes(), this.model.get_links());
+    console.log(this.model.get_nodes(), this.model.get_links(true));
   }
 
   handleExternalData(data) {
@@ -1190,7 +1196,7 @@ export default class Controller {
     this.view.import_end(
       this.model.data.res,
       this.model.get_nodes(),
-      this.model.get_links(),
+      this.model.get_links(true, true),
       this.model.config,
       link_data_range
     );

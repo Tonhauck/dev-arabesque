@@ -16,7 +16,7 @@ global.projections = {
     name: 'RGF93 / Lambert-93 -- France',
     proj4:
       '+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
-    //extent: [-378305.81, 6093283.21, 1212610.74, 7186901.68],
+    // extent: [-378305.81, 6093283.21, 1212610.74, 7186901.68]
   },
   'ETRS89 / LAEA Europe': {
     name: 'ETRS89 / LAEA Europe',
@@ -44,7 +44,7 @@ global.projections = {
   'World Mollweide / EPSG:54009': {
     name: 'World Mollweide / EPSG:54009',
     proj4: '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs',
-    //extent: [-18e6, -9e6, 18e6, 9e6],
+    // extent: [-18e6, -9e6, 18e6, 9e6],
   },
   'Quadrilateralized Spherical Cube': {
     name: 'Quadrilateralized Spherical Cube',
