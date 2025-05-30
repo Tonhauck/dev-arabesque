@@ -349,11 +349,11 @@ export default class Controller {
     const that = this;
     var blob;
     var request = new XMLHttpRequest();
-    request.open('GET', './public/data/netcity.zip');
+    request.open('GET', './public/data/mobiliscol-30-mai.zip');
     request.responseType = 'blob';
     request.onload = function () {
       blob = request.response;
-      var file = new File([blob], 'netcity.zip');
+      var file = new File([blob], 'mobiliscol-30-mai.zip');
 
       that.import_zip(null, file);
     };
