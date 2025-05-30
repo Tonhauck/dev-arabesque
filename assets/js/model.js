@@ -623,11 +623,8 @@ export default class Model {
   get_links(once = true, onlyOnImport = false) {
     let filteredFlows;
     if (once === true) {
-      console.log('get_links');
       // Obtenir tous les flux filtrés et les formater
       const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
-      console.log('getLink :' + volumeVar);
-      console.log('link data', this.data.links);
 
       filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
         // Récupérer les valeurs calculées précédemment si elles existent
@@ -639,7 +636,6 @@ export default class Model {
           (this.data.filtered_links &&
             this.data.filtered_links.find((f) => f.key === key)) ||
           {};
-        console.log('link', link[volumeVar]);
         return {
           key: key,
           value: parseFloat(link[volumeVar]),
@@ -654,7 +650,6 @@ export default class Model {
 
       if (onlyOnImport === true) {
         filteredFlows = this.calculate_link_indicators(filteredFlows);
-        console.log('filteredFlows', filteredFlows);
       }
 
       // Calculer les pourcentages de données de lien et de volume
@@ -696,7 +691,6 @@ export default class Model {
           ' links)'
       );
       this.data.filtered_links = filteredFlows;
-      console.log('filtered_links', this.data.filtered_links);
     } else {
       let filteredFlows = this.data.filtered_links;
     }

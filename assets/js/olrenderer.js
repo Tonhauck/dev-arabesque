@@ -102,6 +102,7 @@ export default class OlRenderer {
     this._link_color_groups = {};
     //Initializing a hash link object to store radius in px
     this.proj_links_hash = {};
+    this.linksAdded = false; // Ajouter un drapeau pour suivre si les liens ont été ajoutés
   }
 
   //CONTROLS //
@@ -1370,9 +1371,13 @@ export default class OlRenderer {
   }
 
   add_links(links, lstyle, link_data_range, z_index, zoomSaved, center) {
-    //On fixe le minimum et maximum des valeurs pour la définition des échelles
+    // Supprimer systématiquement la couche de liens existante si elle existe
+    let existingLayer = this.get_layer('links');
+    if (existingLayer) {
+      this.map.removeLayer(existingLayer);
+    }
 
-    if (link_data_range !== undefined) {
+    if (link_data_range) {
       this.links_min_value = link_data_range[0];
       this.links_max_value = link_data_range[1];
     } else {
@@ -1388,21 +1393,19 @@ export default class OlRenderer {
     if (lstyle.color.varied.type === 'qualitative') {
       this.create_link_color_groups(links);
     }
-    this.map.removeLayer(this.get_layer('links'));
+
     let max_90percent = d3.max(links.map((l) => l.value)) * (90 / 100);
     let mean = d3.mean(links.map((l) => l.value));
 
-    let filtered = links.filter(function (a) {
-      return a.value <= mean;
-    });
+    let filtered = links;
     // Ajouter les informations supplémentaires aux entités géographiques + création des fleches
-
     let arrows = this.create_arrows(filtered, lstyle);
 
     let links_shapes = [];
 
     // Afficher le spinner avant le chargement
     document.getElementById('spinnerDiv').style.display = 'flex';
+
     // Remplacer forEach par for...of
     for (const [i, a] of arrows.entries()) {
       let polygon = new Polygon([a.geometry]);
@@ -1416,6 +1419,10 @@ export default class OlRenderer {
 
       links_shapes.push(feature);
     }
+
+    // Marquer les liens comme ajoutés
+    this.linksAdded = true;
+
     // Cacher le spinner après le chargement
     document.getElementById('spinnerDiv').style.display = 'none';
 

@@ -374,9 +374,14 @@ export default class Controller {
       layers_visibility[layer.get('name')] = layer.getVisible();
     });
 
+    // Obtenir les données filtrées une seule fois
+    let filtered_links = this.model.get_links(true, false);
+    let nodes = this.model.get_nodes();
+
+    // Rendu unique avec les données filtrées
     this.view.renderer.render(
-      this.model.get_nodes(),
-      this.model.get_links(true, false),
+      nodes,
+      filtered_links,
       this.model.get_nodes_style(),
       this.model.get_links_style()
     );
@@ -387,11 +392,6 @@ export default class Controller {
         layer.setVisible(layers_visibility[layer.get('name')]);
       }
     });
-    /* 
-        view.setCenter(center);
-        view.setZoom(zoom);
-         */
-    //view.setProjection(projection);
   }
 
   // PROJECTION //
