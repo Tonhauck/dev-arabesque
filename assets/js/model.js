@@ -313,6 +313,66 @@ export default class Model {
             link[that.config.varnames.linkID[1]]
         );
 
+        // Calculer les indicateurs des liens
+        let flowMap = new Map();
+        that.data.links.forEach((link) => {
+          const key =
+            link[that.config.varnames.linkID[0]] +
+            '->' +
+            link[that.config.varnames.linkID[1]];
+          const reverseKey =
+            link[that.config.varnames.linkID[1]] +
+            '->' +
+            link[that.config.varnames.linkID[0]];
+
+          if (!flowMap.has(key)) {
+            flowMap.set(key, {
+              value: 0,
+              reverseValue: 0,
+              volume: 0,
+            });
+          }
+          if (!flowMap.has(reverseKey)) {
+            flowMap.set(reverseKey, {
+              value: 0,
+              reverseValue: 0,
+              volume: 0,
+            });
+          }
+
+          let value = isNaN(link[that.config.varnames.vol])
+            ? 0
+            : parseFloat(link[that.config.varnames.vol]);
+          flowMap.get(key).value += value;
+          flowMap.get(key).volume += value;
+          flowMap.get(reverseKey).reverseValue += value;
+        });
+
+        // Ajouter les indicateurs aux liens
+        that.data.links = that.data.links.map((link) => {
+          const key =
+            link[that.config.varnames.linkID[0]] +
+            '->' +
+            link[that.config.varnames.linkID[1]];
+          const reverseKey =
+            link[that.config.varnames.linkID[1]] +
+            '->' +
+            link[that.config.varnames.linkID[0]];
+
+          let values = flowMap.get(key);
+          let reverseValues = flowMap.get(reverseKey);
+
+          let balance = values.value - reverseValues.value;
+          let grossFlow = values.value + reverseValues.value;
+
+          return {
+            ...link,
+            balance: balance,
+            grossFlow: grossFlow,
+            volume: values.volume,
+          };
+        });
+
         var import_resume = that.import();
         callback(
           import_resume,
@@ -567,6 +627,7 @@ export default class Model {
       // Obtenir tous les flux filtrés et les formater
       const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
       console.log('getLink :' + volumeVar);
+      console.log('link data', this.data.links);
 
       filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
         // Récupérer les valeurs calculées précédemment si elles existent
@@ -578,7 +639,7 @@ export default class Model {
           (this.data.filtered_links &&
             this.data.filtered_links.find((f) => f.key === key)) ||
           {};
-
+        console.log('link', link[volumeVar]);
         return {
           key: key,
           value: parseFloat(link[volumeVar]),
@@ -586,85 +647,14 @@ export default class Model {
           balance: previousFlow.balance || 0,
           grossFlow: previousFlow.grossFlow || parseFloat(link[volumeVar]),
           volume: previousFlow.volume || parseFloat(link[volumeVar]),
+          ...previousFlow.flow,
+          ...previousFlow.originalLink, // Ajouter toutes les propriétés du lien original
         };
       });
 
       if (onlyOnImport === true) {
-        // Calculer balance, gross flows et garder le volume pour les liens asymétriques
-        let flowMap = new Map();
-
-        // Créer un Map pour la jointure avec this.data.links
-        let linksMap = new Map();
-        this.data.links.forEach((link) => {
-          const key =
-            link[this.config.varnames.linkID[0]] +
-            '->' +
-            link[this.config.varnames.linkID[1]];
-          linksMap.set(key, link);
-        });
-
-        filteredFlows.forEach((flow) => {
-          let [from, to] = flow.key.split('->');
-          let reverseKey = `${to}->${from}`;
-
-          if (!flowMap.has(flow.key)) {
-            flowMap.set(flow.key, {
-              value: 0,
-              reverseValue: 0,
-              volume: 0,
-            });
-          }
-          if (!flowMap.has(reverseKey)) {
-            flowMap.set(reverseKey, {
-              value: 0,
-              reverseValue: 0,
-              volume: 0,
-            });
-          }
-
-          let value = isNaN(flow.value) ? 0 : flow.value;
-
-          flowMap.get(flow.key).value += value;
-          flowMap.get(flow.key).volume += value;
-          flowMap.get(reverseKey).reverseValue += value;
-        });
-
-        // Ajouter les valeurs d'asymétrie à filteredFlows et faire la jointure avec this.data.links
-        filteredFlows = filteredFlows.map((flow) => {
-          if (filteredFlows.indexOf(flow) < 10) {
-            console.log(flow);
-          }
-          let [from, to] = flow.key.split('->');
-          let reverseKey = `${to}->${from}`;
-
-          let values = flowMap.get(flow.key);
-          let reverseValues = flowMap.get(reverseKey);
-
-          let balance = values.value - reverseValues.value;
-          let grossFlow = values.value + reverseValues.value;
-
-          // Récupérer les données originales du lien
-          const originalLink = linksMap.get(flow.key) || {};
-
-          // Vérifier si le lien est asymétrique
-          if (balance !== 0) {
-            return {
-              ...flow,
-              ...originalLink, // Ajouter toutes les propriétés du lien original
-              balance: balance,
-              grossFlow: grossFlow,
-              volume: values.volume,
-            };
-          } else {
-            return {
-              ...flow,
-              ...originalLink, // Ajouter toutes les propriétés du lien original
-              balance: 0,
-              grossFlow: values.value,
-              volume: values.volume,
-            };
-          }
-        });
+        filteredFlows = this.calculate_link_indicators(filteredFlows);
+        console.log('filteredFlows', filteredFlows);
       }
 
       // Calculer les pourcentages de données de lien et de volume
@@ -710,6 +700,84 @@ export default class Model {
     } else {
       let filteredFlows = this.data.filtered_links;
     }
+    return filteredFlows;
+  }
+
+  calculate_link_indicators(filteredFlows) {
+    // Calculer balance, gross flows et garder le volume pour les liens asymétriques
+    let flowMap = new Map();
+
+    // Créer un Map pour la jointure avec this.data.links
+    let linksMap = new Map();
+    this.data.links.forEach((link) => {
+      const key =
+        link[this.config.varnames.linkID[0]] +
+        '->' +
+        link[this.config.varnames.linkID[1]];
+      linksMap.set(key, link);
+    });
+
+    filteredFlows.forEach((flow) => {
+      let [from, to] = flow.key.split('->');
+      let reverseKey = `${to}->${from}`;
+
+      if (!flowMap.has(flow.key)) {
+        flowMap.set(flow.key, {
+          value: 0,
+          reverseValue: 0,
+          volume: 0,
+        });
+      }
+      if (!flowMap.has(reverseKey)) {
+        flowMap.set(reverseKey, {
+          value: 0,
+          reverseValue: 0,
+          volume: 0,
+        });
+      }
+
+      let value = isNaN(flow.value) ? 0 : flow.value;
+
+      flowMap.get(flow.key).value += value;
+      flowMap.get(flow.key).volume += value;
+      flowMap.get(reverseKey).reverseValue += value;
+    });
+
+    // Ajouter les valeurs d'asymétrie à filteredFlows et faire la jointure avec this.data.links
+    filteredFlows = filteredFlows.map((flow) => {
+      if (filteredFlows.indexOf(flow) < 10) {
+      }
+      let [from, to] = flow.key.split('->');
+      let reverseKey = `${to}->${from}`;
+
+      let values = flowMap.get(flow.key);
+      let reverseValues = flowMap.get(reverseKey);
+
+      let balance = values.value - reverseValues.value;
+      let grossFlow = values.value + reverseValues.value;
+
+      // Récupérer les données originales du lien
+      const originalLink = linksMap.get(flow.key) || {};
+
+      // Vérifier si le lien est asymétrique
+      if (balance !== 0) {
+        return {
+          ...flow,
+          ...originalLink, // Ajouter toutes les propriétés du lien original
+          balance: balance,
+          grossFlow: grossFlow,
+          volume: values.volume,
+        };
+      } else {
+        return {
+          ...flow,
+          ...originalLink, // Ajouter toutes les propriétés du lien original
+          balance: 0,
+          grossFlow: values.value,
+          volume: values.volume,
+        };
+      }
+    });
     return filteredFlows;
   }
 
