@@ -383,7 +383,7 @@ export default class Controller {
       nodes,
       filtered_links,
       this.model.get_nodes_style(),
-      this.model.config.layers.find((l) => l.name === 'nodes').z_index
+      this.model.get_links_style()
     );
 
     // Restaurer la visibilité des layers
