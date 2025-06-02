@@ -67,18 +67,13 @@ export default class Controller {
 
   async loadFromQueryParameters() {
     const queryParameters = new URLSearchParams(window.location.search)
-    const nodesUrl = queryParameters.get('n_u');
-    const edgesUrl = queryParameters.get('e_u');
-    const configUrl = queryParameters.get('c_u');
-    if (isValidHttpsUrl(nodesUrl) && isValidHttpsUrl(edgesUrl) && isValidHttpsUrl(configUrl)) {
+    const dataUrl = queryParameters.get('d_u');
+    if (isValidHttpsUrl(dataUrl)) {
       try {
-        const [nodes, edges, config] = await Promise.all([
-          fetch(nodesUrl).then(r => r.json()),
-          fetch(edgesUrl).then(r => r.json()),
-          fetch(configUrl).then(r => r.json())
-        ]);
+        const response = await fetch(dataUrl).then(r => r.json());
         document.getElementById('spinnerDiv').style.display = 'flex';
-        return { nodes, links: edges, config }
+        const { nodes, edges: links, config } = response;
+        return { nodes, links, config }
       } catch(e) {
         console.error(`error fetching data file`);
         console.error(e);
