@@ -101,15 +101,23 @@ export const SizeContainerComponent = (props) => {
           >
             {/* We can iterate on the nodes properties to fill the select div  */}
             {Object.keys(links_properties)
-              .filter((p) => !isNaN(filter_float(links_properties[p])))
+              .filter(
+                (p) =>
+                  !isNaN(filter_float(links_properties[p])) && // Keep only numeric properties
+                  p !== 'value' && // Exclude calculated 'value'
+                  p !== 'balance' && // Exclude calculated 'balance'
+                  p !== 'grossFlow' && // Exclude calculated 'grossFlow'
+                  p !== 'volume' // Exclude calculated 'volume'
+              )
               .map((p) => (
                 <option key={p} value={p}>
                   {p}
                 </option>
               ))}
+            {/* Explicitly add the calculated/derived properties */}
             <option value="value">value</option>
             <option value="balance">balance</option>
-            <option value="grossflow">grossflow</option>
+            <option value="grossFlow">grossFlow</option>
             <option value="volume">volume</option>
           </select>
         </div>
