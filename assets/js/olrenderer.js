@@ -1550,7 +1550,10 @@ export default class OlRenderer {
             for (var key in feature.get('linkData')) {
               if (key !== 'key') {
                 let value = feature.get('linkData')[key];
-                let formattedValue = isNaN(value) ? value : value.toFixed(2);
+                let formattedValue =
+                  typeof value === 'number' && !isNaN(value)
+                    ? value.toFixed(2)
+                    : value;
                 popupContent +=
                   '<tr class="' +
                   (i % 2 === 0 ? '' : 'table-secondary') +

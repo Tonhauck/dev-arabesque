@@ -518,7 +518,6 @@ export default class Model {
     // update nodes stats degree, wheighted degree, balance,...
     this.init_nodes_stats();
     this.update_nodes_stats();
-
     // import statistics
     return {
       nb_nodes: final_nodes.size,
@@ -611,7 +610,13 @@ export default class Model {
   }
 
   get_nodes(num_nodes) {
-    // this.update_nodes_stats();
+    console.log('get_nodes', num_nodes);
+    // Si num_nodes n'est pas fourni, retourner simplement les nœuds sans mettre à jour les statistiques
+    if (num_nodes === undefined) {
+      return this.data.nodes;
+    }
+
+    // Sinon, mettre à jour les statistiques avec le nombre de nœuds fourni
     let percentageNodesData = (num_nodes / this.data.nodes.length) * 100;
     $('#percentageNodeData').html(
       percentageNodesData.toFixed(2) + ' % ' + '(' + num_nodes + ' nodes)'
@@ -649,38 +654,32 @@ export default class Model {
       });
 
       if (onlyOnImport === true) {
+        console.log('onlyOnImport');
+        // Trier les liens par valeur décroissante
+        filteredFlows.sort((a, b) => b.value - a.value);
+
+        // Calculer le nombre de liens à garder (25%)
+        const numberOfLinksToKeep = Math.ceil(filteredFlows.length * 0.25);
+
+        // Ne garder que les 25% premiers liens
+        filteredFlows = filteredFlows.slice(0, numberOfLinksToKeep);
+
+        // Calculer les indicateurs pour les liens filtrés
         filteredFlows = this.calculate_link_indicators(filteredFlows);
       }
 
       // Calculer les pourcentages de données de lien et de volume
-      let link_data_range = [
-        d3.min(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
-        d3.max(filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))),
-      ];
-      console.log('filteredFlows', filteredFlows);
       let sum = d3.sum(
         filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))
       );
       let globalSum = d3.sum(
-        this.data.links.map((l) =>
-          isNaN(l[this.config.varnames.vol]) ? 0 : l[this.config.varnames.vol]
-        )
+        this.data.links.map((l) => (isNaN(l[volumeVar]) ? 0 : l[volumeVar]))
       );
       let percentageLinkData =
         (filteredFlows.length / this.data.links.length) * 100;
       let percentageVolumeData = (sum / globalSum) * 100;
 
-      let linkKeys = filteredFlows.map((link) => link.key);
-
-      // Extraire les IDs avant et après '->' et supprimer les doublons
-      let nodeIds = [];
-      linkKeys.forEach((key) => {
-        let ids = key.split('->');
-        if (!nodeIds.includes(ids[0])) nodeIds.push(ids[0]);
-        if (!nodeIds.includes(ids[1])) nodeIds.push(ids[1]);
-      });
-      // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds
-      this.get_nodes(nodeIds.length);
+      // Mettre à jour les statistiques des liens
       $('#percentageVolumeData').html(
         percentageVolumeData.toFixed(2) + ' % ( ' + sum + ' )'
       );
@@ -691,6 +690,22 @@ export default class Model {
           filteredFlows.length.toLocaleString('fr-FR') +
           ' links)'
       );
+
+      // Mettre à jour les statistiques des nœuds uniquement si nous avons des liens filtrés
+      if (filteredFlows.length > 0) {
+        let linkKeys = filteredFlows.map((link) => link.key);
+        // Extraire les IDs avant et après '->' et supprimer les doublons
+        let nodeIds = [];
+        linkKeys.forEach((key) => {
+          let ids = key.split('->');
+          if (!nodeIds.includes(ids[0])) nodeIds.push(ids[0]);
+          if (!nodeIds.includes(ids[1])) nodeIds.push(ids[1]);
+        });
+        console.log('nodeIds', nodeIds);
+        // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds
+        this.get_nodes(nodeIds.length);
+      }
+
       this.data.filtered_links = filteredFlows;
     } else {
       let filteredFlows = this.data.filtered_links;
