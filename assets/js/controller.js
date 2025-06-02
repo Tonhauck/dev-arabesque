@@ -101,6 +101,14 @@ export default class Controller {
       .addEventListener('click', this.load_thumbnail_zip.bind(this));
 
     document
+      .getElementById('thumbnail-card2')
+      .addEventListener('click', this.load_thumbnail_zip2.bind(this));
+
+    document
+      .getElementById('thumbnail-card3')
+      .addEventListener('click', this.load_thumbnail_zip3.bind(this));
+
+    document
       .getElementById('Filters')
       .addEventListener('change', this.update_stats.bind(this));
 
@@ -360,6 +368,35 @@ export default class Controller {
     request.send();
   }
 
+  load_thumbnail_zip2() {
+    const that = this;
+    var blob;
+    var request = new XMLHttpRequest();
+    request.open('GET', './public/data/Bird_migration.zip');
+    request.responseType = 'blob';
+    request.onload = function () {
+      blob = request.response;
+      var file = new File([blob], 'Bird_migration.zip');
+
+      that.import_zip(null, file);
+    };
+    request.send();
+  }
+
+  load_thumbnail_zip3() {
+    const that = this;
+    var blob;
+    var request = new XMLHttpRequest();
+    request.open('GET', './public/data/ferrailles.zip');
+    request.responseType = 'blob';
+    request.onload = function () {
+      blob = request.response;
+      var file = new File([blob], 'ferrailles.zip');
+
+      that.import_zip(null, file);
+    };
+    request.send();
+  }
   render_all() {
     let proj_sel = document.getElementById('projection');
     let proj = proj_sel.options[proj_sel.selectedIndex].value;

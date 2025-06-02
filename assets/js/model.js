@@ -377,7 +377,7 @@ export default class Model {
         callback(
           import_resume,
           that.get_nodes(),
-          that.get_links(),
+          that.get_links(true, true, true),
           that.config
         );
       };
@@ -518,7 +518,6 @@ export default class Model {
     // update nodes stats degree, wheighted degree, balance,...
     this.init_nodes_stats();
     this.update_nodes_stats();
-
     // import statistics
     return {
       nb_nodes: final_nodes.size,
@@ -626,7 +625,7 @@ export default class Model {
     return this.data.nodes;
   }
 
-  get_links(once = true, onlyOnImport = false) {
+  get_links(once = true, onlyOnImport = false, newLinkImport = false) {
     let filteredFlows;
     if (once === true) {
       // Obtenir tous les flux filtrés et les formater
@@ -655,7 +654,20 @@ export default class Model {
       });
 
       if (onlyOnImport === true) {
+        // Calculer les indicateurs pour les liens filtrés
         filteredFlows = this.calculate_link_indicators(filteredFlows);
+      }
+
+      if (newLinkImport === true) {
+        console.log('newLinkImport');
+        // Trier les liens par valeur décroissante
+        filteredFlows.sort((a, b) => b.value - a.value);
+
+        // Calculer le nombre de liens à garder (25%)
+        const numberOfLinksToKeep = Math.ceil(filteredFlows.length * 0.25);
+
+        // Ne garder que les 25% premiers liens
+        filteredFlows = filteredFlows.slice(0, numberOfLinksToKeep);
       }
 
       // Calculer les pourcentages de données de lien et de volume
