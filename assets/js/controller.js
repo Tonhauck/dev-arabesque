@@ -9,6 +9,7 @@ import * as turf from '@turf/turf';
 import { LayerCardsContainer } from '../react/layers/layers_container';
 import crossfilter from 'crossfilter2';
 import { data } from 'jquery';
+import { isValidHttpsUrl } from './util.js';
 
 export default class Controller {
   constructor(model, view) {
@@ -25,19 +26,65 @@ export default class Controller {
                 console.log("Aucune donnée trouvée dans IndexedDB.");
             }
         }); */
+    this.initialize();
+  }
+  
+  async initialize() {
+    this.tryPreloadData();
+    // let initialSetup run otherwise empty projection dropdown
+    this.initialSetup();
+  }
 
-    window.addEventListener('message', (event) => {
-      const data = event.data;
-      if (data.type === 'arabesqueData') {
-        // Afficher le spinner d'attente
-        document.getElementById('spinnerDiv').style.display = 'flex';
-        // Ajouter un léger délai pour éviter que l'application ne se déclenche avant l'import des data
-        setTimeout(() => {
-          this.handleExternalData(data.content);
-        }, 500);
-      }
+  async tryPreloadData() {
+    let data = await this.loadFromQueryParameters();
+    // the other tab waits for 2000ms so we give it 3000ms to send a message
+    data = data || await this.loadFromPostMessage(3000);
+    if (data) {
+      // show a spinner for 500ms then load the data
+      document.getElementById('spinnerDiv').style.display = 'flex';
+      setTimeout(() => {
+        this.handleExternalData(data);
+      }, 500);
+    }
+  }
+
+  async loadFromPostMessage(timeout) {
+    return new Promise((resolve) => {
+      const messageHandler = (event) => {
+        const data = event.data;
+        if (data.type === 'arabesqueData') {
+          window.removeEventListener('message', messageHandler);
+          resolve(data.content);
+        }
+      };
+      window.addEventListener('message', messageHandler);
+      setTimeout(() => { // remove listener if no data after timeout
+        window.removeEventListener('message', messageHandler);
+        resolve(null);
+      }, timeout);
     });
+  }
 
+  async loadFromQueryParameters() {
+    const queryParameters = new URLSearchParams(window.location.search)
+    const dataUrl = queryParameters.get('d_u');
+    if (isValidHttpsUrl(dataUrl)) {
+      try {
+        const response = await fetch(dataUrl).then(r => r.json());
+        document.getElementById('spinnerDiv').style.display = 'flex';
+        const { nodes, edges: links, config } = response;
+        return { nodes, links, config }
+      } catch(e) {
+        console.error(`error fetching data file`);
+        console.error(e);
+        throw e
+      }
+    } else {
+      console.log('no query param files')
+    }
+  }
+
+  initialSetup() {
     this.render_layers_cards();
 
     document
@@ -1190,6 +1237,7 @@ export default class Controller {
   }
 
   handleExternalData(data) {
+    document.getElementById('spinnerDiv').style.display = 'flex';
     // Vérifier que les données sont valides
     if (!data.nodes || !data.links) {
       console.error('Invalid data format: nodes and links are required.');
