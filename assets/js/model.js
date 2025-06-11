@@ -628,28 +628,21 @@ export default class Model {
   get_links(once = true, onlyOnImport = false, newLinkImport = false) {
     let filteredFlows;
     if (once === true) {
-      // Obtenir tous les flux filtrés et les formater
       const volumeVar = window.selectedLinkSizeVar || this.config.varnames.vol;
-
-      filteredFlows = this.data.crossfilters.allFiltered().map((link) => {
-        // Récupérer les valeurs calculées précédemment si elles existent
+      // Process links directly from crossfilter's current filtered set
+      filteredFlows = this.data.crossfilters.allFiltered().map((linkFromCrossfilter) => {
         const key =
-          link[this.config.varnames.linkID[0]] +
+          linkFromCrossfilter[this.config.varnames.linkID[0]] +
           '->' +
-          link[this.config.varnames.linkID[1]];
-        const previousFlow =
-          (this.data.filtered_links &&
-            this.data.filtered_links.find((f) => f.key === key)) ||
-          {};
+          linkFromCrossfilter[this.config.varnames.linkID[1]];
+        // volumeVar is defined outside this map function, in the scope of get_links
+
         return {
           key: key,
-          value: parseFloat(link[volumeVar]),
-          // Conserver les valeurs calculées précédemment
-          balance: previousFlow.balance || 0,
-          grossFlow: previousFlow.grossFlow || parseFloat(link[volumeVar]),
-          volume: previousFlow.volume || parseFloat(link[volumeVar]),
-          ...previousFlow.flow,
-          ...previousFlow.originalLink, // Ajouter toutes les propriétés du lien original
+          value: parseFloat(linkFromCrossfilter[volumeVar]), // Current value for sorting/filtering
+          // Spread all properties from the link object from crossfilter.
+          // This includes original attributes and those added during import (balance, grossFlow, volume).
+          ...linkFromCrossfilter
         };
       });
 
@@ -670,6 +663,7 @@ export default class Model {
         filteredFlows = filteredFlows.slice(0, numberOfLinksToKeep);
       }
 
+      // UI Update Logic
       // Calculer les pourcentages de données de lien et de volume
       let sum = d3.sum(
         filteredFlows.map((l) => (isNaN(l.value) ? 0 : l.value))
@@ -683,7 +677,7 @@ export default class Model {
 
       // Mettre à jour les statistiques des liens
       $('#percentageVolumeData').html(
-        percentageVolumeData.toFixed(2) + ' % ( ' + sum + ' )'
+        percentageVolumeData.toFixed(2) + ' % ( ' + sum.toLocaleString('fr-FR') + ' )'
       );
       $('#percentageLinkData').html(
         percentageLinkData.toFixed(2) +
@@ -695,24 +689,31 @@ export default class Model {
 
       // Mettre à jour les statistiques des nœuds uniquement si nous avons des liens filtrés
       if (filteredFlows.length > 0) {
-        let linkKeys = filteredFlows.map((link) => link.key);
-        // Extraire les IDs avant et après '->' et supprimer les doublons
-        let nodeIds = [];
-        linkKeys.forEach((key) => {
-          let ids = key.split('->');
-          if (!nodeIds.includes(ids[0])) nodeIds.push(ids[0]);
-          if (!nodeIds.includes(ids[1])) nodeIds.push(ids[1]);
+        let nodeIds = new Set();
+        filteredFlows.forEach((link) => {
+          const ids = link.key.split('->');
+          nodeIds.add(ids[0]);
+          nodeIds.add(ids[1]);
         });
-        console.log('nodeIds', nodeIds);
-        // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds
-        this.get_nodes(nodeIds.length);
+        console.log('nodeIds', Array.from(nodeIds)); // Log as array for readability if needed
+        // Appel de la méthode get_nodes avec le nombre d'IDs de nœuds uniques
+        this.get_nodes(nodeIds.size);
+      } else {
+        this.get_nodes(0); // Update node count to 0 if no links
       }
 
       this.data.filtered_links = filteredFlows;
     } else {
+      // This line was incorrect in the original code, it should assign to the outer scope filteredFlows
+      // or this.data.filtered_links should be used directly if that's the intent for once === false.
+      // For now, mirroring the original structure's potential bug:
       let filteredFlows = this.data.filtered_links;
+      // Corrected approach would be:
+      // filteredFlows = this.data.filtered_links;
     }
-    return filteredFlows;
+    // If once was false, the original code had a scoping issue with filteredFlows.
+    // Assuming the intent is to return the class member if once is false.
+    return once === false ? this.data.filtered_links : filteredFlows;
   }
 
   calculate_link_indicators(filteredFlows) {
