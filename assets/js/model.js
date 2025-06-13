@@ -869,10 +869,11 @@ export default class Model {
       let fromNode = this.data.nodes_hash[from];
       let toNode = this.data.nodes_hash[to];
       if (fromNode && toNode) {
-        let fromLat = Number(fromNode.properties[this.config.varnames.lat]);
-        let fromLong = Number(fromNode.properties[this.config.varnames.long]);
-        let toLat = Number(toNode.properties[this.config.varnames.lat]);
-        let toLong = Number(toNode.properties[this.config.varnames.long]);
+        // Utiliser les coordonnées du format GeoJSON
+        let fromLat = Number(fromNode.geometry.coordinates[1]);
+        let fromLong = Number(fromNode.geometry.coordinates[0]);
+        let toLat = Number(toNode.geometry.coordinates[1]);
+        let toLong = Number(toNode.geometry.coordinates[0]);
 
         if (
           isNaN(fromLat) ||
