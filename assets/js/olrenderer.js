@@ -656,8 +656,9 @@ export default class OlRenderer {
     this.update_node_scales_types(nstyle);
 
     var map = this.map;
-    // nettoyage
-    this.map.removeLayer(this.get_layer('nodes'));
+    let oldLayer = this.get_layer('nodes');
+    let wasVisible = oldLayer ? oldLayer.getVisible() : true;
+    map.removeLayer(oldLayer);
     // projection
     let proj_nodes = nodes.map(function (n) {
       return {
@@ -744,27 +745,7 @@ export default class OlRenderer {
       name: 'nodes',
       source: nodes_vector,
       renderMode: 'image',
-      style: (feature) => {
-        const nodeData = feature.get('nodeData'); // Récupération des données supplémentaires
-        const labelText = nodeData.id;
-        return new Style({
-          fill: new Fill({ color: 'rgba(43, 146, 190, 0.4)' }),
-          stroke: new Stroke({
-            width: 3,
-            color: 'rgba(43, 146, 190, 1)',
-          }),
-          text: new Text({
-            font: '13px Calibri,sans-serif',
-            fill: new Fill({ color: '#fff' }),
-            stroke: new Stroke({
-              color: '#000',
-              width: 2,
-            }),
-            text: labelText, // Utilisation du texte dynamique en fonction des données de la feature
-            overflow: true,
-          }),
-        });
-      },
+      visible: wasVisible,
     });
 
     nodesLayer.setZIndex(0);

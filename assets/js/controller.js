@@ -28,7 +28,7 @@ export default class Controller {
         }); */
     this.initialize();
   }
-  
+
   async initialize() {
     this.tryPreloadData();
     // let initialSetup run otherwise empty projection dropdown
@@ -38,7 +38,7 @@ export default class Controller {
   async tryPreloadData() {
     let data = await this.loadFromQueryParameters();
     // the other tab waits for 2000ms so we give it 3000ms to send a message
-    data = data || await this.loadFromPostMessage(3000);
+    data = data || (await this.loadFromPostMessage(3000));
     if (data) {
       // show a spinner for 500ms then load the data
       document.getElementById('spinnerDiv').style.display = 'flex';
@@ -58,7 +58,8 @@ export default class Controller {
         }
       };
       window.addEventListener('message', messageHandler);
-      setTimeout(() => { // remove listener if no data after timeout
+      setTimeout(() => {
+        // remove listener if no data after timeout
         window.removeEventListener('message', messageHandler);
         resolve(null);
       }, timeout);
@@ -66,21 +67,21 @@ export default class Controller {
   }
 
   async loadFromQueryParameters() {
-    const queryParameters = new URLSearchParams(window.location.search)
+    const queryParameters = new URLSearchParams(window.location.search);
     const dataUrl = queryParameters.get('d_u');
     if (isValidHttpsUrl(dataUrl)) {
       try {
-        const response = await fetch(dataUrl).then(r => r.json());
+        const response = await fetch(dataUrl).then((r) => r.json());
         document.getElementById('spinnerDiv').style.display = 'flex';
         const { nodes, edges: links, config } = response;
-        return { nodes, links, config }
-      } catch(e) {
+        return { nodes, links, config };
+      } catch (e) {
         console.error(`error fetching data file`);
         console.error(e);
-        throw e
+        throw e;
       }
     } else {
-      console.log('no query param files')
+      console.log('no query param files');
     }
   }
 
@@ -550,6 +551,15 @@ export default class Controller {
       lstyle,
       links_z_index
     );
+
+    // Update visibility icon to match layer state
+    let nodesLayer = this.view.renderer.get_layer('nodes');
+    let eyeIcon = document.getElementById('nodesVisibility');
+    if (nodesLayer && eyeIcon) {
+      eyeIcon.src = nodesLayer.getVisible()
+        ? './assets/svg/si-glyph-view.svg'
+        : './assets/svg/si-glyph-noview.svg';
+    }
 
     this.render_legend();
   }
